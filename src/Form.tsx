@@ -1,10 +1,10 @@
 import {useState} from 'react';
 import { Check } from '@mui/icons-material';
-import {Stack, styled, Box, Card, TextField, Grid2, Paper, Typography, Select, MenuItem, Checkbox, InputLabel, FormControl, Divider} from '@mui/material';
+import {Stack, styled, Box, Card, TextField, Grid2, Paper, Typography, Select, MenuItem, Checkbox, InputLabel, FormControl, Divider, CardContent} from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './theme';
-
+import { alpha } from '@mui/material/styles';
 
 interface Currency {
     symbol: string;
@@ -47,16 +47,25 @@ const currencyData: currencyData = {
 export const Form = () => {
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline enableColorScheme />
+            <CssBaseline/>
             <Box sx={(theme) => ({
                 display: 'flex',
-                backgroundColor: `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-            })}>                
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quibusdam quaerat magni, at nihil aliquid, perspiciatis molestias officiis ad recusandae enim odit, nesciunt animi nostrum deleniti quia tempora quis id?
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quibusdam quaerat magni, at nihil aliquid, perspiciatis molestias officiis ad recusandae enim odit, nesciunt animi nostrum deleniti quia tempora quis id?
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quibusdam quaerat magni, at nihil aliquid, perspiciatis molestias officiis ad recusandae enim odit, nesciunt animi nostrum deleniti quia tempora quis id?
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quibusdam quaerat magni, at nihil aliquid, perspiciatis molestias officiis ad recusandae enim odit, nesciunt animi nostrum deleniti quia tempora quis id?
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos quibusdam quaerat magni, at nihil aliquid, perspiciatis molestias officiis ad recusandae enim odit, nesciunt animi nostrum deleniti quia tempora quis id?
+                overflow: 'auto',
+                // backgroundColor: `rgba(${theme.vars.palette.background.defaultChannel} / 1)`,
+                backgroundColor: theme.vars
+                    ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+                    : alpha(theme.palette.background.default, 1),
+                width: '100%',
+                maxWidth: { sm: '100%', md: '1700px' }
+                
+            })}>
+                <Card variant="outlined">
+                    <CardContent>
+                        <Typography variant="h5" component="div">
+                            Hello, World!
+                        </Typography>
+                    </CardContent>
+                </Card>
             </Box>
         </ThemeProvider>
     );
