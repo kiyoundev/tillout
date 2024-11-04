@@ -17,21 +17,6 @@ export const gray = {
     900: 'hsl(220, 35%, 3%)',
 };
 
-const customComponents = {
-    MuiCard: {
-        styleOverrides: {
-            root: ({ theme }) => {
-                return {
-                    borderRadius: (theme.vars || theme).shape.borderRadius,
-                    border: `1px solid ${((theme.vars || theme).palette.divider)}`,
-                    boxShadow: 'none',
-                    background: 'hsl(0, 0%, 100%)',
-                }
-            }
-        }
-    }
-}
-
 export const colorSchemes = {
     light: {
         palette: {
@@ -45,14 +30,50 @@ export const colorSchemes = {
         },
     },
 
-    dark: {
-        palette: {
-            background: {
-                default: 'hsl(0, 0%, 0%)',
-            },
-        },
-    }
+    // dark: {
+    //     palette: {
+    //         background: {
+    //             default: 'hsl(0, 0%, 0%)',
+    //         },
+    //     },
+    // }
 }
+
+
+
+const customComponents = {
+    MuiCard: {
+        styleOverrides: {
+            root: ({ theme }) => {
+                return {
+                    padding: theme.spacing(4),
+                    borderRadius: (theme.vars || theme).shape.borderRadius,
+                    border: `1px solid ${((theme.vars || theme).palette.divider)}`,
+                    boxShadow: 'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+                    background: 'hsl(0, 0%, 100%)',
+                    [theme.breakpoints.up('sm')]: {
+                        maxWidth: '750px',
+                    },
+                    alignSelf: 'center',
+                    // margin: 'auto',
+                    width: '100%',
+                }
+            }
+        }
+    },
+    MuiStack: {
+        styleOverrides: {
+            root: ({ theme }) => {
+                return {
+                    padding: theme.spacing(2),
+                }
+            }
+        }
+    }
+
+}
+
+
 
 export const theme = createTheme({
     cssVariables: {

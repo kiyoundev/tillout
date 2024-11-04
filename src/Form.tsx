@@ -5,68 +5,120 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './theme';
 import { alpha } from '@mui/material/styles';
-
-interface Currency {
-    symbol: string;
-    bills: string[];
-    coins: string[];
-}
-
-interface currencyData {
-    [key: string]: Currency
-}
-
-const currencyData: currencyData = {
-    USD: {
-        symbol: '$',
-        bills: ['$1', '$5', '$10', '$20', '$50', '$100'],
-        coins: ['1¢', '5¢', '10¢', '25¢', '50¢', '$1']
-    },
-    CAD: {
-        symbol: '$',
-        bills: ['$5', '$10', '$20', '$50', '$100'],
-        coins: ['5¢', '10¢', '25¢', '$1', '$2']
-    },
-    AUD: {
-        symbol: '$',
-        bills: ['$5', '$10', '$20', '$50', '$100'],
-        coins: ['5¢', '10¢', '20¢', '50¢', '$1', '$2']
-    },
-    NZD: {
-        symbol: '$',
-        bills: ['$5', '$10', '$20', '$50', '$100'],
-        coins: ['10¢', '20¢', '50¢', '$1', '$2']
-    },
-    EUR: {
-        symbol: '€',
-        bills: ['€5', '€10', '€20', '€50', '€100', '€200', '€500'],
-        coins: ['1¢', '2¢', '5¢', '10¢', '20¢', '50¢', '€1', '€2']
-    }
-}
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { CurrencySelect, CurrencySelect2} from './components/CurrencySelect';
+import { Options } from './components/Options';
+import { MainInput } from './components/MainInput';
 
 export const Form = () => {
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <Box sx={(theme) => ({
-                display: 'flex',
-                overflow: 'auto',
-                // backgroundColor: `rgba(${theme.vars.palette.background.defaultChannel} / 1)`,
-                backgroundColor: theme.vars
-                    ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-                    : alpha(theme.palette.background.default, 1),
-                width: '100%',
-                maxWidth: { sm: '100%', md: '1700px' }
-                
-            })}>
-                <Card variant="outlined">
-                    <CardContent>
-                        <Typography variant="h5" component="div">
-                            Hello, World!
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </Box>
+        <ThemeProvider theme={theme} defaultMode='light'>
+            <CssBaseline enableColorScheme/>
+                {/* <CurrencySelect/> */}
+                <CurrencySelect2/>
+                <Options/>
+                <MainInput/>
         </ThemeProvider>
-    );
-};
+    )
+}
+
+
+// export const Form = () => {
+//     return (
+//         <ThemeProvider theme={theme} defaultMode='light'>
+//             <CssBaseline enableColorScheme/>
+//             <Stack direction='column'>
+//                 <Card>
+//                     <Typography variant="h5" component="div">
+//                         title
+//                     </Typography>
+//                     <Grid2 
+//                         container 
+//                         spacing = {4}
+//                         sx={(theme) => ({
+//                             padding: theme.spacing(4),
+//                             // margin: theme.spacing(2),
+//                             border: `1px solid ${((theme.vars || theme).palette.divider)}`,
+//                             borderRadius: (theme.vars || theme).shape.borderRadius,
+//                         })}
+//                     >
+//                         <Grid2 item height= '100%' direction='column' size={6} display='flex' >
+//                             <TextField variant='standard' fullWidth select>
+//                             </TextField>
+//                             <TextField variant='standard' fullWidth>
+//                             </TextField>                            
+//                         </Grid2>
+//                         <Grid2 item size={6} display="flex" justifyContent="center">
+//                             <FormGroup>
+//                                 <FormControlLabel control={<Checkbox/>} label="option1"/>
+//                                 <FormControlLabel control={<Checkbox/>} label="option2"/>
+//                                 <FormControlLabel control={<Checkbox/>} label="option3"/>
+//                             </FormGroup>
+//                         </Grid2>
+//                     </Grid2>
+//                 </Card>
+//             </Stack>
+//         </ThemeProvider>
+//     );
+// };
+
+
+// const CustomPaper = (): JSX.Element => {
+//   return (
+//     <Paper
+//       elevation={0}
+//       sx={{
+//         display: "flex",
+//         justifyContent: "space-between",
+//         padding: "34px 25px",
+//         borderRadius: 1,
+//         border: "1px solid",
+//         borderColor: "palette.divider",
+//       }}
+//     >
+//       <Box sx={{ width: 220 }}>
+//         <FormControl fullWidth variant="standard">
+//           <InputLabel>Currency</InputLabel>
+//           <Select
+//             defaultValue=""
+//             IconComponent={ArrowDropDownIcon}
+//             label="Currency"
+//           >
+//             <MenuItem value="Value">Value</MenuItem>
+//             <MenuItem value="asd">asd</MenuItem>
+//           </Select>
+//           <Typography variant="caption" color="textSecondary">
+//             Helper text
+//           </Typography>
+//         </FormControl>
+
+//         <FormControl fullWidth variant="standard" sx={{ mt: 4 }}>
+//           <InputLabel>Label</InputLabel>
+//           <TextField defaultValue="Value" variant="standard" />
+//         </FormControl>
+//       </Box>
+
+//       <Box sx={{ width: 320 }}>
+//         <Typography variant="body1">Label</Typography>
+//         <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+//           <Checkbox icon={<Hidden />} checkedIcon={<Hidden />} />
+//           <Typography variant="body1">Label</Typography>
+//         </Box>
+//         <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+//           <Checkbox icon={<Hidden />} checkedIcon={<Hidden />} />
+//           <Typography variant="body1">Label</Typography>
+//         </Box>
+//         <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+//           <Checkbox icon={<Hidden />} checkedIcon={<Hidden />} />
+//           <Typography variant="body1">Label</Typography>
+//         </Box>
+//         <Typography variant="caption" color="textSecondary" sx={{ mt: 2 }}>
+//           Helper text
+//         </Typography>
+//       </Box>
+//     </Paper>
+//   );
+// };
+
+// export default CustomPaper;
