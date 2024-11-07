@@ -9,7 +9,7 @@ import { CurrencySelector } from './components/CurrencySelect.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode>
       <Form/>
-  </StrictMode>
+  // </StrictMode>
 )

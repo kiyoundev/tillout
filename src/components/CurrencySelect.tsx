@@ -1,6 +1,7 @@
 import { TextField, Autocomplete} from "@mui/material";
 import { currencies } from "../assets/currencies";
 import { useState, useEffect} from "react";
+import { set } from "react-hook-form";
 
 // export const CurrencySelect = () => {
 //     const { control } = useForm();
@@ -52,12 +53,29 @@ import { useState, useEffect} from "react";
 //     );
 // };
 
+
 export const CurrencySelect2 = () => {
+
+    // Custom display of inputValue in Autocomplete component; "- <currency.label>"
+    // const displayEndAdornment = (option) => (option ? `- ${option.name}` : "");
+    const displayEndAdornment = (option) => `- ${option?.name ?? ''}`;
+    // const displayEndAdornment = (option) => `- ${option?.name || ''}`;
+
+    const displayFlag = (code, container: string) => (
+        <img
+            loading="lazy"
+            width="20"
+            srcSet={`https://flagcdn.com/w40/${code}.png 2x`}
+            src={`https://flagcdn.com/w20/${code}.png`}
+            alt=""
+            style={container == 'input' ? { marginLeft: '0.2em', marginRight: '0.5em' } : { marginRight: '0.5em' }}
+        />        
+    );
+
     const [selectedValue, setSelectedValue] = useState(currencies[0]);
-    const [inputValue, setInputValue] = useState(selectedValue ? ` - ${selectedValue.name}` : "");
+    const [inputValue, setInputValue] = useState(selectedValue ? displayEndAdornment(selectedValue) : "");
     const [helperText, setHelperText] = useState('Please select a currency');
     const [inputFocused, setInputFocused] = useState(false);
-    const [inputBlurred, setInputBlurred] = useState(true);
 
     // console.log('selectedValue: ', selectedValue);
     // console.log('inputValue: ', inputValue);    
@@ -67,37 +85,31 @@ export const CurrencySelect2 = () => {
     // consider using React.useMemo() for focus
     // https://codesandbox.io/embed/t36437?module=/src/Demo.js&fontsize=12
 
-    useEffect(() => {
-        setInputBlurred(!inputFocused);
-    }, [inputFocused]);
-
-    useEffect(() => {
-        selectedValue ? setInputValue(` - ${selectedValue.name}`) : setInputValue('');
-    }, [selectedValue]);
-
-
-    const handleInputChange = (_, newInputValue) => {
-        setInputValue(newInputValue);
-    };
-
-    const handleBlur = () => {
-        setInputFocused(false);
-    };
-
-    const handleFocus = () => {
-        setInputFocused(true);
-        if (selectedValue) { setInputValue(''); }
-    };
-
     return (
         <>
-            {/* <div>{`selectedValue: ${selectedValue !== null ? `'${selectedValue.label}'` : 'null'}`}</div>
+            <div>{`selectedValue: ${selectedValue !== null ? `'${selectedValue.label}'` : 'null'}`}</div>
             <div>{`inputValue: '${inputValue}'`}</div>
             <div>{`inputFocused: '${inputFocused}'`}</div>
-            <div>{`inputBlurred: '${inputBlurred}'`}</div> */}
             
         <Autocomplete
+            disableClearable
+            blurOnSelect
+            // clearOnBlur
+            // clearOnEscape
             options={currencies}
+            value={selectedValue}
+            onChange={(event, newValue, reason) => {
+                // console.log(`****************** onChange occured! ******************`);
+                // console.log(`newValue: ${newValue.label}\nreason: ${reason}`);
+                setSelectedValue(newValue);
+            }}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue, reason) => {
+                // console.log(`**************** onInputChange occured! ****************`);
+                // console.log(`newInputValue: ${newInputValue}\nreason: ${reason}`);
+                setInputValue(newInputValue);
+            }}
+            getOptionLabel={(option) => displayEndAdornment(option)}
             filterOptions={(options, params) => {
                 const filteredOptions = options.filter((option) => {
                     const inputValue = params.inputValue.toLowerCase();
@@ -105,63 +117,47 @@ export const CurrencySelect2 = () => {
                 });
                 return filteredOptions;                
             }}
-            value={selectedValue}
-            onChange={(_, newValue) => {
-                setSelectedValue(newValue);
-            }}
-            inputValue={inputValue}
-            onInputChange={handleInputChange}
-            blurOnSelect
-            disableClearable
-            clearOnBlur
-            clearOnEscape
-            getOptionLabel={(option) => option ? `- ${option.name}` : ''}
             renderOption={(props, option) => {
                 const {key, ...optionProps} = props;
                 return (
                     <li key={key} {...optionProps}>
-                        <img
-                            loading="lazy"
-                            width="20"
-                            srcSet={`https://flagcdn.com/w40/${option.code}.png 2x`}
-                            src={`https://flagcdn.com/w20/${option.code}.png`}
-                            alt=""
-                            style={{ marginRight: '0.5em' }}
-                        />
+                        {displayFlag(option.code, "")}
                         {option.label} - {option.name}
                     </li>
                 )
             }}            
             renderInput={(params) => (
-                // console.log(`params: `, params),
                 <TextField 
                     {...params} 
                     label="Currency"
                     placeholder="Type to search"
                     helperText={helperText}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    InputProps = {{
-                        ...params.InputProps,
-                        sx: {
-                            input: { color: 'gray' },
-                            ...(inputFocused && {input: { color: 'black' }}),
-                        },
-                        startAdornment: (
-                            (!inputFocused && inputValue !== "") && selectedValue && (
-                                <>
-                                    <img
-                                        loading="lazy"
-                                        width="20"
-                                        srcSet={`https://flagcdn.com/w40/${selectedValue.code}.png 2x`}
-                                        src={`https://flagcdn.com/w20/${selectedValue.code}.png`}
-                                        alt=""
-                                        style={{ marginLeft: '0.2em', marginRight: '0.5em' }}
-                                    />
-                                    {selectedValue.label}
-                                </>
-                            )                         
-                        )
+                    onFocus={ () => {
+                        // console.log(`******************* onFocus occured! *******************`);
+                        setInputFocused(true);``
+                        setInputValue('');                   
+                    }}
+                    onBlur={() => {
+                        // console.log(`******************* onBlur occured! *******************`);
+                        setInputFocused(false)
+                        if (inputValue !== "" && selectedValue) {setHelperText('');}
+                    }}
+                    slotProps ={{
+                        input: {
+                            ...params.InputProps,
+                            sx: {
+                                input: { color: 'gray' },
+                                ...(inputFocused && {input: { color: 'black' }}),
+                            },
+                            startAdornment: (
+                                (!inputFocused && selectedValue) && (
+                                    <>
+                                        {displayFlag(selectedValue.code, "input")}
+                                        {selectedValue.label}
+                                    </>
+                                )                         
+                            )
+                        }
                     }}
                 /> 
             )}
@@ -169,3 +165,73 @@ export const CurrencySelect2 = () => {
         </>
     )
 }
+
+// const options = [
+//     {
+//         label: "Option 1",
+//         name: "Option 1 Name"
+//     },
+
+//     {
+//         label: "Option 2",
+//         name: "Option 2 Name"
+//     }    
+// ];
+
+// export const Test = () => {
+
+//     // const displayCustomInput = (option) => (`Custom ${selectedValue.name}`);
+
+//     const [selectedValue, setSelectedValue] = useState(options[0]);
+//     const [inputValue, setInputValue] = useState(`This is ${selectedValue.name}`);
+//     // const [inputValue, setInputValue] = useState(selectedValue ? displayCustomInput(selectedValue.name) : ""); // Initialize with custom value
+
+//     // useEffect(() => {
+//     //     console.log(`****************** useEffect occured! ******************`);
+//     //     setInputValue(`This is ${selectedValue.name}`);
+//     // }, [selectedValue]);
+
+//     // console.log(`----------------- state change occured! -----------------\nselectedValue: ${selectedValue.label}\ninputValue: ${inputValue}`);
+//     console.log(`selectedValue: ${selectedValue.label}\n`);
+//     console.log(`inputValue: ${inputValue}`);
+
+//     const handleChange = (event, newValue, reason) => {
+//         // console.log(`****************** onChange occured! ******************`);
+//         // console.log(`newValue: ${newValue.label}\nreason: ${reason}`);
+//         setSelectedValue(newValue);
+//     };
+
+//     const handleInputChange = (event, newInputValue, reason) => {
+//         // console.log(`****************** onInputChange occured! ******************`);
+//         // console.log(`newInputValue: ${newInputValue}\nreason: ${reason}`);
+//         // console.log(reason === "input");
+//         // reason === "input" && setInputValue(newInputValue);
+//         setInputValue(newInputValue);
+//     };    
+
+//     return (
+//         <Autocomplete
+//             blurOnSelect
+//             clearOnBlur
+//             disableClearable
+
+//             options={options}
+//             value={selectedValue}
+//             onChange={handleChange}            
+//             inputValue={inputValue}
+//             onInputChange={handleInputChange}
+
+//             getOptionLabel={(option) => {
+//                 return (`This is ${option.name}`);
+//             }}
+//             // getOptionLabel={(option) => option.name} // Custom display for input value
+//             renderInput={(params) => <TextField {...params} />}
+//             // renderOption={(props, option)=> {
+//             //     const { key, ...otherProps } = props;
+//             //     <li key={key}{...otherProps}>
+//             //         {option.label} - {option.name}
+//             //     </li>
+//             // }}
+//         />
+//     );
+// };

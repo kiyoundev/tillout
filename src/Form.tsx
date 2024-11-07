@@ -10,6 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { CurrencySelect, CurrencySelect2} from './components/CurrencySelect';
 import { Options } from './components/Options';
 import { MainInput } from './components/MainInput';
+import { Test } from './components/CurrencySelect';
 
 export const Form = () => {
     return (
@@ -19,6 +20,7 @@ export const Form = () => {
                 <CurrencySelect2/>
                 <Options/>
                 <MainInput/>
+                {/* <Test/> */}
         </ThemeProvider>
     )
 }
