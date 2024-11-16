@@ -2,7 +2,7 @@ import { useState, useReducer} from "react";
 // import { set } from "react-hook-form";
 import { TextField, Autocomplete} from "@mui/material";
 import { currencies, Currency} from "../assets/currencies";
-import { displayEndAdornment, displayFlag } from "../util/util";
+import { displayEndAdornment, displayFlag } from "../utils/util";
 
 
 interface Action {
