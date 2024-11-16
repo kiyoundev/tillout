@@ -1,18 +1,19 @@
 import { useState } from "react";
 import {Box, TextField, Stack, Input, InputAdornment} from "@mui/material";
 
-export const MainInput = () => {
+export const MainInput = (props) => {
+    const {currency} = props;
     return (
-        <Stack>
-            <TextField
-                label="label"
-                slotProps={{
-                    input:{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>
-                    }
-                }}
-            />
-        </Stack>
+        <TextField
+            fullWidth
+            label="label"
+            type="number"
+            slotProps={{
+                input: {
+                    startAdornment: <InputAdornment position="start">{currency.symbol}</InputAdornment>
+                }
+            }}
+        />
     )
 }
 

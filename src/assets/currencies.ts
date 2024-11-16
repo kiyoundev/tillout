@@ -1,49 +1,19 @@
 
-// interface Currency {
-//     label: string;
-//     flagIconClass: string;
-//     bills: string[];
-//     coins: string[];
-// }
+export interface Currency {
+    label: string;
+    name: string;
+    code: string;
+    symbol: string;
+    bills: string[];
+    coins: string[];
+}
 
-// export const currencyData: Record<string, Currency> = {
-//     USD: {
-//         label: 'US Dollar',
-//         flagIconClass: 'us',
-//         bills: ['$1', '$5', '$10', '$20', '$50', '$100'],
-//         coins: ['1¢', '5¢', '10¢', '25¢', '50¢', '$1']
-//     },
-//     CAD: {
-//         label: 'Canadian Dollar',
-//         flagIconClass: 'ca',
-//         bills: ['$5', '$10', '$20', '$50', '$100'],
-//         coins: ['5¢', '10¢', '25¢', '$1', '$2']        
-//     },
-//     AUD: {
-//         label: 'Australian Dollar',
-//         flagIconClass: 'au',
-//         bills: ['$5', '$10', '$20', '$50', '$100'],
-//         coins: ['5¢', '10¢', '20¢', '50¢', '$1', '$2']
-//     },
-//     NZD: {
-//         label: 'New Zealand Dollar',
-//         flagIconClass: 'nz',
-//         bills: ['$5', '$10', '$20', '$50', '$100'],
-//         coins: ['10¢', '20¢', '50¢', '$1', '$2']
-//     },
-//     EUR: {
-//         label: 'Euro',
-//         flagIconClass: 'eu',
-//         bills: ['€5', '€10', '€20', '€50', '€100', '€200', '€500'],
-//         coins: ['1¢', '2¢', '5¢', '10¢', '20¢', '50¢', '€1', '€2']
-//     },
-// };
-
-export const currencies = [
+export const currencies: Currency[] = [
     {   
         label: 'USD',
         name: 'US Dollar',
         code: 'us',
+        symbol: '$',
         bills: ['$1', '$5', '$10', '$20', '$50', '$100'],
         coins: ['1¢', '5¢', '10¢', '25¢', '50¢', '$1']
     },
@@ -51,6 +21,7 @@ export const currencies = [
         label: 'CAD',
         name: 'Canadian Dollar',
         code: 'ca',
+        symbol: '$',
         bills: ['$5', '$10', '$20', '$50', '$100'],
         coins: ['5¢', '10¢', '25¢', '$1', '$2']        
     },
@@ -58,6 +29,7 @@ export const currencies = [
         label: 'AUD',
         name: 'Australian Dollar',
         code: 'au',
+        symbol: '$',
         bills: ['$5', '$10', '$20', '$50', '$100'],
         coins: ['5¢', '10¢', '20¢', '50¢', '$1', '$2']
     },
@@ -65,6 +37,7 @@ export const currencies = [
         label: 'NZD',
         name: 'New Zealand Dollar',
         code: 'nz',
+        symbol: '$',
         bills: ['$5', '$10', '$20', '$50', '$100'],
         coins: ['10¢', '20¢', '50¢', '$1', '$2']
     },
@@ -72,7 +45,16 @@ export const currencies = [
         label: 'EUR',
         name: 'Euro',
         code: 'eu',
+        symbol: '€',
         bills: ['€5', '€10', '€20', '€50', '€100', '€200', '€500'],
         coins: ['1¢', '2¢', '5¢', '10¢', '20¢', '50¢', '€1', '€2']
     },
+    {   
+        label: 'GBP',
+        name: 'British Pound',
+        code: 'gb',
+        symbol: '£',
+        bills: ['£5', '£10', '£20', '£50', '£100'],
+        coins: ['1p', '2p', '5p', '10p', '20p', '50p', '£1', '£2']
+    }
 ]
