@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 *storybook.log
+commit_msg.txt
