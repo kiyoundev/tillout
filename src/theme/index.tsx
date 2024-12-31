@@ -69,10 +69,22 @@ const customComponents = {
                 }
             }
         }
+    },
+    // Disabling the default MUI textfield's spinner when type is number
+    MuiTextField: {
+        styleOverrides: {
+            root: ({ theme }) => ({
+                "input::-webkit-outer-spin-button, input::-webkit-inner-spin-button": {
+                    WebkitAppearance: "none",
+                    margin: 0,
+                },
+                  "input[type=number]": {
+                    MozAppearance: "textfield",
+                }
+            })
+        }
     }
 }
-
-
 
 export const theme = createTheme({
     cssVariables: {

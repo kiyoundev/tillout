@@ -1,28 +1,23 @@
 import { useState, useReducer} from "react";
 // import { set } from "react-hook-form";
 import { TextField, Autocomplete} from "@mui/material";
-import { currencies, Currency} from "../assets/currencies";
-import { displayEndAdornment, displayFlag } from "../utils/util";
+import { currencies } from "../assets/currencies";
+import { CurrencySelectProps, ACTIONTYPE, InputFieldProps, DisplayFlagProps } from '../types/index.ts'
+import { displayEndAdornment} from "../utils/util";
 
+const DisplayFlag: React.FC<DisplayFlagProps> = ({code, container = 'input'}) => (
+    <img
+        loading="lazy"
+        width="25"
+        srcSet={`https://flagcdn.com/w40/${code}.png 2x`}
+        src={`https://flagcdn.com/w40/${code}.png`}
+        alt=""
+        style={container == 'input' ? {marginLeft: '0.5em', marginRight: '0.5em'} : {marginRight: '0.5em'}}
+    />    
+);
 
-interface Action {
-    type: "input" | "reset" | "clear" | "blur" | "selectOption" | "removeOption" | "focus"
-    payload: string;
-}
-
-interface InputFieldProps {
-    selectedValue: Currency;
-    onFocusChange: (inputFocused : boolean) => void;
-    InputProps?: object;
-}
-
-interface CurrencySelectProps {
-    currency: Currency;
-    onCurrencyChange: (currency: Currency) => void;
-}
-
-export const InputField = (props: InputFieldProps) : JSX.Element => {
-    const { onFocusChange, selectedValue, ...params } = props;
+export const InputField : React.FC<InputFieldProps> = (props) => {
+    const { onFocusChange, currency, ...params } = props;
     const [inputFocused, setInputFocused] = useState<boolean>(false);
 
     const toggleInputFocused = () : void => {
@@ -48,12 +43,12 @@ export const InputField = (props: InputFieldProps) : JSX.Element => {
                         }
                     },
                     startAdornment: (
-                        selectedValue && !inputFocused && (
+                        currency && !inputFocused && (
                             <>
-                                {displayFlag(selectedValue.code, "input")}
-                                {selectedValue.label}
+                                <DisplayFlag code={currency.code}/>
+                                {currency.label}
                             </>
-                        )                         
+                        )
                     )
                 }
             }}
@@ -61,17 +56,17 @@ export const InputField = (props: InputFieldProps) : JSX.Element => {
     );
 }
 
-export const CurrencySelect = ({currency, onCurrencyChange} : CurrencySelectProps) : JSX.Element => {
+export const CurrencySelect:React.FC<CurrencySelectProps> = ({currency, onCurrencyChange}) => {
 
     const handleFocusChange = (inputFocused : boolean) : void => {
         inputFocused && dispatch({type: 'focus', payload: ""})
-    }
+    }   
 
-    const reducer = (state: string, action: Action) : string => {
+    const reducer = (state: string, action: ACTIONTYPE) : string => {
         switch (action.type) {
+            // Autocomplete's blurOnSelect causes inputValue to be reverted back to original value, causing re-render
+            // Re-render only when inputValue's state changes from empty string to action.payload
             case 'blur':
-                // Autocomplete's blurOnSelect causes inputValue to be reverted back to original value, causing re-render
-                // Re-render only when inputValue's state changes from empty string to action.payload
                 return (state && state !== action.payload) ? state : action.payload;
             default:
                 return action.payload;
@@ -79,10 +74,6 @@ export const CurrencySelect = ({currency, onCurrencyChange} : CurrencySelectProp
     }
 
     const [inputValue, dispatch] = useReducer(reducer, currency ? displayEndAdornment(currency) : "");
-
-    // console.log('selectedValue: ', selectedValue);
-    // console.log('inputValue: ', inputValue);
-    // console.log('inputFocused: ', inputFocused);
 
     return (
         <Autocomplete
@@ -106,13 +97,13 @@ export const CurrencySelect = ({currency, onCurrencyChange} : CurrencySelectProp
                     const inputValue = params.inputValue.toLowerCase();
                     return option.name.toLowerCase().includes(inputValue) || option.label.toLowerCase().includes(inputValue);
                 });
-                return filteredOptions;                
+                return filteredOptions;
             }}
             renderOption={(props, option) => {
                 const {key, ...optionProps} = props;
                 return (
                     <li key={key} {...optionProps}>
-                        {displayFlag(option.code)}
+                        <DisplayFlag code={option.code} container="dropdown"/>                       
                         {option.label} {option.name}
                     </li>
                 )
@@ -122,7 +113,7 @@ export const CurrencySelect = ({currency, onCurrencyChange} : CurrencySelectProp
                 <InputField 
                     {...params}
                     onFocusChange={handleFocusChange}
-                    selectedValue={currency}
+                    currency={currency}
                 />
             )}
         />
