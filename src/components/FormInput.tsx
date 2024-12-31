@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { TextField, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
@@ -6,25 +6,11 @@ import { FormInputProps } from '../types';
 import { removeLeadingZero } from '../utils/util';
 
 export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOption }) => {
-	const CashInput = ({ tender, type, value, onChange, onFocus, onBlur }) => (
-		<TextField
-			value={value}
-			onChange={(e) => onChange(e, tender, type)}
-			onFocus={(e) => onFocus(e, tender, type)}
-			onBlur={(e) => onBlur(e, tender, type)}
-			onKeyDown={handleKeyDown}
-			variant='outlined'
-			id={`${tender}-${type}`}
-			label={type}
-			type='number'
-		/>
-	);
-
-	const mapInitialData = (value: 0 | '') => {
+	const initializeData = () => {
 		let data = {};
 		Object.keys(selectedCashOption).forEach((key) => {
 			Object.values(cashTypes[key] ?? cashTypes['coins']).forEach((type) => {
-				(data[key] ||= {})[type] = value;
+				(data[key] ||= {})[type] = 0;
 			});
 		});
 		return data;
@@ -53,12 +39,8 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 	};
 
 	const [formData, setFormData] = useState({});
-	const refData = useRef(mapInitialData(0));
+	const refData = useRef(useMemo(() => initializeData(), [cashTypes]));
 	const isCalculated = useRef(false);
-
-	useEffect(() => {
-		refData.current = mapInitialData(0);
-	}, [selectedCashOption, cashTypes]);
 
 	const handleChange = (e, tender, type) => {
 		const value = removeLeadingZero(e);
@@ -92,6 +74,9 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 		isCalculated.current = false;
 	};
 
+	console.log('refData.current', refData.current);
+	console.log('formData', formData);
+
 	return (
 		<>
 			<Stack>
@@ -105,13 +90,16 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 							>
 								{Object.values(cashTypes[tender] ?? cashTypes['coins']).map((type) => (
 									<Grid key={`${tender}-${type}`}>
-										<CashInput
-											tender={tender}
-											type={type}
+										<TextField
 											value={formData?.[tender]?.[type] ?? ''}
-											onChange={handleChange}
-											onFocus={handleFocus}
-											onBlur={handleBlur}
+											onChange={(e) => handleChange(e, tender, type)}
+											onFocus={(e) => handleFocus(e, tender, type)}
+											onBlur={(e) => handleBlur(e, tender, type)}
+											onKeyDown={handleKeyDown}
+											variant='outlined'
+											id={`${tender}-${type}`}
+											label={type}
+											type='number'
 										/>
 									</Grid>
 								))}
