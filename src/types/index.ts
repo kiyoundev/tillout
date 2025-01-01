@@ -6,6 +6,7 @@ export interface Currency {
 	cashTypes: {
 		bills: string[];
 		coins: string[];
+		rolls: string[];
 	};
 }
 
@@ -50,3 +51,8 @@ export interface FormInputProps {
 	cashTypes: Currency['cashTypes'];
 	selectedCashOption: SelectedCashOption;
 }
+
+export type Tender = keyof Currency['cashTypes']; // "bills" | "coins" | "rolls"
+export type Type = Currency['cashTypes'][Tender][number];
+export type Data = Record<Tender, Record<Type[number], number>>;
+export type Value = string;

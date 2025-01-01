@@ -1,14 +1,13 @@
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { TextField, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
-import { FormInputProps } from '../types';
-import { removeLeadingZero } from '../utils/util';
+import { FormInputProps, Tender, Type, Data, SelectedCashOption, Value } from '../types';
 
 export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOption }) => {
-	const initializeData = () => {
-		let data = {};
-		Object.keys(selectedCashOption).forEach((key) => {
+	const initializeData = (): Data => {
+		const data = {} as Data;
+		(Object.keys(selectedCashOption) as Array<keyof SelectedCashOption>).forEach((key) => {
 			Object.values(cashTypes[key] ?? cashTypes['coins']).forEach((type) => {
 				(data[key] ||= {})[type] = 0;
 			});
@@ -16,7 +15,7 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 		return data;
 	};
 
-	const updateFormData: void = (tender, type, value) => {
+	const updateFormData = (tender: Tender, type: Type, value: Value): void => {
 		setFormData((prev) => ({
 			...prev,
 			[tender]: {
@@ -26,9 +25,9 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 		}));
 	};
 
-	const mergeFormData = () => {
-		let updatedData = {};
-		for (const key of Object.keys(refData.current)) {
+	const mergeFormData = (): Data => {
+		const updatedData = {} as Data;
+		for (const key of Object.keys(refData.current) as Array<keyof SelectedCashOption>) {
 			selectedCashOption[key] &&
 				(updatedData[key] = {
 					...refData.current[key],
@@ -38,49 +37,46 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 		return updatedData;
 	};
 
-	const [formData, setFormData] = useState({});
-	const refData = useRef(useMemo(() => initializeData(), [cashTypes]));
-	const isCalculated = useRef(false);
+	const [formData, setFormData] = useState<Data>({} as Data);
+	const refData = useRef<Data>(useMemo(() => initializeData(), [cashTypes]));
+	const isCalculated = useRef<boolean>(false);
 
-	const handleChange = (e, tender, type) => {
-		const value = removeLeadingZero(e);
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
+		const value = String(Number(e.target.value));
 		updateFormData(tender, type, value);
 	};
 
-	const handleFocus = (e, tender, type) => {
+	const handleFocus = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
 		if (e.target.value === '0') {
 			updateFormData(tender, type, '');
 		}
 	};
 
-	const handleBlur = (e, tender, type) => {
+	const handleBlur = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
 		isCalculated.current && e.target.value === '' && updateFormData(tender, type, '0');
 	};
 
 	// Prevent characters like "e", ".", "-", "+" directly at the keypress level
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
 		if (['e', 'E', '-', '+', '.'].includes(e.key)) {
 			e.preventDefault();
 		}
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = (): void => {
 		setFormData(mergeFormData());
 		isCalculated.current = true;
 	};
 
-	const handleReset = () => {
-		setFormData({});
+	const handleReset = (): void => {
+		setFormData({} as Data);
 		isCalculated.current = false;
 	};
-
-	console.log('refData.current', refData.current);
-	console.log('formData', formData);
 
 	return (
 		<>
 			<Stack>
-				{Object.keys(selectedCashOption).map(
+				{(Object.keys(selectedCashOption) as Array<keyof SelectedCashOption>).map(
 					(tender) =>
 						selectedCashOption[tender] && (
 							<Grid
