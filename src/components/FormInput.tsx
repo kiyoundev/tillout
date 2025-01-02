@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { TextField, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
@@ -38,8 +38,12 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 	};
 
 	const [formData, setFormData] = useState<Data>({} as Data);
-	const refData = useRef<Data>(useMemo(() => initializeData(), [cashTypes]));
+	const refData = useRef<Data>(initializeData());
 	const isCalculated = useRef<boolean>(false);
+
+	useEffect(() => {
+		refData.current = initializeData();
+	}, [cashTypes]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
 		const value = String(Number(e.target.value));
