@@ -43,6 +43,7 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 
 	useEffect(() => {
 		refData.current = initializeData();
+		setFormData({} as Data);
 	}, [cashTypes]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
