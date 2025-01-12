@@ -31,10 +31,10 @@ export const App: React.FC = () => {
 			<Stack>
 				<FormInput
 					cashTypes={currency.cashTypes}
+					symbol={currency.symbol}
 					selectedCashOption={selectedCashOption}
 				/>
 			</Stack>
-			{/* <Test /> */}
 		</>
 	);
 };

@@ -1,21 +1,21 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { TextField, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
-import { FormInputProps, Tender, Type, Data, SelectedCashOption, Value } from '../types';
+import { FormInputProps, Tender, Type, Data, Value, PreData } from '../types';
+import { calculateTotal } from '../utils/util';
 
-export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOption }) => {
-	const initializeData = (): Data => {
-		const data = {} as Data;
-		(Object.keys(selectedCashOption) as Array<keyof SelectedCashOption>).forEach((key) => {
-			Object.values(cashTypes[key] ?? cashTypes['coins']).forEach((type) => {
-				(data[key] ||= {})[type] = 0;
-			});
-		});
-		return data;
-	};
+export const FormInput: React.FC<FormInputProps> = ({ symbol, cashTypes, selectedCashOption }) => {
+	const preData = useMemo<PreData>(
+		() => ({
+			bills: cashTypes.bills,
+			coins: cashTypes.coins,
+			rolls: Object.keys(cashTypes.rolls)
+		}),
+		[cashTypes]
+	);
 
-	const updateFormData = (tender: Tender, type: Type, value: Value): void => {
+	const updateFormData = (tender: Tender, type: Type<typeof tender>, value: Value): void => {
 		setFormData((prev) => ({
 			...prev,
 			[tender]: {
@@ -25,40 +25,42 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 		}));
 	};
 
-	const mergeFormData = (): Data => {
-		const updatedData = {} as Data;
-		for (const key of Object.keys(refData.current) as Array<keyof SelectedCashOption>) {
+	const autoFillData = (): Data => {
+		const data = {} as Data;
+
+		(Object.keys(preData) as Array<Tender>).forEach((key) => {
 			selectedCashOption[key] &&
-				(updatedData[key] = {
-					...refData.current[key],
-					...formData[key]
+				preData[key].forEach((type) => {
+					(data[key] ||= {})[type] = formData[key]?.[type] || '0';
 				});
-		}
-		return updatedData;
+		});
+
+		'rolls' in data && (data['rollsFaceValue'] = cashTypes.rolls);
+
+		return data;
 	};
 
 	const [formData, setFormData] = useState<Data>({} as Data);
-	const refData = useRef<Data>(initializeData());
 	const isCalculated = useRef<boolean>(false);
+	const [totalAmount, setTotalAmount] = useState<number>(0);
 
 	useEffect(() => {
-		refData.current = initializeData();
-		setFormData({} as Data);
+		const emptyData = {} as Data;
+		if (JSON.stringify(formData) === JSON.stringify(emptyData)) return;
+		setFormData(emptyData);
 	}, [cashTypes]);
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type<typeof tender>): void => {
 		const value = String(Number(e.target.value));
 		updateFormData(tender, type, value);
 	};
 
-	const handleFocus = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
-		if (e.target.value === '0') {
-			updateFormData(tender, type, '');
-		}
+	const handleFocus = (tender: Tender, type: Type<typeof tender>): void => {
+		formData[tender]?.[type] === '0' && updateFormData(tender, type, '');
 	};
 
-	const handleBlur = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, tender: Tender, type: Type) => {
-		isCalculated.current && e.target.value === '' && updateFormData(tender, type, '0');
+	const handleBlur = (tender: Tender, type: Type<typeof tender>): void => {
+		isCalculated.current && formData[tender]?.[type] === '' && updateFormData(tender, type, '0');
 	};
 
 	// Prevent characters like "e", ".", "-", "+" directly at the keypress level
@@ -69,7 +71,10 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 	};
 
 	const handleSubmit = (): void => {
-		setFormData(mergeFormData());
+		const data = autoFillData();
+		const totalAmount = calculateTotal(data, symbol);
+		setFormData(data);
+		setTotalAmount(totalAmount);
 		isCalculated.current = true;
 	};
 
@@ -81,21 +86,22 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 	return (
 		<>
 			<Stack>
-				{(Object.keys(selectedCashOption) as Array<keyof SelectedCashOption>).map(
-					(tender) =>
+				{(Object.keys(preData) as Array<Tender>).map((key) => {
+					const tender = key as Tender;
+					return (
 						selectedCashOption[tender] && (
 							<Grid
 								container
 								key={`${tender}-container`}
 								spacing={2}
 							>
-								{Object.values(cashTypes[tender] ?? cashTypes['coins']).map((type) => (
+								{Object.values(preData[tender]).map((type) => (
 									<Grid key={`${tender}-${type}`}>
 										<TextField
-											value={formData?.[tender]?.[type] ?? ''}
+											value={formData[tender as Tender]?.[type] ?? ''}
 											onChange={(e) => handleChange(e, tender, type)}
-											onFocus={(e) => handleFocus(e, tender, type)}
-											onBlur={(e) => handleBlur(e, tender, type)}
+											onFocus={() => handleFocus(tender, type)}
+											onBlur={() => handleBlur(tender, type)}
 											onKeyDown={handleKeyDown}
 											variant='outlined'
 											id={`${tender}-${type}`}
@@ -106,7 +112,8 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 								))}
 							</Grid>
 						)
-				)}
+					);
+				})}
 			</Stack>
 
 			<Grid
@@ -128,6 +135,8 @@ export const FormInput: React.FC<FormInputProps> = ({ cashTypes, selectedCashOpt
 					Reset
 				</Button>
 			</Grid>
+
+			<Grid container>{isCalculated.current && totalAmount}</Grid>
 		</>
 	);
 };

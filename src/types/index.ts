@@ -6,7 +6,7 @@ export interface Currency {
 	cashTypes: {
 		bills: string[];
 		coins: string[];
-		rolls: string[];
+		rolls: Record<string, string>;
 	};
 }
 
@@ -17,7 +17,6 @@ export interface SelectedCashOption {
 }
 
 export interface DisplayFlagProps {
-	// code: Pick<Currency, 'code'>;
 	code: Currency['code'];
 	container?: 'input' | 'dropdown';
 }
@@ -49,10 +48,50 @@ export interface OpeningBalanceProp {
 
 export interface FormInputProps {
 	cashTypes: Currency['cashTypes'];
+	symbol: Currency['symbol'];
 	selectedCashOption: SelectedCashOption;
 }
 
-export type Tender = keyof Currency['cashTypes']; // "bills" | "coins" | "rolls"
-export type Type = Currency['cashTypes'][Tender][number];
-export type Data = Record<Tender, Record<Type[number], number>>;
+// formData
+// {
+//     "bills": {
+//         "$1": 0,
+//         "$2": 0,
+//         "$5": 0,
+//         "$10": 0,
+//         "$20": 0,
+//         "$50": 0,
+//         "$100": 0
+//     },
+//     "coins": {
+//         "1¢": 0,
+//         "5¢": 0,
+//         "10¢": 0,
+//         "25¢": 0,
+//         "50¢": 0,
+//         "$1": 0
+//     },
+//     "rolls": {
+//         "1¢": 0,
+//         "5¢": 0,
+//         "10¢": 0,
+//         "25¢": 0,
+//         "50¢": 0,
+//         "$1": 0
+//     }
+// }
+
+// "bills" | "coins" | "rolls"
+export type Tender = keyof Currency['cashTypes'];
+// eg. '$1' | '1¢', etc.
+export type Type<T extends Tender> = T extends 'rolls'
+	? keyof Currency['cashTypes']['rolls']
+	: T extends 'bills' | 'coins'
+	? Currency['cashTypes'][T][number]
+	: never;
+export type Data = { [T in Tender]: Record<Type<T>, Value> } & { rollsFaceValue: Record<string, string> };
 export type Value = string;
+export type Symbol = Currency['symbol'];
+export type PreData = Omit<Currency['cashTypes'], 'rolls'> & {
+	rolls: string[];
+};
