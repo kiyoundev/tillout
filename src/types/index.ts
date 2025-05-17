@@ -1,7 +1,8 @@
+export type CurrencyCode = 'us' | 'ca' | 'au' | 'nz' | 'eu' | 'gb';
+
 export interface Currency {
 	label: string;
 	name: string;
-	code: string;
 	symbol: string;
 	cashTypes: {
 		bills: string[];
@@ -10,15 +11,10 @@ export interface Currency {
 	};
 }
 
-export interface SelectedCashOption {
+export interface SelectedTender {
 	bills: boolean;
 	coins: boolean;
 	rolls: boolean;
-}
-
-export interface DisplayFlagProps {
-	code: Currency['code'];
-	container?: 'input' | 'dropdown';
 }
 
 export interface ACTIONTYPE {
@@ -26,23 +22,12 @@ export interface ACTIONTYPE {
 	payload: string;
 }
 
-export interface InputFieldProps {
-	currency: Currency;
-	onFocusChange: (inputFocused: boolean) => void;
-	InputProps?: object;
-}
-
-export interface CurrencySelectProps {
-	currency: Currency;
-	onCurrencyChange: (currency: Currency) => void;
-}
-
 export interface CashOptionSelectProps {
 	selectedCashOption: SelectedCashOption;
 	onCashOptionChange: (selectedCashOption: SelectedCashOption) => void;
 }
 
-export interface OpeningBalanceProp {
+export interface SalesAmountInputProp {
 	currency: Currency;
 }
 
@@ -52,36 +37,6 @@ export interface FormInputProps {
 	selectedCashOption: SelectedCashOption;
 }
 
-// formData
-// {
-//     "bills": {
-//         "$1": 0,
-//         "$2": 0,
-//         "$5": 0,
-//         "$10": 0,
-//         "$20": 0,
-//         "$50": 0,
-//         "$100": 0
-//     },
-//     "coins": {
-//         "1¢": 0,
-//         "5¢": 0,
-//         "10¢": 0,
-//         "25¢": 0,
-//         "50¢": 0,
-//         "$1": 0
-//     },
-//     "rolls": {
-//         "1¢": 0,
-//         "5¢": 0,
-//         "10¢": 0,
-//         "25¢": 0,
-//         "50¢": 0,
-//         "$1": 0
-//     }
-// }
-
-// "bills" | "coins" | "rolls"
 export type Tender = keyof Currency['cashTypes'];
 // eg. '$1' | '1¢', etc.
 export type Type<T extends Tender> = T extends 'rolls'

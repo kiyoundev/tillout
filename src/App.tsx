@@ -1,40 +1,54 @@
-import { CurrencySelect } from './components/CurrencySelect.tsx';
-import { CashOptionSelect } from './components/CashOptionSelect.tsx';
-import { OpeningBalance } from './components/OpeningBalance.tsx';
+import './assets/fonts/fonts.css';
+// import { CurrencySelect } from "./components/CurrencySelect.tsx";
+import { TenderSelect } from './components/TenderSelect.tsx';
+// import { OpeningBalanceInput } from './components/OpeningBalanceInput.tsx';
+// import { SalesAmountInput } from './components/SalesAmountInput.tsx';
 import { FormInput } from './components/FormInput.tsx';
-import { currencies } from './assets/currencies.ts';
-import { Currency, SelectedCashOption } from './types/index.ts';
+import { SelectedTender, CurrencyCode } from './types/index.ts';
 import React, { useState } from 'react';
 import { Stack } from '@mui/material';
 
+// export const App: React.FC = () => {
+// 	const [currencyCode, setCurrencyCode] = useState<CurrencyCode>('us');
+// 	const [selectedTender, setSelectedTender] = useState<SelectedTender>({
+// 		bills: true,
+// 		coins: false,
+// 		rolls: false
+// 	});
+
+// 	return (
+// 		<>
+// 			<Stack>
+// 				<CurrencySelect
+// 					currencyCode={currencyCode}
+// 					setCurrencyCode={setCurrencyCode}
+// 				/>
+// 			</Stack>
+// 			<Stack>
+// 				<TenderSelect
+// 					selectedTender={selectedTender}
+// 					setSelectedTender={setSelectedTender}
+// 				/>
+// 			</Stack>
+// 			<Stack>
+// 				<FormInput
+// 					currencyCode={currencyCode}
+// 					selectedTender={selectedTender}
+// 				/>
+// 			</Stack>
+// 		</>
+// 	);
+// };
+
+import { CurrencySelect } from '../src/components/CurrencySelect/CurrencySelect.tsx';
+
 export const App: React.FC = () => {
-	const [currency, setCurrency] = useState<Currency>(currencies[0]);
-	const [selectedCashOption, setSelectedCashOption] = useState<SelectedCashOption>({
-		bills: true,
-		coins: false,
-		rolls: false
-	});
+	const [currencyCode, setCurrencyCode] = useState<CurrencyCode>('us');
 
 	return (
-		<>
-			<Stack>
-				<CurrencySelect
-					currency={currency}
-					onCurrencyChange={setCurrency}
-				/>
-				<OpeningBalance currency={currency} />
-				<CashOptionSelect
-					selectedCashOption={selectedCashOption}
-					onCashOptionChange={setSelectedCashOption}
-				/>
-			</Stack>
-			<Stack>
-				<FormInput
-					cashTypes={currency.cashTypes}
-					symbol={currency.symbol}
-					selectedCashOption={selectedCashOption}
-				/>
-			</Stack>
-		</>
+		<CurrencySelect
+			currencyCode={currencyCode}
+			onCurrencyChange={(currencyCode) => setCurrencyCode(currencyCode)}
+		/>
 	);
 };

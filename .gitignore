@@ -25,3 +25,6 @@ dist-ssr
 
 *storybook.log
 commit_msg.txt
+
+# windsurf rules
+.windsurfrules

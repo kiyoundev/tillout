@@ -1,10 +1,15 @@
 import { FormGroup, FormControlLabel, Checkbox } from '@mui/material';
-import { CashOptionSelectProps } from '../types/index.ts';
+import { SelectedTender } from '../types/index.ts';
 
-export const CashOptionSelect: React.FC<CashOptionSelectProps> = ({ selectedCashOption, onCashOptionChange }) => {
+interface TenderSelectProps {
+	selectedTender: SelectedTender;
+	setSelectedTender: (options: SelectedTender) => void;
+}
+
+export const TenderSelect: React.FC<TenderSelectProps> = ({ selectedTender, setSelectedTender }) => {
 	const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, checked } = event.target;
-		onCashOptionChange({ ...selectedCashOption, [name]: checked });
+		setSelectedTender({ ...selectedTender, [name]: checked });
 	};
 
 	return (
@@ -14,7 +19,7 @@ export const CashOptionSelect: React.FC<CashOptionSelectProps> = ({ selectedCash
 				control={
 					<Checkbox
 						name='bills'
-						checked={selectedCashOption.bills}
+						checked={selectedTender.bills}
 						onChange={handleCheckboxChange}
 					/>
 				}
@@ -24,7 +29,7 @@ export const CashOptionSelect: React.FC<CashOptionSelectProps> = ({ selectedCash
 				control={
 					<Checkbox
 						name='coins'
-						checked={selectedCashOption.coins}
+						checked={selectedTender.coins}
 						onChange={handleCheckboxChange}
 					/>
 				}
@@ -34,7 +39,7 @@ export const CashOptionSelect: React.FC<CashOptionSelectProps> = ({ selectedCash
 				control={
 					<Checkbox
 						name='rolls'
-						checked={selectedCashOption.rolls}
+						checked={selectedTender.rolls}
 						onChange={handleCheckboxChange}
 					/>
 				}
