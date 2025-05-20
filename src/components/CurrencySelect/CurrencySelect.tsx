@@ -10,10 +10,8 @@ export interface CurrencySelectProps {
 
 export const filterValues = (options: CurrencyCode[], value: string) => {
 	const searchableFields: (keyof Pick<Currency, 'label' | 'name'>)[] = ['label', 'name'];
-	const normalize = (str: string): string => str.toLowerCase().replace(/\s+/g, '');
-
 	return options.filter((option: CurrencyCode) =>
-		searchableFields.some((field) => normalize(getCurrency(option)[field]).includes(normalize(value)))
+		searchableFields.some((field) => getCurrency(option)[field].toLowerCase().includes(value.toLowerCase()))
 	);
 };
 
@@ -24,6 +22,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, on
 	return (
 		<Autocomplete
 			slotProps={{
+				// disable down arrow icon ripple
 				popupIndicator: { disableRipple: true }
 			}}
 			disableClearable // hide clear button
@@ -35,11 +34,12 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, on
 			onChange={(_, newValue) => newValue && onCurrencyChange(newValue)}
 			inputValue={inputValue}
 			onInputChange={(_, newInputValue, reason) => {
-				// upon selecting a new option followed by automatic blur, clear the input value.
+				// upon selecting a new option followed by automatic blur, clear the input value
 				if (reason === 'blur' || reason === 'selectOption') {
 					setInputValue('');
+				} else {
+					setInputValue(newInputValue);
 				}
-				newInputValue && setInputValue(newInputValue);
 			}}
 			filterOptions={(options, props) => filterValues(options, props.inputValue)}
 			renderValue={(value) => {
