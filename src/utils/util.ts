@@ -1,10 +1,6 @@
 import { Currency, Data, Tender, CurrencyCode } from '../types';
 import { CURRENCY_DETAILS } from '../assets/currencies';
 
-export const getCurrencyCodeList = () => {
-	return Object.keys(CURRENCY_DETAILS) as CurrencyCode[];
-};
-
 export const getCurrency = (currencyCode: CurrencyCode): Currency =>
 	CURRENCY_DETAILS[currencyCode] ??
 	(() => {

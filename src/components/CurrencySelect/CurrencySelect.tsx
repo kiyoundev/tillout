@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { TextField, Autocomplete, Box } from '@mui/material';
 import { CurrencyCode, Currency } from '../../types/index.ts';
-import { getCurrency, getCurrencyCodeList } from '../../utils/util.ts';
+import { getCurrency } from '../../utils/util.ts';
+import { CURRENCY_DETAILS } from '../../assets/currencies';
 
 export interface CurrencySelectProps {
 	currencyCode: CurrencyCode;
@@ -22,14 +23,13 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, on
 	return (
 		<Autocomplete
 			slotProps={{
-				// disable down arrow icon ripple
-				popupIndicator: { disableRipple: true }
+				popupIndicator: { disableRipple: true } // disable down arrow icon ripple
 			}}
 			disableClearable // hide clear button
 			blurOnSelect // blur upon selected
 			clearOnEscape // allow clearing inputValue via escape key
 			openOnFocus // open dropdown upon focus
-			options={getCurrencyCodeList()}
+			options={Object.keys(CURRENCY_DETAILS) as CurrencyCode[]}
 			value={currencyCode}
 			onChange={(_, newValue) => newValue && onCurrencyChange(newValue)}
 			inputValue={inputValue}
@@ -41,7 +41,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, on
 					setInputValue(newInputValue);
 				}
 			}}
-			filterOptions={(options, props) => filterValues(options, props.inputValue)}
+			filterOptions={(options, state) => filterValues(options, state.inputValue)}
 			renderValue={(value) => {
 				const currency = getCurrency(value);
 				return (
