@@ -4,6 +4,7 @@ export interface Currency {
 	label: string;
 	name: string;
 	symbol: string;
+	locale: string;
 	cashTypes: {
 		bills: string[];
 		coins: string[];

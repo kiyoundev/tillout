@@ -5,6 +5,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		label: 'USD',
 		name: 'US Dollar',
 		symbol: '$',
+		locale: 'en-US',
 		cashTypes: {
 			bills: ['$1', '$2', '$5', '$10', '$20', '$50', '$100'],
 			coins: ['1¢', '5¢', '10¢', '25¢', '50¢', '$1'],
@@ -24,6 +25,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		label: 'CAD',
 		name: 'Canadian Dollar',
 		symbol: '$',
+		locale: 'en-CA',
 		cashTypes: {
 			bills: ['$5', '$10', '$20', '$50', '$100'],
 			coins: ['5¢', '10¢', '25¢', '$1', '$2'],
@@ -42,6 +44,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		label: 'AUD',
 		name: 'Australian Dollar',
 		symbol: '$',
+		locale: 'en-AU',
 		cashTypes: {
 			bills: ['$5', '$10', '$20', '$50', '$100'],
 			coins: ['5¢', '10¢', '20¢', '50¢', '$1', '$2'],
@@ -61,6 +64,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		label: 'NZD',
 		name: 'New Zealand Dollar',
 		symbol: '$',
+		locale: 'en-NZ',
 		cashTypes: {
 			bills: ['$5', '$10', '$20', '$50', '$100'],
 			coins: ['10¢', '20¢', '50¢', '$1', '$2'],
@@ -79,6 +83,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		label: 'EUR',
 		name: 'Euro',
 		symbol: '€',
+		locale: 'de-DE',
 		cashTypes: {
 			bills: ['€5', '€10', '€20', '€50', '€100'],
 			coins: ['1¢', '2¢', '5¢', '10¢', '20¢', '50¢'],
@@ -100,6 +105,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		label: 'GBP',
 		name: 'British Pound Sterling',
 		symbol: '£',
+		locale: 'en-GB',
 		cashTypes: {
 			bills: ['£5', '£10', '£20', '£50', '£100'],
 			coins: ['1p', '2p', '5p', '10p', '20p', '50p'],

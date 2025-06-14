@@ -1,54 +1,45 @@
 import './assets/fonts/fonts.css';
-// import { CurrencySelect } from "./components/CurrencySelect.tsx";
-import { TenderSelect } from './components/TenderSelect.tsx';
-// import { OpeningBalanceInput } from './components/OpeningBalanceInput.tsx';
-// import { SalesAmountInput } from './components/SalesAmountInput.tsx';
-import { FormInput } from './components/FormInput.tsx';
-import { SelectedTender, CurrencyCode } from './types/index.ts';
-import React, { useState } from 'react';
-import { Stack } from '@mui/material';
-
-// export const App: React.FC = () => {
-// 	const [currencyCode, setCurrencyCode] = useState<CurrencyCode>('us');
-// 	const [selectedTender, setSelectedTender] = useState<SelectedTender>({
-// 		bills: true,
-// 		coins: false,
-// 		rolls: false
-// 	});
-
-// 	return (
-// 		<>
-// 			<Stack>
-// 				<CurrencySelect
-// 					currencyCode={currencyCode}
-// 					setCurrencyCode={setCurrencyCode}
-// 				/>
-// 			</Stack>
-// 			<Stack>
-// 				<TenderSelect
-// 					selectedTender={selectedTender}
-// 					setSelectedTender={setSelectedTender}
-// 				/>
-// 			</Stack>
-// 			<Stack>
-// 				<FormInput
-// 					currencyCode={currencyCode}
-// 					selectedTender={selectedTender}
-// 				/>
-// 			</Stack>
-// 		</>
-// 	);
-// };
-
-import { CurrencySelect } from '../src/components/CurrencySelect/CurrencySelect.tsx';
+import { useState } from 'react';
+import { CurrencySelect } from './components/CurrencySelect/CurrencySelect.tsx';
+import { TenderSelect } from './components/TenderSelect/TenderSelect.tsx';
+import { Tender } from './types/index.ts';
+import { AmountField } from './components/AmountField/AmountField.tsx';
+import { type CurrencyCode } from './types/index.ts';
 
 export const App: React.FC = () => {
 	const [currencyCode, setCurrencyCode] = useState<CurrencyCode>('us');
+	const [selectedTender, setSelectedTender] = useState<Tender[]>([]);
+	const [openingBalance, setOpeningBalance] = useState<number | undefined>();
+	const [salesAmount, setSalesAmount] = useState<number | undefined>();
+
+	console.log(openingBalance);
 
 	return (
-		<CurrencySelect
-			currencyCode={currencyCode}
-			onCurrencyChange={(currencyCode) => setCurrencyCode(currencyCode)}
-		/>
+		<>
+			<CurrencySelect
+				currencyCode={currencyCode}
+				onCurrencyChange={(currencyCode) => setCurrencyCode(currencyCode)}
+			/>
+			<TenderSelect
+				selectedTender={selectedTender}
+				onTenderChange={(selectedTender) => setSelectedTender(selectedTender)}
+			/>
+			{/* Opening Balance */}
+			<AmountField
+				currencyCode={currencyCode}
+				value={openingBalance}
+				onValueChange={({ floatValue }) => setOpeningBalance(floatValue)}
+				label='Opening Balance'
+				helperText='Enter Opening Balance'
+			/>
+			{/* Sales Amount */}
+			<AmountField
+				currencyCode={currencyCode}
+				label='Sales Amount'
+				value={salesAmount}
+				onValueChange={({ floatValue }) => setSalesAmount(floatValue)}
+				helperText='Enter Sales Amount'
+			/>
+		</>
 	);
 };
