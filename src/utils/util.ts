@@ -1,11 +1,13 @@
 import { Currency, Data, Tender, CurrencyCode } from '../types';
 import { CURRENCY_DETAILS } from '../assets/currencies';
 
-export const getCurrency = (currencyCode: CurrencyCode): Currency =>
-	CURRENCY_DETAILS[currencyCode] ??
-	(() => {
+export const getCurrency = (currencyCode: CurrencyCode): Currency => {
+	const currency = CURRENCY_DETAILS[currencyCode];
+	if (!currency) {
 		throw new Error('Invalid currency code');
-	});
+	}
+	return currency;
+};
 
 export const calculateTotal = (data: Data, currency: Currency): number => {
 	const parseValue = (input: string, divisor = 1): number => parseFloat(input.match(/\d+(\.\d+)?/)?.[0] || '0') / divisor;

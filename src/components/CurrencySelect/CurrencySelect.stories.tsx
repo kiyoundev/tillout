@@ -32,7 +32,7 @@ const meta: Meta<typeof CurrencySelect> = {
 		currencyCode: {
 			control: { type: 'select' },
 			options: Object.keys(CURRENCY_DETAILS) as CurrencyCode[],
-			description: 'The currently selected currency code',
+			description: 'The selected currency code',
 			table: {
 				defaultValue: { summary: 'us' }
 			}
@@ -45,7 +45,6 @@ const meta: Meta<typeof CurrencySelect> = {
 			}
 		}
 	},
-	// default arg for all stories
 	args: {
 		currencyCode: 'us'
 	}
