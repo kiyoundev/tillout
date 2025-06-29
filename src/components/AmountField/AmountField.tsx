@@ -5,12 +5,7 @@ import { CurrencyCode } from '../../types/index.ts';
 import { useMemo } from 'react';
 
 /**
- * AmountField component
- *
- * A specialized TextField for inputting currency amounts.
- * It uses react-number-format for formatting and Material-UI for styling.
- * It dynamically displays the correct currency symbol and number separators
- * based on the provided currency code.
+ * Props for the AmountField component.
  */
 
 export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
@@ -19,6 +14,11 @@ export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
 	onValueChange: (value: NumberFormatValues) => void;
 };
 
+/**
+ * A utility function that returns locale-aware thousand and decimal separators.
+ * @param currencyCode The currency code to get separators for.
+ * @returns An object containing the `thousandSeparator` and `decimalSeparator`.
+ */
 export const getSeparators = (currencyCode: CurrencyCode) => {
 	const locale = getCurrency(currencyCode).locale;
 	const SAMPLE_NUMBER = 1234.56;
@@ -31,6 +31,17 @@ export const getSeparators = (currencyCode: CurrencyCode) => {
 		decimalSeparator
 	};
 };
+
+/**
+ * AmountField component
+ *
+ * A specialized TextField for inputting monetary amounts.
+ * It uses react-number-format for formatting and Material-UI for styling.
+ * - Displays a currency symbol adornment based on the `currencyCode` prop.
+ * - Uses locale-aware thousand and decimal separators.
+ * - Disallows negative numbers.
+ * - Enforces a two-decimal-place format.
+ */
 
 export const AmountField = ({ currencyCode, value, onValueChange, label, helperText, ...props }: AmountFieldProps) => {
 	const currency = getCurrency(currencyCode);

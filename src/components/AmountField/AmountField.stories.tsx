@@ -3,13 +3,6 @@ import { useArgs } from '@storybook/preview-api';
 import { NumberFormatValues } from 'react-number-format';
 import { AmountField } from './AmountField';
 
-/**
- * Storybook configuration for the AmountField component.
- *
- * This file defines the metadata and stories for the AmountField component,
- * enabling interactive testing and documentation within Storybook.
- */
-
 const meta: Meta<typeof AmountField> = {
 	title: 'Components/AmountField',
 	component: AmountField,
@@ -59,7 +52,7 @@ export const Default: Story = {
 			<AmountField
 				{...args}
 				value={value}
-				onValueChange={(values: NumberFormatValues) => updateArgs({ value: values.value })}
+				onValueChange={(values: NumberFormatValues) => updateArgs({ value: values.floatValue })}
 			/>
 		);
 	}
