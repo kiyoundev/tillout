@@ -2,8 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from '@storybook/preview-api';
 import { Box } from '@mui/material';
 import { CurrencySelect, CurrencySelectProps } from './CurrencySelect';
-import { CURRENCY_DETAILS } from '../../assets/currencies';
-import { CurrencyCode } from '../../types';
+import { CURRENCY_CODES } from '../../assets/currencies';
 
 /**
  * A currency selector component that allows users to search and select from a list of currencies.
@@ -31,7 +30,7 @@ const meta: Meta<typeof CurrencySelect> = {
 	argTypes: {
 		currencyCode: {
 			control: { type: 'select' },
-			options: Object.keys(CURRENCY_DETAILS) as CurrencyCode[],
+			options: CURRENCY_CODES,
 			description: 'The selected currency code',
 			table: {
 				defaultValue: { summary: 'us' }

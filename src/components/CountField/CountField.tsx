@@ -2,7 +2,7 @@ import { TextField, type TextFieldProps } from '@mui/material';
 import { NumericFormat, type OnValueChange } from 'react-number-format';
 
 export type CountFieldProps = Pick<TextFieldProps, 'label' | 'onFocus' | 'onBlur'> & {
-	value: number | string;
+	value: number | undefined;
 	onValueChange: OnValueChange;
 };
 
@@ -17,21 +17,20 @@ export type CountFieldProps = Pick<TextFieldProps, 'label' | 'onFocus' | 'onBlur
  * - Disallows leading zeros.
  */
 
-export const CountField = ({ value, onValueChange, label, ...props }: CountFieldProps) => {
-	return (
-		<NumericFormat
-			// --- MUI TextField props (passed to customInput) ---
-			customInput={TextField}
-			label={label}
-			// --- NumericFormat specific props ---
-			value={value}
-			onValueChange={onValueChange}
-			allowNegative={false}
-			decimalScale={0}
-			allowLeadingZeros={false}
-			{...props}
-		/>
-	);
-};
+export const CountField = ({ value, onValueChange, label, ...props }: CountFieldProps) => (
+	<NumericFormat
+		// --- MUI TextField props (passed to customInput) ---
+		customInput={TextField}
+		label={label}
+		fullWidth
+		// --- NumericFormat specific props ---}
+		value={value}
+		onValueChange={onValueChange}
+		allowNegative={false}
+		decimalScale={0}
+		allowLeadingZeros={false}
+		{...props}
+	/>
+);
 
 export default CountField;

@@ -30,7 +30,7 @@ type Story = StoryObj<typeof CountField>;
 export const Default: Story = {
 	args: {
 		label: 'Label',
-		value: ''
+		value: undefined
 	},
 	render: (args: CountFieldProps) => {
 		const [{ value }, updateArgs] = useArgs();

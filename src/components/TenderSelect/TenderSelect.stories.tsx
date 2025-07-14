@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { TenderSelect, TenderSelectProps } from './TenderSelect';
 import { Box } from '@mui/material';
 import { useArgs } from '@storybook/preview-api';
+import { TenderSelect, TenderSelectProps } from './TenderSelect';
+import { TENDER_TYPES } from '../../assets/currencies';
 
 const meta: Meta<typeof TenderSelect> = {
 	title: 'Components/TenderSelect',
@@ -20,7 +21,7 @@ const meta: Meta<typeof TenderSelect> = {
 	argTypes: {
 		selectedTender: {
 			control: { type: 'multi-select' },
-			options: ['bills', 'coins', 'rolls'],
+			options: TENDER_TYPES,
 			description: 'The currently selected tender options',
 			table: {
 				defaultValue: { summary: '[]' }

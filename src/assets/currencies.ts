@@ -1,4 +1,4 @@
-import { Currency, CurrencyCode } from '../types';
+import { type Currency, type CurrencyCode } from '../types';
 
 export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 	us: {
@@ -6,7 +6,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		name: 'US Dollar',
 		symbol: '$',
 		locale: 'en-US',
-		cashTypes: {
+		denomination: {
 			bills: ['$1', '$2', '$5', '$10', '$20', '$50', '$100'],
 			coins: ['1¢', '5¢', '10¢', '25¢', '50¢', '$1'],
 			rolls:
@@ -26,7 +26,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		name: 'Canadian Dollar',
 		symbol: '$',
 		locale: 'en-CA',
-		cashTypes: {
+		denomination: {
 			bills: ['$5', '$10', '$20', '$50', '$100'],
 			coins: ['5¢', '10¢', '25¢', '$1', '$2'],
 			rolls:
@@ -45,7 +45,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		name: 'Australian Dollar',
 		symbol: '$',
 		locale: 'en-AU',
-		cashTypes: {
+		denomination: {
 			bills: ['$5', '$10', '$20', '$50', '$100'],
 			coins: ['5¢', '10¢', '20¢', '50¢', '$1', '$2'],
 			rolls:
@@ -65,7 +65,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		name: 'New Zealand Dollar',
 		symbol: '$',
 		locale: 'en-NZ',
-		cashTypes: {
+		denomination: {
 			bills: ['$5', '$10', '$20', '$50', '$100'],
 			coins: ['10¢', '20¢', '50¢', '$1', '$2'],
 			rolls:
@@ -84,7 +84,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		name: 'Euro',
 		symbol: '€',
 		locale: 'de-DE',
-		cashTypes: {
+		denomination: {
 			bills: ['€5', '€10', '€20', '€50', '€100'],
 			coins: ['1¢', '2¢', '5¢', '10¢', '20¢', '50¢'],
 			rolls:
@@ -106,7 +106,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		name: 'British Pound Sterling',
 		symbol: '£',
 		locale: 'en-GB',
-		cashTypes: {
+		denomination: {
 			bills: ['£5', '£10', '£20', '£50', '£100'],
 			coins: ['1p', '2p', '5p', '10p', '20p', '50p'],
 			rolls:
@@ -124,3 +124,6 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 		}
 	}
 };
+
+export const CURRENCY_CODES = Object.keys(CURRENCY_DETAILS) as CurrencyCode[];
+export const TENDER_TYPES = ['bills', 'coins', 'rolls'];

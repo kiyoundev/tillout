@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from '@storybook/preview-api';
 import { NumberFormatValues } from 'react-number-format';
 import { AmountField } from './AmountField';
+import { CURRENCY_CODES } from '../../assets/currencies';
 
 const meta: Meta<typeof AmountField> = {
 	title: 'Components/AmountField',
@@ -17,6 +18,8 @@ const meta: Meta<typeof AmountField> = {
 			}
 		},
 		currencyCode: {
+			control: 'select',
+			options: CURRENCY_CODES,
 			description: 'The selected currency code',
 			table: {
 				defaultValue: { summary: 'us' }
