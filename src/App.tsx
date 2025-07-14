@@ -2,17 +2,37 @@ import './assets/fonts/fonts.css';
 import { useState } from 'react';
 import { CurrencySelect } from './components/CurrencySelect/CurrencySelect.tsx';
 import { TenderSelect } from './components/TenderSelect/TenderSelect.tsx';
-import { Tender } from './types/index.ts';
+import { TenderType } from './types/index.ts';
 import { AmountField } from './components/AmountField/AmountField.tsx';
-import { type CurrencyCode } from './types/index.ts';
+import { CountGrid } from './components/CountGrid/CountGrid.tsx';
+import { type CurrencyCode, type Counts } from './types/index.ts';
 
 export const App: React.FC = () => {
 	const [currencyCode, setCurrencyCode] = useState<CurrencyCode>('us');
-	const [selectedTender, setSelectedTender] = useState<Tender[]>([]);
+	const [selectedTender, setSelectedTender] = useState<TenderType[]>([]);
 	const [openingBalance, setOpeningBalance] = useState<number | undefined>();
 	const [salesAmount, setSalesAmount] = useState<number | undefined>();
+	const [counts, setCounts] = useState<Counts>({
+		bills: {},
+		coins: {},
+		rolls: {}
+	});
 
-	console.log(openingBalance);
+	console.log(
+		`Currency Code: ${currencyCode}\nSelected Tender: ${selectedTender}\nOpening Balance: ${openingBalance}\nSales Amount: ${salesAmount}\nCounts: ${JSON.stringify(
+			counts
+		)}`
+	);
+
+	const handleDataChange = (denomination: string, count: number | undefined, tenderType: TenderType) => {
+		setCounts((prevCounts) => ({
+			...prevCounts,
+			[tenderType]: {
+				...prevCounts[tenderType],
+				[denomination]: count
+			}
+		}));
+	};
 
 	return (
 		<>
@@ -40,6 +60,23 @@ export const App: React.FC = () => {
 				onValueChange={({ floatValue }) => setSalesAmount(floatValue)}
 				helperText='Enter Sales Amount'
 			/>
+
+			{/* Bills Count Grid */}
+			<CountGrid
+				currencyCode={currencyCode}
+				tenderType='bills'
+				counts={counts}
+				onDataChange={(denomination, count, tenderType) => handleDataChange(denomination, count, tenderType)}
+			/>
+
+			{/* {selectedTender.includes('bills') && (
+				<CountGrid
+					currencyCode={currencyCode}
+					tenderType='bills'
+					counts={counts.bills}
+					onDataChange={(denomination, count, tenderType) => handleDataChange(denomination, count, tenderType)}
+				/>
+			)} */}
 		</>
 	);
 };
