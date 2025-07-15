@@ -29,7 +29,7 @@ const meta: Meta<typeof CountGrid> = {
 		},
 		tenderType: {
 			control: 'select',
-			options: TENDER_TYPES,
+			options: Object.keys(TENDER_TYPES),
 			description: 'The type of tender to display (bills, coins, or rolls).'
 		},
 		onDataChange: {

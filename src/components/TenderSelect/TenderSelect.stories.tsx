@@ -21,7 +21,7 @@ const meta: Meta<typeof TenderSelect> = {
 	argTypes: {
 		selectedTender: {
 			control: { type: 'multi-select' },
-			options: TENDER_TYPES,
+			options: Object.keys(TENDER_TYPES),
 			description: 'The currently selected tender options',
 			table: {
 				defaultValue: { summary: '[]' }

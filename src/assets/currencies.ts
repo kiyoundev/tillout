@@ -1,4 +1,4 @@
-import { type Currency, type CurrencyCode } from '../types';
+import { type Currency, type CurrencyCode, type TenderType } from '../types';
 
 export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 	us: {
@@ -126,4 +126,8 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 };
 
 export const CURRENCY_CODES = Object.keys(CURRENCY_DETAILS) as CurrencyCode[];
-export const TENDER_TYPES = ['bills', 'coins', 'rolls'];
+export const TENDER_TYPES: Record<TenderType, string> = {
+	bills: 'Banknotes',
+	coins: 'Coins',
+	rolls: 'Rolled Coins'
+};
