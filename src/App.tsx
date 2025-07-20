@@ -4,7 +4,7 @@ import { CurrencySelect } from './components/CurrencySelect/CurrencySelect.tsx';
 import { TenderSelect } from './components/TenderSelect/TenderSelect.tsx';
 import { TenderType } from './types/index.ts';
 import { AmountField } from './components/AmountField/AmountField.tsx';
-import { CountGrid } from './components/CountGrid/CountGrid.tsx';
+import { TenderCountContainer } from './components/TenderCountContainer/TenderCountContainer.tsx';
 import { type CurrencyCode, type Counts } from './types/index.ts';
 
 export const App: React.FC = () => {
@@ -61,22 +61,37 @@ export const App: React.FC = () => {
 				helperText='Enter Sales Amount'
 			/>
 
-			{/* Bills Count Grid */}
-			<CountGrid
-				currencyCode={currencyCode}
-				tenderType='bills'
-				counts={counts}
-				onDataChange={(denomination, count, tenderType) => handleDataChange(denomination, count, tenderType)}
-			/>
+			{/* Tender Count */}
 
-			{/* {selectedTender.includes('bills') && (
-				<CountGrid
+			{/* Bills */}
+			{selectedTender.includes('bills') && (
+				<TenderCountContainer
 					currencyCode={currencyCode}
 					tenderType='bills'
-					counts={counts.bills}
+					counts={counts}
 					onDataChange={(denomination, count, tenderType) => handleDataChange(denomination, count, tenderType)}
 				/>
-			)} */}
+			)}
+
+			{/* Coins */}
+			{selectedTender.includes('coins') && (
+				<TenderCountContainer
+					currencyCode={currencyCode}
+					tenderType='coins'
+					counts={counts}
+					onDataChange={(denomination, count, tenderType) => handleDataChange(denomination, count, tenderType)}
+				/>
+			)}
+
+			{/* Rolls */}
+			{selectedTender.includes('rolls') && (
+				<TenderCountContainer
+					currencyCode={currencyCode}
+					tenderType='rolls'
+					counts={counts}
+					onDataChange={(denomination, count, tenderType) => handleDataChange(denomination, count, tenderType)}
+				/>
+			)}
 		</>
 	);
 };

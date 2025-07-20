@@ -39,7 +39,7 @@ export const CountGrid = ({ currencyCode, tenderType, counts, onDataChange }: Co
 	return (
 		<Grid
 			container
-			spacing={2}
+			spacing={1}
 		>
 			{denominations.map((denomination) => (
 				<Grid
