@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box } from '@mui/material';
-import { useArgs } from '@storybook/preview-api';
+import { useArgs } from 'storybook/preview-api';
 import { TenderSelect, TenderSelectProps } from './TenderSelect';
 import { TENDER_TYPES } from '../../assets/currencies';
 

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useArgs } from '@storybook/preview-api';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useArgs } from 'storybook/preview-api';
 import { CountGrid } from './CountGrid';
 import { CURRENCY_CODES, TENDER_TYPES } from '../../assets/currencies';
 import { type CountGridProps, type OnDataChangeHandler } from './CountGrid';

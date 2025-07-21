@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useArgs } from '@storybook/preview-api';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useArgs } from 'storybook/preview-api';
 import { Box } from '@mui/material';
 import { CurrencySelect, CurrencySelectProps } from './CurrencySelect';
 import { CURRENCY_CODES } from '../../assets/currencies';

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CountField, type CountFieldProps } from './CountField'; // Import CountFieldProps
-import { useArgs } from '@storybook/preview-api';
+import { useArgs } from 'storybook/preview-api';
 import type { NumberFormatValues } from 'react-number-format'; // Import NumberFormatValues
 
 const meta: Meta<typeof CountField> = {

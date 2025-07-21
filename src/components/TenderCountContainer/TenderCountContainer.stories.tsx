@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useArgs } from '@storybook/preview-api';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useArgs } from 'storybook/preview-api';
 import { TenderCountContainer, TenderCountContainerProps } from './TenderCountContainer';
 import { CURRENCY_CODES, TENDER_TYPES } from '../../assets/currencies';
 import { Counts, TenderType } from '../../types';
