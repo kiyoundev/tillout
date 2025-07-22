@@ -6,6 +6,7 @@ const config: StorybookConfig = {
 		'@chromatic-com/storybook',
 		'@storybook/addon-vitest',
 		'@storybook/addon-themes',
+		'@storybook/addon-docs',
 		'@storybook/addon-designs'
 	],
 	framework: {

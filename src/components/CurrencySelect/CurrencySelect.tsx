@@ -16,6 +16,15 @@ export const filterValues = (options: CurrencyCode[], value: string) => {
 	);
 };
 
+/**
+ * A specialized Autocomplete component for selecting a currency.
+ * It provides a user-friendly dropdown with search and filter capabilities.
+ * - Renders a list of all available currencies, showing their flag, name, and code.
+ * - Allows users to filter currencies by typing the currency name or code.
+ * - Displays the selected currency's flag and code when a value is chosen.
+ * - Communicates the selected currency back to the parent component via the `onCurrencyChange` callback.
+ */
+
 export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, onCurrencyChange }) => {
 	const [inputValue, setInputValue] = useState('');
 	const [inputFocused, setInputFocused] = useState(false);

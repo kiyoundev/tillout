@@ -33,8 +33,6 @@ export const getSeparators = (currencyCode: CurrencyCode) => {
 };
 
 /**
- * AmountField component
- *
  * A specialized TextField for inputting monetary amounts.
  * It uses react-number-format for formatting and Material-UI for styling.
  * - Displays a currency symbol adornment based on the `currencyCode` prop.

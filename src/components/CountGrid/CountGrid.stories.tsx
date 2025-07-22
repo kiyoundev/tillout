@@ -4,21 +4,11 @@ import { CountGrid } from './CountGrid';
 import { CURRENCY_CODES, TENDER_TYPES } from '../../assets/currencies';
 import { type CountGridProps, type OnDataChangeHandler } from './CountGrid';
 
-/**
- * A grid of CountFields for inputting currency denomination counts.
- * It's a controlled component that displays fields based on the selected currency and tender type.
- */
 const meta: Meta<typeof CountGrid> = {
 	title: 'Components/CountGrid',
 	component: CountGrid,
 	parameters: {
-		layout: 'centered',
-		docs: {
-			description: {
-				component:
-					'A grid of input fields for counting specific denominations of currency (e.g., all USD bills, all CAD coins). This component is controlled, receiving its state from a parent.'
-			}
-		}
+		layout: 'centered'
 	},
 	tags: ['autodocs'],
 	argTypes: {

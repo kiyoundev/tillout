@@ -16,14 +16,13 @@ export type CountGridProps = {
  * Calculates the appropriate column size for a responsive grid layout.
  * Aims to fit all denominations into a two-row grid.
  */
+
 export const getColumnSize = (denominations: string[]) => {
 	const numColumns = Math.ceil(denominations.length / 2);
 	return 12 / numColumns;
 };
 
 /**
- * CountGrid component
- *
  * Renders a grid of CountField components for a specific currency and tender type.
  * It is a controlled component, receiving its state via props and communicating changes via callbacks.
  * - Dynamically arranges CountField components into a responsive grid.
@@ -31,6 +30,7 @@ export const getColumnSize = (denominations: string[]) => {
  * - Receives the entire `counts` object and accesses the relevant slice based on `tenderType`.
  * - Reports any change in a denomination's count back to the parent via the `onDataChange` handler.
  */
+
 export const CountGrid = ({ currencyCode, tenderType, counts, onDataChange }: CountGridProps) => {
 	const currency = getCurrency(currencyCode);
 	const denominations = tenderType === 'rolls' ? Object.keys(currency.denomination[tenderType]) : currency.denomination[tenderType];

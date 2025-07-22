@@ -8,13 +8,7 @@ const meta: Meta<typeof TenderCountContainer> = {
 	title: 'Components/TenderCountContainer',
 	component: TenderCountContainer,
 	parameters: {
-		layout: 'centered',
-		docs: {
-			description: {
-				component:
-					'A complete tender counting section with title, divider, and grid of input fields for counting specific denominations of currency (e.g., bills, coins, or rolls). Displays the tender type as a title and organizes count fields in a responsive grid layout.'
-			}
-		}
+		layout: 'centered'
 	},
 	tags: ['autodocs'],
 	argTypes: {
@@ -47,6 +41,12 @@ export default meta;
 type Story = StoryObj<typeof TenderCountContainer>;
 
 export const Default: Story = {
+	parameters: {
+		design: {
+			type: 'figma',
+			url: 'https://www.figma.com/design/18zXNs33NLGTaGuqrOjELQ/TillOut?node-id=2284-44129&t=O5tqYnrIhdsLrRlY-4'
+		}
+	},
 	args: {
 		currencyCode: 'us',
 		tenderType: 'bills',

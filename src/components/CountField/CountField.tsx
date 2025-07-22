@@ -7,8 +7,6 @@ export type CountFieldProps = Pick<TextFieldProps, 'label' | 'onFocus' | 'onBlur
 };
 
 /**
- * CountField component
- *
  * A specialized TextField for inputting the count of currency denominations.
  * It uses react-number-format for formatting and input constraints, and Material-UI for styling.
  * - Label is provided by the parent (e.g., "$100", "€50").

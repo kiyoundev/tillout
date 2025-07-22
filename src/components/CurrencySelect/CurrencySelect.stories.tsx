@@ -4,22 +4,13 @@ import { Box } from '@mui/material';
 import { CurrencySelect, CurrencySelectProps } from './CurrencySelect';
 import { CURRENCY_CODES } from '../../assets/currencies';
 
-/**
- * A currency selector component that allows users to search and select from a list of currencies.
- * Displays currency flags, codes, and names in a dropdown.
- */
-
 const meta: Meta<typeof CurrencySelect> = {
 	title: 'Components/CurrencySelect',
 	component: CurrencySelect,
 	parameters: {
-		layout: 'centered',
-		docs: {
-			description: {
-				component: 'Dropdown used to select a currency (e.g. USD, CAD, EUR). Used in cash register screens.'
-			}
-		}
+		layout: 'centered'
 	},
+	tags: ['autodocs'],
 	decorators: [
 		(Story) => (
 			<Box sx={{ width: '400px' }}>
@@ -31,13 +22,11 @@ const meta: Meta<typeof CurrencySelect> = {
 		currencyCode: {
 			control: { type: 'select' },
 			options: CURRENCY_CODES,
-			description: 'The selected currency code',
 			table: {
 				defaultValue: { summary: 'us' }
 			}
 		},
 		onCurrencyChange: {
-			description: 'Callback fired when a currency is selected',
 			table: {
 				type: { summary: '(currencyCode: CurrencyCode) => void' },
 				disable: true

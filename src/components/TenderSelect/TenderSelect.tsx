@@ -13,6 +13,19 @@ export const filterValues = (options: TenderType[], inputValue: string) => {
 	);
 };
 
+/**
+ * A multi-select Autocomplete component for selecting tender types (e.g., Bills, Coins, Rolls).
+ * It allows users to choose which types of tender they want to count.
+ *
+ * - Renders a list of available tender types.
+ * - Allows users to select one or more tender types.
+ * - The dropdown remains open after a selection to facilitate multiple choices.
+ * - Communicates the array of selected tenders back to the parent component via the `onTenderChange` callback.
+ *
+ * @param selectedTender An array of the currently selected tender types.
+ * @param onTenderChange Callback function fired when the selection of tender types changes.
+ */
+
 export const TenderSelect = ({ selectedTender, onTenderChange }: TenderSelectProps) => {
 	return (
 		<Autocomplete
