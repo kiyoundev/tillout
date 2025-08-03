@@ -1,40 +1,72 @@
-import { CurrencySelect } from './components/CurrencySelect.tsx';
-import { CashOptionSelect } from './components/CashOptionSelect.tsx';
-import { OpeningBalance } from './components/OpeningBalance.tsx';
-import { FormInput } from './components/FormInput.tsx';
-import { currencies } from './assets/currencies.ts';
-import { Currency, SelectedCashOption } from './types/index.ts';
-import React, { useState } from 'react';
-import { Stack } from '@mui/material';
+import './assets/fonts/fonts.css';
+import { useState } from 'react';
+import { TenderCountContainer } from './components/TenderCountContainer/TenderCountContainer.tsx';
+import { type CurrencyCode, type Counts, type TenderType } from './types/index.ts';
+import { Config } from './components/Config/Config.tsx';
 
 export const App: React.FC = () => {
-	const [currency, setCurrency] = useState<Currency>(currencies[0]);
-	const [selectedCashOption, setSelectedCashOption] = useState<SelectedCashOption>({
-		bills: true,
-		coins: false,
-		rolls: false
+	const [currencyCode, setCurrencyCode] = useState<CurrencyCode>('us');
+	const [selectedTender, setSelectedTender] = useState<TenderType[]>([]);
+	const [openingBalance, setOpeningBalance] = useState<number | undefined>();
+	const [salesAmount, setSalesAmount] = useState<number | undefined>();
+	const [counts, setCounts] = useState<Counts>({
+		bills: {},
+		coins: {},
+		rolls: {}
 	});
+
+	console.log(
+		`Currency Code: ${currencyCode}\nSelected Tender: ${selectedTender}\nOpening Balance: ${openingBalance}\nSales Amount: ${salesAmount}\nCounts: ${JSON.stringify(
+			counts
+		)}`
+	);
+
+	const handleDataChange = (denomination: string, count: number | undefined, tenderType: TenderType) => {
+		setCounts((prevCounts) => ({
+			...prevCounts,
+			[tenderType]: {
+				...prevCounts[tenderType],
+				[denomination]: count
+			}
+		}));
+	};
 
 	return (
 		<>
-			<Stack>
-				<CurrencySelect
-					currency={currency}
-					onCurrencyChange={setCurrency}
+			<Config
+				currencyCode={currencyCode}
+				onCurrencyChange={setCurrencyCode}
+				selectedTender={selectedTender}
+				onTenderChange={setSelectedTender}
+				openingBalance={openingBalance}
+				onOpeningBalanceChange={({ floatValue }) => setOpeningBalance(floatValue)}
+				totalSales={salesAmount}
+				onTotalSalesChange={({ floatValue }) => setSalesAmount(floatValue)}
+			/>
+			{selectedTender.includes('bills') && (
+				<TenderCountContainer
+					currencyCode={currencyCode}
+					tenderType='bills'
+					counts={counts}
+					onDataChange={handleDataChange}
 				/>
-				<OpeningBalance currency={currency} />
-				<CashOptionSelect
-					selectedCashOption={selectedCashOption}
-					onCashOptionChange={setSelectedCashOption}
+			)}
+			{selectedTender.includes('coins') && (
+				<TenderCountContainer
+					currencyCode={currencyCode}
+					tenderType='coins'
+					counts={counts}
+					onDataChange={handleDataChange}
 				/>
-			</Stack>
-			<Stack>
-				<FormInput
-					cashTypes={currency.cashTypes}
-					symbol={currency.symbol}
-					selectedCashOption={selectedCashOption}
+			)}
+			{selectedTender.includes('rolls') && (
+				<TenderCountContainer
+					currencyCode={currencyCode}
+					tenderType='rolls'
+					counts={counts}
+					onDataChange={handleDataChange}
 				/>
-			</Stack>
+			)}
 		</>
 	);
 };

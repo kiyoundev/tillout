@@ -46,6 +46,16 @@ export interface OpeningBalanceProp {
 	currency: Currency;
 }
 
+export type CurrencyCode = 'us' | 'ca' | 'mx' | 'eu';
+
+export type TenderType = 'bills' | 'coins' | 'rolls';
+
+export type Counts = {
+	[key in TenderType]: {
+		[denomination: string]: number | undefined;
+	};
+};
+
 export interface FormInputProps {
 	cashTypes: Currency['cashTypes'];
 	symbol: Currency['symbol'];
