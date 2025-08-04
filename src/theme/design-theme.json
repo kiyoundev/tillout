@@ -1,0 +1,84 @@
+{
+  "palette": {
+    "primary": {
+      "main": "#5E35B1",
+      "light": "#7E57C2",
+      "dark": "#4527A0",
+      "contrastText": "#FFFFFF"
+    },
+    "secondary": {
+      "main": "#F5F5F5",
+      "light": "#FAFAFA",
+      "dark": "#E0E0E0",
+      "contrastText": "#212121"
+    },
+    "background": {
+      "default": "#F7F8FC",
+      "paper": "#FFFFFF"
+    },
+    "text": {
+      "primary": "#2D3748",
+      "secondary": "#6A7383"
+    },
+    "divider": "#E2E8F0",
+    "success": {
+      "main": "#2E7D32"
+    },
+    "error": {
+      "main": "#D32F2F"
+    }
+  },
+  "typography": {
+    "fontFamily": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+    "h1": {
+      "fontWeight": 700,
+      "fontSize": "2.5rem"
+    },
+    "h2": {
+      "fontWeight": 700,
+      "fontSize": "2rem"
+    },
+    "h3": {
+      "fontWeight": 600,
+      "fontSize": "1.75rem"
+    },
+    "h4": {
+      "fontWeight": 600,
+      "fontSize": "1.5rem"
+    },
+    "button": {
+      "textTransform": "none",
+      "fontWeight": 600
+    }
+  },
+  "shape": {
+    "borderRadius": 12
+  },
+  "shadows": [
+    "none",
+    "0px 2px 4px -1px rgba(0,0,0,0.06), 0px 4px 5px 0px rgba(0,0,0,0.04)",
+    "0px 4px 8px -2px rgba(0,0,0,0.08), 0px 6px 10px 0px rgba(0,0,0,0.06)",
+    "0px 5px 10px -3px rgba(0,0,0,0.1), 0px 8px 12px 1px rgba(0,0,0,0.08)",
+    "0px 5px 12px -4px rgba(0,0,0,0.12), 0px 10px 15px 1px rgba(0,0,0,0.1)",
+    "0px 6px 14px -5px rgba(0,0,0,0.14), 0px 12px 18px 2px rgba(0,0,0,0.12)",
+    "0px 7px 15px -6px rgba(0,0,0,0.16), 0px 14px 20px 2px rgba(0,0,0,0.14)",
+    "0px 8px 16px -6px rgba(0,0,0,0.18), 0px 16px 22px 2px rgba(0,0,0,0.16)",
+    "0px 9px 18px -7px rgba(0,0,0,0.2), 0px 18px 25px 3px rgba(0,0,0,0.18)",
+    "0px 10px 20px -8px rgba(0,0,0,0.22), 0px 20px 28px 4px rgba(0,0,0,0.2)",
+    "0px 11px 22px -9px rgba(0,0,0,0.24), 0px 22px 30px 4px rgba(0,0,0,0.22)",
+    "0px 12px 24px -10px rgba(0,0,0,0.26), 0px 24px 32px 5px rgba(0,0,0,0.24)",
+    "0px 13px 25px -11px rgba(0,0,0,0.28), 0px 26px 35px 5px rgba(0,0,0,0.26)",
+    "0px 14px 28px -12px rgba(0,0,0,0.3), 0px 28px 38px 6px rgba(0,0,0,0.28)",
+    "0px 15px 30px -13px rgba(0,0,0,0.32), 0px 30px 40px 6px rgba(0,0,0,0.3)",
+    "0px 16px 32px -14px rgba(0,0,0,0.34), 0px 32px 42px 7px rgba(0,0,0,0.32)",
+    "0px 17px 34px -15px rgba(0,0,0,0.36), 0px 34px 45px 7px rgba(0,0,0,0.34)",
+    "0px 18px 36px -16px rgba(0,0,0,0.38), 0px 36px 48px 8px rgba(0,0,0,0.36)",
+    "0px 19px 38px -17px rgba(0,0,0,0.4), 0px 38px 50px 8px rgba(0,0,0,0.38)",
+    "0px 20px 40px -18px rgba(0,0,0,0.42), 0px 40px 52px 9px rgba(0,0,0,0.4)",
+    "0px 21px 42px -19px rgba(0,0,0,0.44), 0px 42px 55px 9px rgba(0,0,0,0.42)",
+    "0px 22px 44px -20px rgba(0,0,0,0.46), 0px 44px 58px 10px rgba(0,0,0,0.44)",
+    "0px 23px 46px -21px rgba(0,0,0,0.48), 0px 46px 60px 10px rgba(0,0,0,0.46)",
+    "0px 24px 48px -22px rgba(0,0,0,0.5), 0px 48px 62px 11px rgba(0,0,0,0.48)",
+    "0px 24px 50px -24px rgba(0,0,0,0.52), 0px 50px 65px 12px rgba(0,0,0,0.5)"
+  ]
+}

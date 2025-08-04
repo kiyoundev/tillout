@@ -10,16 +10,7 @@ export type CountGridProps = {
 	tenderType: TenderType;
 	counts: Counts;
 	onDataChange: OnDataChangeHandler;
-};
-
-/**
- * Calculates the appropriate column size for a responsive grid layout.
- * Aims to fit all denominations into a two-row grid.
- */
-
-export const getColumnSize = (denominations: string[]) => {
-	const numColumns = Math.ceil(denominations.length / 2);
-	return 12 / numColumns;
+	columnSize: number;
 };
 
 /**
@@ -31,10 +22,9 @@ export const getColumnSize = (denominations: string[]) => {
  * - Reports any change in a denomination's count back to the parent via the `onDataChange` handler.
  */
 
-export const CountGrid = ({ currencyCode, tenderType, counts, onDataChange }: CountGridProps) => {
+export const CountGrid = ({ currencyCode, tenderType, counts, onDataChange, columnSize }: CountGridProps) => {
 	const currency = getCurrency(currencyCode);
 	const denominations = tenderType === 'rolls' ? Object.keys(currency.denomination[tenderType]) : currency.denomination[tenderType];
-	const columnSize = getColumnSize(denominations);
 
 	return (
 		<Grid

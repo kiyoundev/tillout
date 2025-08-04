@@ -5,6 +5,7 @@ import { PaperContainer } from '../Styled/PaperContainer';
 import { CountGrid } from '../CountGrid/CountGrid';
 import { TENDER_TYPES } from '../../assets/currencies';
 import { CurrencyCode, Counts, TenderType } from '../../types';
+import { getColumnSize } from '../../utils/util';
 
 export type TenderCountContainerProps = {
 	currencyCode: CurrencyCode;
@@ -37,6 +38,7 @@ export const TenderCountContainer: React.FC<TenderCountContainerProps> = ({ curr
 			tenderType={tenderType}
 			counts={counts}
 			onDataChange={onDataChange}
+			columnSize={getColumnSize(currencyCode)}
 		/>
 	</PaperContainer>
 );

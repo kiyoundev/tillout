@@ -56,6 +56,7 @@ export const AmountField = ({ currencyCode, value, onValueChange, label, helperT
 					startAdornment: <InputAdornment position='start'>{currency.symbol}</InputAdornment>
 				}
 			}}
+			fullWidth
 			// NumericFormat props
 			value={value}
 			onValueChange={onValueChange}

@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useArgs } from 'storybook/preview-api';
 import { CountGrid } from './CountGrid';
 import { CURRENCY_CODES, TENDER_TYPES } from '../../assets/currencies';
+import { getColumnSize } from '../../utils/util';
 import { type CountGridProps, type OnDataChangeHandler } from './CountGrid';
 
 const meta: Meta<typeof CountGrid> = {
@@ -66,11 +67,14 @@ export const Default: Story = {
 			updateArgs({ counts: newCounts });
 		};
 
+		const columnSize = getColumnSize(args.currencyCode);
+
 		return (
 			<CountGrid
 				{...args}
 				counts={counts}
 				onDataChange={handleDataChange}
+				columnSize={columnSize}
 			/>
 		);
 	}
