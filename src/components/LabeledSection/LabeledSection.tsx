@@ -4,7 +4,7 @@ import React from 'react';
 import { CountContainerTitle } from '../Styled/CountContainerTitle';
 import { PaperContainer } from '../Styled/PaperContainer';
 
-interface LabeledSectionProps extends BoxProps {
+export interface LabeledSectionProps extends BoxProps {
 	title: string;
 	showDivider?: boolean;
 	children: React.ReactNode;

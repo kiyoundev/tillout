@@ -7,6 +7,7 @@ import { CURRENCY_DETAILS } from '../../assets/currencies';
 export interface CurrencySelectProps {
 	currencyCode: CurrencyCode;
 	onCurrencyChange: (currencyCode: CurrencyCode) => void;
+	helperText?: string;
 }
 
 export const filterValues = (options: CurrencyCode[], value: string) => {
@@ -25,7 +26,7 @@ export const filterValues = (options: CurrencyCode[], value: string) => {
  * - Communicates the selected currency back to the parent component via the `onCurrencyChange` callback.
  */
 
-export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, onCurrencyChange }) => {
+export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, onCurrencyChange, helperText = 'Select a currency' }) => {
 	const [inputValue, setInputValue] = useState('');
 	const [inputFocused, setInputFocused] = useState(false);
 
@@ -74,7 +75,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({ currencyCode, on
 					{...props}
 					variant='outlined'
 					placeholder={inputFocused ? 'Type to search...' : ''}
-					helperText='Select a currency'
+					helperText={helperText}
 					onFocus={() => setInputFocused(true)}
 					onBlur={() => setInputFocused(false)}
 				/>

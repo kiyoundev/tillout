@@ -8,7 +8,7 @@ export const App: React.FC = () => {
 	const [currencyCode, setCurrencyCode] = useState<CurrencyCode>('us');
 	const [selectedTender, setSelectedTender] = useState<TenderType[]>([]);
 	const [openingBalance, setOpeningBalance] = useState<number | undefined>();
-	const [salesAmount, setSalesAmount] = useState<number | undefined>();
+	const [totalSales, setTotalSales] = useState<number | undefined>();
 	const [counts, setCounts] = useState<Counts>({
 		bills: {},
 		coins: {},
@@ -16,7 +16,7 @@ export const App: React.FC = () => {
 	});
 
 	console.log(
-		`Currency Code: ${currencyCode}\nSelected Tender: ${selectedTender}\nOpening Balance: ${openingBalance}\nSales Amount: ${salesAmount}\nCounts: ${JSON.stringify(
+		`Currency Code: ${currencyCode}\nSelected Tender: ${selectedTender}\nOpening Balance: ${openingBalance}\nTotal Sales: ${totalSales}\nCounts: ${JSON.stringify(
 			counts
 		)}`
 	);
@@ -39,9 +39,9 @@ export const App: React.FC = () => {
 				selectedTender={selectedTender}
 				onTenderChange={setSelectedTender}
 				openingBalance={openingBalance}
-				onOpeningBalanceChange={({ floatValue }) => setOpeningBalance(floatValue)}
-				totalSales={salesAmount}
-				onTotalSalesChange={({ floatValue }) => setSalesAmount(floatValue)}
+				onOpeningBalanceChange={setOpeningBalance}
+				totalSales={totalSales}
+				onTotalSalesChange={setTotalSales}
 			/>
 			{selectedTender.includes('bills') && (
 				<TenderCountContainer

@@ -1,5 +1,5 @@
 import { TextField, InputAdornment, type TextFieldProps } from '@mui/material';
-import { NumericFormat, NumberFormatValues } from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 import { getCurrency } from '../../utils/util';
 import { CurrencyCode } from '../../types/index.ts';
 import { useMemo } from 'react';
@@ -11,7 +11,7 @@ import { useMemo } from 'react';
 export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
 	currencyCode: CurrencyCode;
 	value: number | undefined;
-	onValueChange: (value: NumberFormatValues) => void;
+	onValueChange: (value: number | undefined) => void;
 };
 
 /**
@@ -19,6 +19,7 @@ export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
  * @param currencyCode The currency code to get separators for.
  * @returns An object containing the `thousandSeparator` and `decimalSeparator`.
  */
+
 export const getSeparators = (currencyCode: CurrencyCode) => {
 	const locale = getCurrency(currencyCode).locale;
 	const SAMPLE_NUMBER = 1234.56;
@@ -45,6 +46,7 @@ export const AmountField = ({ currencyCode, value, onValueChange, label, helperT
 	const currency = getCurrency(currencyCode);
 	const { thousandSeparator, decimalSeparator } = useMemo(() => getSeparators(currencyCode), [currencyCode]);
 
+
 	return (
 		<NumericFormat
 			// MUI TextField props
@@ -59,7 +61,7 @@ export const AmountField = ({ currencyCode, value, onValueChange, label, helperT
 			fullWidth
 			// NumericFormat props
 			value={value}
-			onValueChange={onValueChange}
+			onValueChange={(values) => onValueChange(values.floatValue)}
 			thousandSeparator={thousandSeparator}
 			decimalSeparator={decimalSeparator}
 			allowNegative={false}
@@ -69,5 +71,3 @@ export const AmountField = ({ currencyCode, value, onValueChange, label, helperT
 		/>
 	);
 };
-
-export default AmountField;
