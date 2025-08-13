@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useArgs } from 'storybook/preview-api';
-import { NumberFormatValues } from 'react-number-format';
 import { AmountField } from './AmountField';
 import { CURRENCY_CODES } from '../../assets/currencies';
 
@@ -49,13 +48,13 @@ export const Default: Story = {
 		value: undefined
 	},
 
-	render: (args) => {
+	render: function Render(args) {
 		const [{ value }, updateArgs] = useArgs();
 		return (
 			<AmountField
 				{...args}
 				value={value}
-				onValueChange={(values: NumberFormatValues) => updateArgs({ value: values.floatValue })}
+				onValueChange={(newValue) => updateArgs({ value: newValue })}
 			/>
 		);
 	}

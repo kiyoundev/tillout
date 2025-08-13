@@ -52,7 +52,7 @@ export const Default: Story = {
 			rolls: {}
 		}
 	},
-	render: (args: CountGridProps) => {
+	render: function Render(args: CountGridProps) {
 		const [{ counts }, updateArgs] = useArgs();
 
 		const handleDataChange: OnDataChangeHandler = (denomination, count, tenderType) => {

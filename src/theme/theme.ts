@@ -104,5 +104,27 @@ export const theme = createTheme({
 				})
 			}
 		}
+		// MuiButton: {
+		// 	// styleOverrides: {
+		// 	// 	root: ({ theme }) => ({
+		// 	// 		backgroundColor: theme.palette.primary.main,
+		// 	// 		color: theme.palette.primary.contrastText
+		// 	// 	})
+		// 	// },
+		// 	variants: [
+		// 		{
+		// 			// Define the props that trigger this variant
+		// 			props: { variant: 'primary' },
+		// 			// Define the style for this variant
+		// 			style: {
+		// 				backgroundColor: '#d32f2f', // A danger red
+		// 				color: '#fff',
+		// 				'&:hover': {
+		// 					backgroundColor: '#c62828'
+		// 				}
+		// 			}
+		// 		}
+		// 	]
+		// }
 	}
 });

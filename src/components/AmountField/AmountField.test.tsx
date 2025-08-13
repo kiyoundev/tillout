@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AmountField, AmountFieldProps, getSeparators } from './AmountField';
+import { AmountField, type AmountFieldProps } from './AmountField';
+import { getSeparators } from './AmountField.utils';
 
 describe('AmountField helpers', () => {
 	describe('getSeparators', () => {

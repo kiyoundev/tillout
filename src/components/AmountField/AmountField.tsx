@@ -3,6 +3,7 @@ import { NumericFormat } from 'react-number-format';
 import { getCurrency } from '../../utils/util';
 import { CurrencyCode } from '../../types/index.ts';
 import { useMemo } from 'react';
+import { getSeparators } from './AmountField.utils';
 
 /**
  * Props for the AmountField component.
@@ -20,18 +21,7 @@ export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
  * @returns An object containing the `thousandSeparator` and `decimalSeparator`.
  */
 
-export const getSeparators = (currencyCode: CurrencyCode) => {
-	const locale = getCurrency(currencyCode).locale;
-	const SAMPLE_NUMBER = 1234.56;
-	const parts = new Intl.NumberFormat(locale).formatToParts(SAMPLE_NUMBER);
-	const thousandSeparator = parts.find((part) => part.type === 'group')?.value || ',';
-	const decimalSeparator = parts.find((part) => part.type === 'decimal')?.value || '.';
 
-	return {
-		thousandSeparator,
-		decimalSeparator
-	};
-};
 
 /**
  * A specialized TextField for inputting monetary amounts.

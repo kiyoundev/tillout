@@ -56,7 +56,7 @@ export const Default: Story = {
 			rolls: {}
 		}
 	},
-	render: (args: TenderCountContainerProps) => {
+	render: function Render(args: TenderCountContainerProps) {
 		const [{ counts }, updateArgs] = useArgs();
 
 		const handleDataChange = (denomination: string, count: number | undefined, tenderType: TenderType) => {

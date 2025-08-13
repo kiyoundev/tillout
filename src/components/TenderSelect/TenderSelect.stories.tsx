@@ -44,7 +44,7 @@ export default meta;
 type Story = StoryObj<typeof TenderSelect>;
 
 export const Default: Story = {
-	render: (args: TenderSelectProps) => {
+	render: function Render(args: TenderSelectProps) {
 		const [{ selectedTender }, updateArgs] = useArgs();
 		return (
 			<TenderSelect

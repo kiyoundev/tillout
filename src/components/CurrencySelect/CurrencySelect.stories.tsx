@@ -41,7 +41,7 @@ const meta: Meta<typeof CurrencySelect> = {
 export default meta;
 
 export const Default: StoryObj<typeof CurrencySelect> = {
-	render: (args: CurrencySelectProps) => {
+	render: function Render(args: CurrencySelectProps) {
 		const [{ currencyCode }, updateArgs] = useArgs();
 		return (
 			<CurrencySelect

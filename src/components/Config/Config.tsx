@@ -43,7 +43,11 @@ export const Config = ({
 					onTenderChange={onTenderChange}
 				/>
 			</ConfigSection>
-			<ConfigSection title='OPENING BALANCE'>
+			<ConfigSection
+				title='OPENING BALANCE'
+				showIcon
+				tooltipText='The starting cash float for the register, to be used during the next day’s operations.'
+			>
 				<AmountField
 					currencyCode={currencyCode}
 					value={openingBalance}
@@ -51,7 +55,11 @@ export const Config = ({
 					helperText='Enter Opening Balance'
 				/>
 			</ConfigSection>
-			<ConfigSection title='TOTAL SALES'>
+			<ConfigSection
+				title='TOTAL SALES'
+				showIcon
+				tooltipText='The expected total cash sales recorded by the POS system for the day.'
+			>
 				<AmountField
 					currencyCode={currencyCode}
 					value={totalSales}

@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TenderSelect, TenderSelectProps, filterValues } from './TenderSelect';
+import { TenderSelect, type TenderSelectProps } from './TenderSelect';
+import { filterValues } from './TenderSelect.utils';
 import { TENDER_TYPES } from '../../assets/currencies';
 import { type TenderType } from '../../types';
 

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { TextField, Autocomplete, Box } from '@mui/material';
-import { CurrencyCode, Currency } from '../../types/index.ts';
+import { type CurrencyCode } from '../../types/index.ts';
 import { getCurrency } from '../../utils/util.ts';
 import { CURRENCY_DETAILS } from '../../assets/currencies';
+import { filterValues } from './CurrencySelect.utils';
 
 export interface CurrencySelectProps {
 	currencyCode: CurrencyCode;
@@ -10,12 +11,7 @@ export interface CurrencySelectProps {
 	helperText?: string;
 }
 
-export const filterValues = (options: CurrencyCode[], value: string) => {
-	const searchableFields: (keyof Pick<Currency, 'label' | 'name'>)[] = ['label', 'name'];
-	return options.filter((option: CurrencyCode) =>
-		searchableFields.some((field) => getCurrency(option)[field].toLowerCase().includes(value.toLowerCase()))
-	);
-};
+
 
 /**
  * A specialized Autocomplete component for selecting a currency.

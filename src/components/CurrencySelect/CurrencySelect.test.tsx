@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CurrencySelect, CurrencySelectProps, filterValues } from './CurrencySelect';
+import { CurrencySelect, type CurrencySelectProps } from './CurrencySelect';
+import { filterValues } from './CurrencySelect.utils';
 import { CURRENCY_CODES } from '../../assets/currencies';
 
 describe('CurrencySelect helpers', () => {
