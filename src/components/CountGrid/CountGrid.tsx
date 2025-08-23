@@ -1,16 +1,12 @@
 import { Grid } from '@mui/material';
 import { CountField } from '../CountField/CountField';
 import { getCurrency } from '../../utils/util';
-import { type CurrencyCode, type TenderType, type Counts } from '../../types/index.ts';
-
-export type OnDataChangeHandler = (denomination: string, count: number | undefined, tenderType: TenderType) => void;
+import { type TenderType } from '../../types/index.ts';
+import { useCurrencyCode, useCounts, useTillActions } from '../../stores/tillStore';
+import { getColumnSize } from '../../utils/util';
 
 export type CountGridProps = {
-	currencyCode: CurrencyCode;
 	tenderType: TenderType;
-	counts: Counts;
-	onDataChange: OnDataChangeHandler;
-	columnSize: number;
 };
 
 /**
@@ -22,7 +18,12 @@ export type CountGridProps = {
  * - Reports any change in a denomination's count back to the parent via the `onDataChange` handler.
  */
 
-export const CountGrid = ({ currencyCode, tenderType, counts, onDataChange, columnSize }: CountGridProps) => {
+export const CountGrid: React.FC<CountGridProps> = ({ tenderType }) => {
+	const currencyCode = useCurrencyCode();
+	const counts = useCounts();
+	const { updateCount } = useTillActions();
+	const columnSize = getColumnSize(currencyCode);
+
 	const currency = getCurrency(currencyCode);
 	const denominations = tenderType === 'rolls' ? Object.keys(currency.denomination[tenderType]) : currency.denomination[tenderType];
 
@@ -39,9 +40,7 @@ export const CountGrid = ({ currencyCode, tenderType, counts, onDataChange, colu
 					<CountField
 						label={denomination}
 						value={counts?.[tenderType]?.[denomination]}
-						onValueChange={(value) => {
-							onDataChange(denomination, value.floatValue, tenderType);
-						}}
+						onValueChange={(value) => updateCount(tenderType, denomination, value.floatValue)}
 					/>
 				</Grid>
 			))}

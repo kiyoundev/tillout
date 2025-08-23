@@ -32,7 +32,7 @@ export const Default: Story = {
 		label: 'Label',
 		value: undefined
 	},
-	render: function Render(args: CountFieldProps) {
+	render: (args: CountFieldProps) => {
 		const [{ value }, updateArgs] = useArgs();
 
 		return (

@@ -1,99 +1,127 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TenderSelect, type TenderSelectProps } from './TenderSelect';
-import { filterValues } from './TenderSelect.utils';
-import { TENDER_TYPES } from '../../assets/currencies';
+import { TenderSelect } from './TenderSelect';
 import { type TenderType } from '../../types';
-
-describe('TenderSelect helpers', () => {
-	describe('filterValues', () => {
-		const options = Object.keys(TENDER_TYPES) as TenderType[];
-
-		it('should filter by key', () => {
-			expect(filterValues(options, 'bills')).toEqual(['bills']);
-		});
-
-		it('should filter by value and include partial matches', () => {
-			// 'Coin Rolls' includes 'Coins', so both are expected
-			expect(filterValues(options, 'Coins')).toEqual(['coins', 'rolls']);
-		});
-
-		it('should be case-insensitive', () => {
-			expect(filterValues(options, 'rOlLs')).toEqual(['rolls']);
-		});
-
-		it('should return all options for an empty search', () => {
-			expect(filterValues(options, '')).toEqual(options);
-		});
-
-		it('should return an empty array for no matches', () => {
-			expect(filterValues(options, 'nonexistent')).toEqual([]);
-		});
-	});
-});
+import * as tillStore from '../../stores/tillStore';
 
 describe('TenderSelect Component', () => {
-	const mockOnTenderChange = jest.fn();
+	// Mock the entire store module to spy on its hooks.
+	const useSelectedTenderMock = jest.spyOn(tillStore, 'useSelectedTender');
+	const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
+	// Create a mock object for the store's actions.
+	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
+		// Only mock the action used by the component under test.
+		updateSelectedTender: jest.fn()
+	};
 
-	const setup = (props: Partial<TenderSelectProps> = {}) => {
-		const defaultProps: TenderSelectProps = {
-			selectedTender: [],
-			onTenderChange: mockOnTenderChange
-		};
+	// Create a setup function to prepare the mock for each test.
+	const setup = (initialTenders: TenderType[] = []) => {
+		// For each test, we define what our mocked hooks should return.
+		useSelectedTenderMock.mockReturnValue(initialTenders);
+		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
 
-		render(<TenderSelect {...defaultProps} {...props} />);
+		render(<TenderSelect />);
 
 		return {
-			user: userEvent.setup(),
-			mockOnTenderChange
+			user: userEvent.setup()
 		};
 	};
 
+	// Reset all mocks before each test to prevent state leakage.
 	beforeEach(() => {
-		mockOnTenderChange.mockClear();
+		jest.clearAllMocks();
 	});
 
-	it('renders with initial selections', () => {
-		setup({ selectedTender: ['bills', 'coins'] });
+	// Write the tests using the setup function.
+	it('renders with initial selections from the store', () => {
+		setup(['bills', 'coins']);
 
 		expect(screen.getByText('Banknotes')).toBeInTheDocument();
 		expect(screen.getByText('Coins')).toBeInTheDocument();
 	});
 
-	it('adds a selection when a new option is clicked', async () => {
-		const { user, mockOnTenderChange } = setup({ selectedTender: ['bills'] });
+	it('renders with no initial selections', () => {
+		setup();
+		// Check for the helper text to ensure it rendered
+		expect(screen.getByText('Select Tender Types')).toBeInTheDocument();
+		// Check that no chips (selected items) are rendered
+		expect(screen.queryAllByRole('button')).toHaveLength(1); // Only the dropdown arrow
+	});
+
+	it('renders the helper text', () => {
+		setup();
+		expect(screen.getByText('Select Tender Types')).toBeInTheDocument();
+	});
+
+	it('calls updateSelectedTender when a new option is clicked', async () => {
+		const { user } = setup(['bills']);
 
 		const input = screen.getByRole('combobox');
 		await user.click(input);
 
-		const coinsOption = await screen.findByText('Coins');
+		const coinsOption = await screen.findByRole('option', { name: 'Coins' });
 		await user.click(coinsOption);
 
-		expect(mockOnTenderChange).toHaveBeenCalledWith(['bills', 'coins']);
-		expect(mockOnTenderChange).toHaveBeenCalledTimes(1);
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['bills', 'coins']);
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
+	});
+
+	it('removes a selection when an existing option is clicked', async () => {
+		const { user } = setup(['bills', 'coins']);
+
+		const input = screen.getByRole('combobox');
+		await user.click(input);
+
+		const coinsOption = await screen.findByRole('option', { name: 'Coins' });
+		await user.click(coinsOption);
+
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['bills']);
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
 	});
 
 	it('removes a selection when a chip is deleted', async () => {
-		const { user, mockOnTenderChange } = setup({ selectedTender: ['bills', 'coins'] });
+		const { user } = setup(['bills', 'coins']);
 
-		// Find the chip containing 'Banknotes', then find the delete icon within that chip.
 		const banknotesChip = screen.getByRole('button', { name: 'Banknotes' });
 		const deleteIcon = within(banknotesChip).getByTestId('CancelIcon');
 
 		await user.click(deleteIcon);
 
-		expect(mockOnTenderChange).toHaveBeenCalledWith(['coins']);
-		expect(mockOnTenderChange).toHaveBeenCalledTimes(1);
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['coins']);
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
 	});
 
 	it('removes all selections when the clear icon is clicked', async () => {
-		const { user, mockOnTenderChange } = setup({ selectedTender: ['bills', 'coins'] });
+		const { user } = setup(['bills', 'coins']);
 
-		// The main clear button has a title of 'Clear'
-		const clearButton = screen.getByTitle('Clear');
+		const clearButton = screen.getByLabelText('Clear');
 		await user.click(clearButton);
 
-		expect(mockOnTenderChange).toHaveBeenCalledWith([]);
-		expect(mockOnTenderChange).toHaveBeenCalledTimes(1);
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith([]);
+	});
+
+	it('filters options when user types in the input', async () => {
+		const { user } = setup();
+		const input = screen.getByRole('combobox');
+
+		await user.type(input, 'Coin');
+
+		const options = await screen.findAllByRole('option');
+		expect(options).toHaveLength(2); // 'Coins' and 'Coin Rolls'
+		expect(screen.getByRole('option', { name: 'Coins' })).toBeInTheDocument();
+		expect(screen.getByRole('option', { name: 'Rolled Coins' })).toBeInTheDocument();
+		expect(screen.queryByRole('option', { name: 'Banknotes' })).not.toBeInTheDocument();
+	});
+
+	it('selects an option using the keyboard', async () => {
+		const { user } = setup();
+		const input = screen.getByRole('combobox');
+
+		await user.click(input);
+		await user.keyboard('{arrowdown}'); // Highlight first option ('Banknotes')
+		await user.keyboard('{enter}'); // Select it
+
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['bills']);
+		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
 	});
 });

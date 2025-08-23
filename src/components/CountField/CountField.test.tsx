@@ -13,7 +13,7 @@ describe('CountField Component', () => {
 			onValueChange: mockOnValueChange
 		};
 
-		render(
+		const result = render(
 			<CountField
 				{...defaultProps}
 				{...props}
@@ -22,7 +22,8 @@ describe('CountField Component', () => {
 
 		return {
 			user: userEvent.setup(),
-			mockOnValueChange
+			mockOnValueChange,
+			...result
 		};
 	};
 
@@ -33,13 +34,13 @@ describe('CountField Component', () => {
 
 	it('renders correctly with a given value', () => {
 		setup({ value: 10 });
-		const inputWithValue = screen.getByLabelText('Count') as HTMLInputElement;
+		const inputWithValue = screen.getByRole('textbox', { name: /count/i }) as HTMLInputElement;
 		expect(inputWithValue.value).toBe('10');
 	});
 
 	it('handles valid input correctly', async () => {
 		const { user, mockOnValueChange } = setup();
-		const input = screen.getByLabelText('Count');
+		const input = screen.getByRole('textbox', { name: /count/i });
 		await user.type(input, '12');
 
 		// The last call should have the complete number
@@ -49,7 +50,7 @@ describe('CountField Component', () => {
 
 	it('disallows negative numbers', async () => {
 		const { user, mockOnValueChange } = setup();
-		const input = screen.getByLabelText('Count') as HTMLInputElement;
+		const input = screen.getByRole('textbox', { name: /count/i }) as HTMLInputElement;
 		await user.type(input, '-5');
 
 		expect(input.value).toBe('5');
@@ -58,7 +59,7 @@ describe('CountField Component', () => {
 
 	it('disallows decimal points', async () => {
 		const { user, mockOnValueChange } = setup();
-		const input = screen.getByLabelText('Count') as HTMLInputElement;
+		const input = screen.getByRole('textbox', { name: /count/i }) as HTMLInputElement;
 		await user.type(input, '1.5');
 
 		expect(input.value).toBe('15'); // The decimal point is ignored
@@ -67,11 +68,27 @@ describe('CountField Component', () => {
 
 	it('disallows non-numeric characters', async () => {
 		const { user, mockOnValueChange } = setup();
-		const input = screen.getByLabelText('Count') as HTMLInputElement;
+		const input = screen.getByRole('textbox', { name: /count/i }) as HTMLInputElement;
 		await user.type(input, 'a1b');
 
 		expect(input.value).toBe('1');
 		expect(mockOnValueChange).toHaveBeenCalledTimes(1);
 		expect(mockOnValueChange).toHaveBeenCalledWith({ formattedValue: '1', value: '1', floatValue: 1 }, expect.any(Object));
+	});
+
+	it('handles empty/cleared input correctly', async () => {
+		const { user, mockOnValueChange } = setup({ value: 42 });
+		const input = screen.getByRole('textbox', { name: /count/i }) as HTMLInputElement;
+		
+		// Clear the input
+		await user.clear(input);
+		
+		expect(input.value).toBe('');
+		expect(mockOnValueChange).toHaveBeenCalledWith({ formattedValue: '', value: '', floatValue: undefined }, expect.any(Object));
+	});
+
+	it('displays helper text when provided', () => {
+		setup({ helperText: 'Enter count here' });
+		expect(screen.getByText('Enter count here')).toBeInTheDocument();
 	});
 });

@@ -1,52 +1,48 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from '@mui/material/styles';
 import { TenderCountContainer, TenderCountContainerProps } from './TenderCountContainer';
 import { TENDER_TYPES } from '../../assets/currencies';
 import { theme } from '../../theme/theme';
+import { TenderType } from '../../types';
+import { CountGrid } from '../CountGrid/CountGrid';
 
-const setup = (props: Partial<TenderCountContainerProps> = {}) => {
-	const mockOnDataChange = jest.fn();
-	const defaultProps: TenderCountContainerProps = {
-		currencyCode: 'us',
-		tenderType: 'bills',
-		counts: { bills: {}, coins: {}, rolls: {} },
-		onDataChange: mockOnDataChange
-	};
+// Mock the child component to isolate the container's logic.
+// This ensures the test focuses only on the TenderCountContainer's behavior.
+jest.mock('../CountGrid/CountGrid', () => ({
+	// The 'any' type is used here because we are mocking the component and don't need to match its real prop types.
+	CountGrid: jest.fn((props: any) => (
+		<div data-testid="mock-count-grid" data-tendertype={props.tenderType} />
+	)),
+}));
 
+const setup = (props: TenderCountContainerProps) => {
 	render(
 		<ThemeProvider theme={theme}>
-			<TenderCountContainer {...defaultProps} {...props} />
+			<TenderCountContainer {...props} />
 		</ThemeProvider>
 	);
-
-	return {
-		user: userEvent.setup(),
-		mockOnDataChange
-	};
 };
 
 describe('TenderCountContainer Component', () => {
-	it('renders the correct capitalized title for the tender type', () => {
-		setup();
-		const expectedTitle = TENDER_TYPES.bills.toUpperCase();
-		expect(screen.getByText(expectedTitle)).toBeInTheDocument();
-	});
+	// Use describe.each to run the same tests for all tender types, reducing code duplication.
+	describe.each(['bills', 'coins', 'rolls'] as TenderType[])('for tenderType="%s"', tenderType => {
+		beforeEach(() => {
+			// Clear mock history before each test to ensure clean assertions between test cases.
+			(CountGrid as jest.Mock).mockClear();
+			setup({ tenderType });
+		});
 
-	it('passes initial counts down to CountGrid', () => {
-		const initialCounts = { bills: { '$5': 10 }, coins: {}, rolls: {} };
-		setup({ counts: initialCounts });
+		it('renders the correct capitalized title', () => {
+			const expectedTitle = TENDER_TYPES[tenderType].toUpperCase();
+			expect(screen.getByText(expectedTitle)).toBeInTheDocument();
+		});
 
-		const fiveDollarInput = screen.getByLabelText('$5') as HTMLInputElement;
-		expect(fiveDollarInput.value).toBe('10');
-	});
+		it('renders CountGrid and passes the correct tenderType prop', () => {
+			// Verify that the mocked CountGrid is rendered.
+			expect(screen.getByTestId('mock-count-grid')).toBeInTheDocument();
 
-	it('handles data changes from CountGrid correctly', async () => {
-		const { user, mockOnDataChange } = setup();
-
-		const tenDollarInput = screen.getByLabelText('$10');
-		await user.type(tenDollarInput, '4');
-
-		expect(mockOnDataChange).toHaveBeenCalledWith('$10', 4, 'bills');
+			// Verify that CountGrid was called with the correct props.
+			expect(CountGrid).toHaveBeenCalledWith({ tenderType }, {});
+		});
 	});
 });

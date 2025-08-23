@@ -1,72 +1,48 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CurrencySelect, type CurrencySelectProps } from './CurrencySelect';
-import { filterValues } from './CurrencySelect.utils';
-import { CURRENCY_CODES } from '../../assets/currencies';
-
-describe('CurrencySelect helpers', () => {
-	describe('filterValues', () => {
-		it('should filter options based on currency label (code)', () => {
-			const filtered = filterValues(CURRENCY_CODES, 'gb');
-			expect(filtered).toEqual(['gb']);
-		});
-
-		it('should filter options based on currency name', () => {
-			// 'us' -> 'US Dollar', 'ca' -> 'Canadian Dollar'
-			const filtered = filterValues(CURRENCY_CODES, 'Dollar');
-			expect(filtered).toEqual(expect.arrayContaining(['us', 'ca', 'au', 'nz']));
-			expect(filtered.length).toBe(4);
-		});
-
-		it('should be case-insensitive', () => {
-			const filtered = filterValues(CURRENCY_CODES, 'dollar');
-			expect(filtered).toEqual(expect.arrayContaining(['us', 'ca', 'au', 'nz']));
-			expect(filtered.length).toBe(4);
-		});
-
-		it('should return an empty array if no match is found', () => {
-			const filtered = filterValues(CURRENCY_CODES, 'nonexistent');
-			expect(filtered).toEqual([]);
-		});
-
-		it('should return all options for an empty search string', () => {
-			const filtered = filterValues(CURRENCY_CODES, '');
-			expect(filtered).toEqual(CURRENCY_CODES);
-		});
-	});
-});
+import { CurrencySelect } from './CurrencySelect';
+import * as tillStore from '../../stores/tillStore';
+import { type CurrencyCode } from '../../types';
 
 describe('CurrencySelect Component', () => {
-	const mockOnCurrencyChange = jest.fn();
+	const useCurrencyCodeMock = jest.spyOn(tillStore, 'useCurrencyCode');
+	const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
+	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
+		updateCurrencyCode: jest.fn()
+	};
 
-	const setup = (props: Partial<CurrencySelectProps> = {}) => {
-		const defaultProps: CurrencySelectProps = {
-			currencyCode: 'us',
-			onCurrencyChange: mockOnCurrencyChange
-		};
+	// Create a setup function to prepare the mock for each test.
+	const setup = (initialCurrencyCode: CurrencyCode) => {
+		// For each test, we define what our mocked hooks should return.
+		useCurrencyCodeMock.mockReturnValue(initialCurrencyCode);
+		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
 
-		render(<CurrencySelect {...defaultProps} {...props} />);
+		render(<CurrencySelect />);
 
 		return {
-			user: userEvent.setup(),
-			mockOnCurrencyChange
+			user: userEvent.setup()
 		};
 	};
 
+	// Reset all mocks before each test to prevent state leakage.
 	beforeEach(() => {
-		mockOnCurrencyChange.mockClear();
+		jest.clearAllMocks();
+	});
+
+	afterAll(() => {
+		jest.restoreAllMocks();
 	});
 
 	it('renders with the initial currency code correctly', () => {
-		setup();
+		setup('us');
 
 		// Check for the rendered value, which includes the label and name
 		expect(screen.getByText('USD')).toBeInTheDocument();
 		expect(screen.getByText('- US Dollar')).toBeInTheDocument();
 	});
 
-	it('calls onCurrencyChange when a new currency is selected', async () => {
-		const { user, mockOnCurrencyChange } = setup();
+	it('updates the currency code when a new currency is selected', async () => {
+		const { user } = setup('us');
 
 		// Find the autocomplete input field
 		const input = screen.getByRole('combobox');
@@ -79,18 +55,18 @@ describe('CurrencySelect Component', () => {
 		await user.click(euroOption);
 
 		// Verify that the callback was called with the correct new currency code
-		expect(mockOnCurrencyChange).toHaveBeenCalledWith('eu');
-		expect(mockOnCurrencyChange).toHaveBeenCalledTimes(1);
+		expect(mockActions.updateCurrencyCode).toHaveBeenCalledWith('eu');
+		expect(mockActions.updateCurrencyCode).toHaveBeenCalledTimes(1);
 	});
 
 	it('renders correctly with helper text', () => {
-		setup({ helperText: 'Select a currency' });
+		setup('us');
 
 		expect(screen.getByText('Select a currency')).toBeInTheDocument();
 	});
 
 	it('renders correctly with placeholder when focused', async () => {
-		const { user } = setup();
+		const { user } = setup('us');
 
 		const input = screen.getByRole('combobox');
 		await user.click(input);

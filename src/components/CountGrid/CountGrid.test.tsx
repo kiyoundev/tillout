@@ -1,21 +1,26 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { CountGrid, CountGridProps } from './CountGrid';
-import { getCurrency, getColumnSize } from '../../utils/util';
+import { getCurrency } from '../../utils/util';
+import { type Counts, type CurrencyCode, type TenderType } from '../../types';
+import * as tillStore from '../../stores/tillStore';
+
+const useCurrencyCodeMock = jest.spyOn(tillStore, 'useCurrencyCode');
+const useCountsMock = jest.spyOn(tillStore, 'useCounts');
+const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
 
 describe('CountGrid Component', () => {
-	const mockOnDataChange = jest.fn();
+	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
+		updateCount: jest.fn()
+	};
 
-		const setup = (props: Partial<CountGridProps> = {}) => {
-		const defaultProps: CountGridProps = {
-			currencyCode: 'us',
-			tenderType: 'bills',
-			counts: { bills: {}, coins: {}, rolls: {} },
-			onDataChange: mockOnDataChange,
-			columnSize: getColumnSize('us')
-		};
+	const setup = (props: CountGridProps, initialCounts: Counts, initialCurrencyCode: CurrencyCode) => {
+		// For each test, we define what our mocked hooks should return.
+		useCurrencyCodeMock.mockReturnValue(initialCurrencyCode);
+		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
+		useCountsMock.mockReturnValue(initialCounts);
 
-		render(<CountGrid {...defaultProps} {...props} />);
+		render(<CountGrid {...props} />);
 
 		return {
 			user: userEvent.setup()
@@ -23,10 +28,14 @@ describe('CountGrid Component', () => {
 	};
 
 	beforeEach(() => {
-		mockOnDataChange.mockClear();
+		jest.clearAllMocks();
 	});
 
-	const testCases: { currencyCode: 'us' | 'ca'; tenderType: 'bills' | 'coins' | 'rolls' }[] = [
+	afterAll(() => {
+		jest.restoreAllMocks();
+	});
+
+	const testCases: { currencyCode: CurrencyCode; tenderType: TenderType }[] = [
 		{ currencyCode: 'us', tenderType: 'bills' },
 		{ currencyCode: 'us', tenderType: 'coins' },
 		{ currencyCode: 'us', tenderType: 'rolls' },
@@ -34,12 +43,13 @@ describe('CountGrid Component', () => {
 	];
 
 	it.each(testCases)('renders the correct denominations for each currencyCode and tenderType', ({ currencyCode, tenderType }) => {
-		const currency = getCurrency(currencyCode);
-		const denominations = tenderType === 'rolls' ? Object.keys(currency.denomination.rolls) : currency.denomination[tenderType];
-
-		setup({ currencyCode, tenderType, columnSize: getColumnSize(currencyCode) });
+		const initialCounts: Counts = { bills: {}, coins: {}, rolls: {} };
+		setup({ tenderType }, initialCounts, currencyCode); // setup configures the spies for this test
 
 		// Check that each denomination has a corresponding input field with label
+		const currency = getCurrency(currencyCode);
+		const denominations = tenderType === 'rolls' ? Object.keys(currency.denomination[tenderType]) : currency.denomination[tenderType];
+
 		denominations.forEach((denomination: string) => {
 			expect(screen.getByLabelText(denomination)).toBeInTheDocument();
 		});
@@ -50,24 +60,24 @@ describe('CountGrid Component', () => {
 	});
 
 	it('maps initial counts to inputs correctly', () => {
-		const initialCounts = {
+		const initialCounts: Counts = {
 			bills: { $20: 3 },
 			coins: {},
 			rolls: {}
 		};
 
-		setup({ counts: initialCounts });
+		setup({ tenderType: 'bills' }, initialCounts, 'us');
 
 		const twentyDollarInput = screen.getByLabelText('$20') as HTMLInputElement;
 		expect(twentyDollarInput.value).toBe('3');
 	});
 
 	it('handles data changes correctly on user input', async () => {
-		const { user } = setup();
+		const { user } = setup({ tenderType: 'bills' }, { bills: {}, coins: {}, rolls: {} }, 'us');
 
 		const fiftyDollarInput = screen.getByLabelText('$50');
 		await user.type(fiftyDollarInput, '5');
 
-		expect(mockOnDataChange).toHaveBeenCalledWith('$50', 5, 'bills');
+		expect(mockActions.updateCount).toHaveBeenLastCalledWith('bills', '$50', 5);
 	});
 });

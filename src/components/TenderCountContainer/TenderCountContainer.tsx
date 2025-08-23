@@ -4,14 +4,10 @@ import { CountContainerTitle } from '../Styled/CountContainerTitle';
 import { PaperContainer } from '../Styled/PaperContainer';
 import { CountGrid } from '../CountGrid/CountGrid';
 import { TENDER_TYPES } from '../../assets/currencies';
-import { CurrencyCode, Counts, TenderType } from '../../types';
-import { getColumnSize } from '../../utils/util';
+import { TenderType } from '../../types';
 
 export type TenderCountContainerProps = {
-	currencyCode: CurrencyCode;
 	tenderType: TenderType;
-	counts: Counts;
-	onDataChange: (denomination: string, count: number | undefined, tenderType: TenderType) => void;
 };
 
 /**
@@ -27,18 +23,13 @@ export type TenderCountContainerProps = {
  * @param counts An object containing the current counts for each denomination.
  * @param onDataChange Callback function that is fired when the count for any denomination changes.
  */
-export const TenderCountContainer: React.FC<TenderCountContainerProps> = ({ currencyCode, tenderType, counts, onDataChange }) => (
-	<PaperContainer>
-		<CountContainerTitle>{TENDER_TYPES[tenderType].toUpperCase()}</CountContainerTitle>
 
-		<Divider sx={{ mt: 2, mb: 3 }} />
-
-		<CountGrid
-			currencyCode={currencyCode}
-			tenderType={tenderType}
-			counts={counts}
-			onDataChange={onDataChange}
-			columnSize={getColumnSize(currencyCode)}
-		/>
-	</PaperContainer>
-);
+export const TenderCountContainer: React.FC<TenderCountContainerProps> = ({ tenderType }) => {
+	return (
+		<PaperContainer>
+			<CountContainerTitle>{TENDER_TYPES[tenderType].toUpperCase()}</CountContainerTitle>
+			<Divider sx={{ mt: 2, mb: 3 }} />
+			<CountGrid tenderType={tenderType} />
+		</PaperContainer>
+	);
+};

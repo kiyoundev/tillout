@@ -2,11 +2,12 @@ import { Autocomplete, TextField } from '@mui/material';
 import { TENDER_TYPES } from '../../assets/currencies';
 import { type TenderType } from '../../types';
 import { filterValues } from './TenderSelect.utils';
+import { useTillActions, useSelectedTender } from '../../stores/tillStore';
 
-export interface TenderSelectProps {
-	selectedTender: TenderType[];
-	onTenderChange: (selectedTender: TenderType[]) => void;
-}
+// export interface TenderSelectProps {
+// 	selectedTender: TenderType[];
+// 	onTenderChange: (selectedTender: TenderType[]) => void;
+// }
 
 /**
  * A multi-select Autocomplete component for selecting tender types (e.g., Bills, Coins, Rolls).
@@ -21,32 +22,37 @@ export interface TenderSelectProps {
  * @param onTenderChange Callback function fired when the selection of tender types changes.
  */
 
-export const TenderSelect = ({ selectedTender, onTenderChange }: TenderSelectProps) => (
-	<Autocomplete
-		multiple
-		disableCloseOnSelect // keep the dropdown menu open even when an option is selected
-		slotProps={{
-			popupIndicator: { disableRipple: true } // disable down arrow icon ripple
-		}}
-		options={Object.keys(TENDER_TYPES) as TenderType[]}
-		// display the label of the option
-		renderOption={(props, option) => (
-			<li
-				{...props}
-				key={option}
-			>
-				{TENDER_TYPES[option]}
-			</li>
-		)}
-		getOptionLabel={(option) => TENDER_TYPES[option]}
-		value={selectedTender}
-		onChange={(_, newValue) => onTenderChange(newValue)}
-		filterOptions={(options, state) => filterValues(options, state.inputValue)}
-		renderInput={(params) => (
-			<TextField
-				{...params}
-				helperText='Select Tender Types'
-			/>
-		)}
-	/>
-);
+export const TenderSelect = () => {
+	const selectedTender = useSelectedTender();
+	const { updateSelectedTender } = useTillActions();
+
+	return (
+		<Autocomplete
+			multiple
+			disableCloseOnSelect // keep the dropdown menu open even when an option is selected
+			slotProps={{
+				popupIndicator: { disableRipple: true } // disable down arrow icon ripple
+			}}
+			options={Object.keys(TENDER_TYPES) as TenderType[]}
+			// display the label of the option
+			renderOption={(props, option) => (
+				<li
+					{...props}
+					key={option}
+				>
+					{TENDER_TYPES[option]}
+				</li>
+			)}
+			getOptionLabel={(option) => TENDER_TYPES[option]}
+			value={selectedTender}
+			onChange={(_, newValue) => updateSelectedTender(newValue)}
+			filterOptions={(options, state) => filterValues(options, state.inputValue)}
+			renderInput={(params) => (
+				<TextField
+					{...params}
+					helperText='Select Tender Types'
+				/>
+			)}
+		/>
+	);
+};

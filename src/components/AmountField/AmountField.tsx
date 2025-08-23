@@ -1,16 +1,15 @@
 import { TextField, InputAdornment, type TextFieldProps } from '@mui/material';
 import { NumericFormat } from 'react-number-format';
 import { getCurrency } from '../../utils/util';
-import { CurrencyCode } from '../../types/index.ts';
 import { useMemo } from 'react';
 import { getSeparators } from './AmountField.utils';
+import { useCurrencyCode } from '../../stores/tillStore.ts';
 
 /**
  * Props for the AmountField component.
  */
 
-export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
-	currencyCode: CurrencyCode;
+export type AmountFieldProps = Pick<TextFieldProps, 'helperText'> & {
 	value: number | undefined;
 	onValueChange: (value: number | undefined) => void;
 };
@@ -21,8 +20,6 @@ export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
  * @returns An object containing the `thousandSeparator` and `decimalSeparator`.
  */
 
-
-
 /**
  * A specialized TextField for inputting monetary amounts.
  * It uses react-number-format for formatting and Material-UI for styling.
@@ -32,16 +29,15 @@ export type AmountFieldProps = Pick<TextFieldProps, 'label' | 'helperText'> & {
  * - Enforces a two-decimal-place format.
  */
 
-export const AmountField = ({ currencyCode, value, onValueChange, label, helperText, ...props }: AmountFieldProps) => {
+export const AmountField = ({ value, onValueChange, helperText, ...props }: AmountFieldProps) => {
+	const currencyCode = useCurrencyCode();
 	const currency = getCurrency(currencyCode);
 	const { thousandSeparator, decimalSeparator } = useMemo(() => getSeparators(currencyCode), [currencyCode]);
-
 
 	return (
 		<NumericFormat
 			// MUI TextField props
 			customInput={TextField}
-			label={label}
 			helperText={helperText}
 			slotProps={{
 				input: {

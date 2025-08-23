@@ -13,8 +13,11 @@ export type ConfigSectionProps = {
 	children: React.ReactNode;
 };
 
-export const ConfigSection = ({ title, showIcon = false, tooltipText, children }: ConfigSectionProps) => (
-	<Grid size={{ xs: 6 }}>
+export const ConfigSection = ({ title, showIcon = false, tooltipText, children, ...rest }: ConfigSectionProps) => (
+	<Grid
+		size={{ xs: 6 }}
+		{...rest}
+	>
 		<Stack
 			direction='row'
 			alignItems='center'
@@ -22,7 +25,6 @@ export const ConfigSection = ({ title, showIcon = false, tooltipText, children }
 			spacing={1}
 			sx={{ mb: 2 }}
 		>
-			{/* <CountContainerTitle sx={{ mb: 2 }}>{title.toUpperCase()}</CountContainerTitle> */}
 			<CountContainerTitle>{title.toUpperCase()}</CountContainerTitle>
 			{showIcon && (
 				<Tooltip
