@@ -9,7 +9,8 @@ const COLORS = {
 	BG_TRACK_COLOR: 'rgba(199,204,214,0.4)',
 	PROG_GREAT: 'rgba(19, 246, 91, 0.5)',
 	PROG_GOOD: 'rgba(255, 153, 20, 0.5)',
-	PROG_BAD: 'rgba(255, 61, 22, 0.5)'
+	PROG_BAD: 'rgba(255, 61, 22, 0.5)',
+	PROG_OVER: 'rgba(255, 153, 20, 1)'
 };
 
 const TRANSITION_CONFIG = {
@@ -25,6 +26,10 @@ const ANIMATION_CONFIG = {
 	BLUR: {
 		from: 8,
 		to: 0
+	},
+	OPACITY: {
+		inputRange: [0, 0.001],
+		outputRange: [0, 1]
 	}
 };
 
@@ -41,7 +46,7 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
 	const { viewBox, ...circleProps } = getCircleProps(PROPS.THICKNESS);
 
 	// Pick color based on variance
-	const progressColor = variance < 0.75 ? COLORS.PROG_BAD : variance < 0.9 ? COLORS.PROG_GOOD : COLORS.PROG_GREAT;
+	const progressColor = variance < 0.75 ? COLORS.PROG_BAD : variance < 1 ? COLORS.PROG_GOOD : COLORS.PROG_GREAT;
 
 	const reducedMotion = useReducedMotion();
 
@@ -50,7 +55,11 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
 	const blur = useMotionValue(ANIMATION_CONFIG.BLUR.from);
 
 	// Derived values
+	const baseProgress = useTransform(progress, (v) => Math.min(v, 1));
+	const overageProgress = useTransform(progress, (v) => Math.max(0, v - 1));
 	const roundedProgress = useTransform(progress, (v) => Math.round(v * 100));
+
+	const overageOpacity = useTransform(overageProgress, ANIMATION_CONFIG.OPACITY.inputRange, ANIMATION_CONFIG.OPACITY.outputRange);
 	const percentageText = useMotionTemplate`${roundedProgress}%`;
 	const filter = useMotionTemplate`blur(${blur}px)`;
 
@@ -73,11 +82,9 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
 		<Box
 			sx={{
 				position: 'relative',
-				width: PROPS.SIZE,
-				height: PROPS.SIZE,
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center'
+				display: 'inline-flex',
+				width: `${PROPS.SIZE}px`,
+				height: `${PROPS.SIZE}px`
 			}}
 		>
 			<svg
@@ -87,17 +94,33 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
 				viewBox={viewBox}
 				style={{ transform: 'rotate(-90deg)' }}
 			>
+				{/* Background Track */}
 				<circle
 					{...circleProps}
 					strokeWidth={PROPS.THICKNESS}
 					stroke={COLORS.BG_TRACK_COLOR}
 				/>
-				<motion.circle
-					{...circleProps}
-					strokeWidth={PROPS.THICKNESS}
-					stroke={progressColor}
-					pathLength={progress}
-				/>
+				{/* Base Circle */}
+				{variance > 0 && (
+					<motion.circle
+						{...circleProps}
+						strokeWidth={PROPS.THICKNESS}
+						stroke={progressColor}
+						style={{ pathLength: baseProgress }}
+					/>
+				)}
+				{/* Overage Circle */}
+				{variance > 1 && (
+					<motion.circle
+						{...circleProps}
+						strokeWidth={PROPS.THICKNESS}
+						stroke={COLORS.PROG_OVER}
+						style={{
+							pathLength: overageProgress,
+							opacity: overageOpacity
+						}}
+					/>
+				)}
 			</svg>
 			<Typography
 				variant='h3'
@@ -109,11 +132,9 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
 					transform: 'translate(-50%, -50%)',
 					fontWeight: 700,
 					fontSize: 48,
-					textAlign: 'center',
 					pointerEvents: 'none'
 				}}
 			>
-				{/* This motion.span is responsible for handling the motion values */}
 				<motion.span style={{ filter }}>{percentageText}</motion.span>
 			</Typography>
 		</Box>

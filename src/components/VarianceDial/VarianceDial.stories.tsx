@@ -12,8 +12,8 @@ const meta: Meta<typeof VarianceDial> = {
 	tags: ['autodocs'],
 	argTypes: {
 		variance: {
-			control: { type: 'range', min: 0, max: 1, step: 0.01 }, // Finer step
-			description: 'Variance value between 0 and 1'
+			control: { type: 'range', min: 0, max: 2, step: 0.05 }, // Finer step
+			description: 'Variance value between 0 and 2'
 		}
 	},
 	decorators: [
@@ -44,7 +44,7 @@ export const Default: Story = {
  */
 export const Bad: Story = {
 	args: {
-		variance: 0.5
+		variance: 0.74
 	}
 };
 
@@ -54,7 +54,7 @@ export const Bad: Story = {
  */
 export const Good: Story = {
 	args: {
-		variance: 0.8
+		variance: 0.75
 	}
 };
 
@@ -64,6 +64,16 @@ export const Good: Story = {
  */
 export const Great: Story = {
 	args: {
-		variance: 0.95
+		variance: 1
+	}
+};
+
+/**
+ * This story shows the "Overage" state of the dial, for variance values above 1.
+ * The progress ring will be colored green, while the overage ring will be colored orange.
+ */
+export const Overage: Story = {
+	args: {
+		variance: 1.2
 	}
 };
