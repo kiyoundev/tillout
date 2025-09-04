@@ -5,7 +5,7 @@ import { motion, useMotionValue, useTransform, useReducedMotion, useMotionTempla
 import { theme } from '../../theme/theme';
 import { getCircleProps } from './VarianceDial.utils';
 
-const COLORS = {
+export const COLORS = {
 	BG_TRACK_COLOR: 'rgba(199,204,214,0.4)',
 	PROG_GREAT: 'rgba(19, 246, 91, 0.5)',
 	PROG_GOOD: 'rgba(255, 153, 20, 0.5)',
@@ -46,7 +46,7 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
 	const { viewBox, ...circleProps } = getCircleProps(PROPS.THICKNESS);
 
 	// Pick color based on variance
-	const progressColor = variance < 0.75 ? COLORS.PROG_BAD : variance < 1 ? COLORS.PROG_GOOD : COLORS.PROG_GREAT;
+	const progressColor = variance < 0.75 ? COLORS.PROG_BAD : variance <= 0.9 ? COLORS.PROG_GOOD : COLORS.PROG_GREAT;
 
 	const reducedMotion = useReducedMotion();
 
@@ -101,14 +101,14 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
 					stroke={COLORS.BG_TRACK_COLOR}
 				/>
 				{/* Base Circle */}
-				{variance > 0 && (
-					<motion.circle
-						{...circleProps}
-						strokeWidth={PROPS.THICKNESS}
-						stroke={progressColor}
-						style={{ pathLength: baseProgress }}
-					/>
-				)}
+				<motion.circle
+					{...circleProps}
+					data-testid='progress-circle'
+					strokeWidth={PROPS.THICKNESS}
+					stroke={progressColor}
+					style={{ pathLength: baseProgress }}
+					visibility={variance > 0 ? 'visible' : 'hidden'}
+				/>
 				{/* Overage Circle */}
 				{variance > 1 && (
 					<motion.circle
