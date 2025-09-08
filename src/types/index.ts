@@ -16,6 +16,22 @@ export type TenderType = keyof Currency['denomination'];
 
 export type Counts = Record<TenderType, Record<string, number | undefined>>;
 
+export type DepositAction = {
+	type: 'BREAK_ROLL' | 'CHECK_COUNT';
+	message: string;
+	denominationsToHighlight?: string[];
+};
+
+export type DepositBreakdown = {
+	[Tender in TenderType]?: { [denom: string]: number };
+};
+
+export type DepositSummary = {
+	totalDeposit: number;
+	breakdown: DepositBreakdown;
+	actions: DepositAction[];
+};
+
 // export interface SelectedTender {
 // 	bills: boolean;
 // 	coins: boolean;
