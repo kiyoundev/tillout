@@ -1,3 +1,4 @@
+import Big from 'big.js';
 import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { animate, cubicBezier } from 'motion';
@@ -39,10 +40,11 @@ const PROPS = {
 };
 
 type VarianceDialProps = {
-	variance: number;
+	variance: Big;
 };
 
-export const VarianceDial: React.FC<VarianceDialProps> = ({ variance }) => {
+export const VarianceDial: React.FC<VarianceDialProps> = ({ variance: varianceBig }) => {
+	const variance = varianceBig.toNumber();
 	const { viewBox, ...circleProps } = getCircleProps(PROPS.THICKNESS);
 
 	// Pick color based on variance

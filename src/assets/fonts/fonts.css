@@ -13,3 +13,38 @@
 	font-style: normal;
 	font-display: swap;
 }
+
+/* 1. SF Pro Display – Regular (400) */
+@font-face {
+	font-family: 'SF Pro Display';
+	src: url('./SF-Pro-Display-Regular.otf') format('opentype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* 2. SF Pro Display – Medium (500) */
+@font-face {
+	font-family: 'SF Pro Display';
+	src: url('./SF-Pro-Display-Medium.otf') format('opentype');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* 3. SF Pro Display – Semibold (600) */
+@font-face {
+	font-family: 'SF Pro Display';
+	src: url('./SF-Pro-Display-Semibold.otf') format('opentype');
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'SF Pro Text';
+	src: url('./SF-Pro-Text-Regular.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}

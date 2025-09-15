@@ -1,8 +1,9 @@
 import { Currency, CurrencyCode } from '../types';
 import Big from 'big.js';
 import { CURRENCY_DETAILS } from '../assets/currencies';
-import type { Counts, TenderType, DepositSummary, DepositBreakdown, DepositAction } from '../types';
+import type { Counts, TenderType, DepositSummary, DepositBreakdown, DepositAction, DepositSubtotals } from '../types';
 import type { CurrencyDenomination } from './suggestionEngine';
+import { toWords } from 'number-to-words';
 
 /**
  * Retrieves the currency details for a given currency code.
@@ -78,12 +79,12 @@ export const calculateTotal = (counts: Counts, currencyCode: CurrencyCode): Big 
  * @param totalSales The total sales recorded.
  * @returns The variance ratio, or 0 if the expected total is zero.
  */
-export const calculateVariance = (calculatedTotal: number, openingBalance: number | undefined, totalSales: number | undefined): number => {
-	const expectedTotal = (openingBalance || 0) + (totalSales || 0);
-	if (expectedTotal === 0) {
-		return 0; // Avoid division by zero; no variance if nothing is expected.
+export const calculateVariance = (calculatedTotal: Big, openingBalance: number | undefined, totalSales: number | undefined): Big => {
+	const expectedTotal = new Big(openingBalance || 0).plus(new Big(totalSales || 0));
+	if (expectedTotal.eq(0)) {
+		return new Big(0); // Avoid division by zero; no variance if nothing is expected.
 	}
-	return calculatedTotal / expectedTotal;
+	return calculatedTotal.div(expectedTotal);
 };
 
 /**
@@ -100,13 +101,14 @@ export const calculateDeposit = (counts: Counts, openingBalance: number, currenc
 	const openingBalanceBig = new Big(openingBalance);
 
 	if (totalCountedValue.lte(openingBalanceBig)) {
-		return { totalDeposit: 0, breakdown: {}, actions: [] };
+		return { totalDeposit: new Big(0), breakdown: {}, subtotals: {}, actions: [] };
 	}
 
 	const totalDepositAmount = totalCountedValue.minus(openingBalanceBig);
-	let remainingDeposit = totalDepositAmount;
+	let remainingDeposit = new Big(totalDepositAmount);
 
 	const depositBreakdown: DepositBreakdown = { bills: {}, coins: {}, rolls: {} };
+	const depositSubtotals: DepositSubtotals = { bills: new Big(0), coins: new Big(0), rolls: new Big(0) };
 	const actions: DepositAction[] = [];
 
 	// Use the centralized helper to get all possible denominations, then filter for what the user actually has.
@@ -130,7 +132,9 @@ export const calculateDeposit = (counts: Counts, openingBalance: number, currenc
 		if (qtyToDeposit > 0) {
 			if (!depositBreakdown[tender]) depositBreakdown[tender] = {};
 			depositBreakdown[tender]![denom] = qtyToDeposit;
-			remainingDeposit = remainingDeposit.minus(value.times(qtyToDeposit));
+			const depositedValue = value.times(qtyToDeposit);
+			remainingDeposit = remainingDeposit.minus(depositedValue);
+			depositSubtotals[tender] = depositSubtotals[tender]!.plus(depositedValue);
 		}
 	}
 
@@ -142,25 +146,67 @@ export const calculateDeposit = (counts: Counts, openingBalance: number, currenc
 		}
 	}
 
-	const looseCoinsInFloat = Object.values(floatCounts.coins || {})
+	let looseCoinsInFloat = Object.values(floatCounts.coins || {})
 		.filter((qty): qty is number => typeof qty === 'number')
 		.reduce((sum, qty) => sum + qty, 0);
-	if (looseCoinsInFloat < 20 && Object.keys(floatCounts.rolls || {}).length > 0) {
-		const largestRollDenom = Object.keys(floatCounts.rolls!)
-			.filter((denom) => floatCounts.rolls![denom]! > 0)
-			.sort((a, b) => {
-				const valA = new Big(getDenominationValue('rolls', a, currency));
-				const valB = new Big(getDenominationValue('rolls', b, currency));
-				return valB.cmp(valA);
-			})[0];
-		if (largestRollDenom) {
-			actions.push({ type: 'BREAK_ROLL', message: `Break 1 roll of ${largestRollDenom} for a more flexible float.` });
+
+	const availableRolls = Object.keys(floatCounts.rolls || {})
+		.filter((denom) => (floatCounts.rolls?.[denom] || 0) > 0)
+		.sort((a, b) => {
+			const valA = new Big(getDenominationValue('rolls', a, currency));
+			const valB = new Big(getDenominationValue('rolls', b, currency));
+			return valB.cmp(valA);
+		});
+
+	const brokenRollsCount: { [denom: string]: number } = {};
+
+	while (looseCoinsInFloat < 20 && availableRolls.length > 0) {
+		const rollToBreak = availableRolls.shift(); // Get the largest remaining roll
+
+		if (rollToBreak && floatCounts.rolls?.[rollToBreak]) {
+			// Record the broken roll
+			brokenRollsCount[rollToBreak] = (brokenRollsCount[rollToBreak] || 0) + 1;
+
+			// Decrement the roll count in the float
+			floatCounts.rolls[rollToBreak]!--;
+
+			// Update loose coin count
+			const coinValue = new Big(getDenominationValue('coins', rollToBreak, currency));
+			const rollValue = new Big(getDenominationValue('rolls', rollToBreak, currency));
+			if (coinValue.gt(0)) {
+				const coinsInRoll = rollValue.div(coinValue).toNumber();
+				looseCoinsInFloat += coinsInRoll;
+			}
 		}
 	}
 
+	if (Object.keys(brokenRollsCount).length > 0) {
+		const numToWords: { [key: number]: string } = { 1: 'One', 2: 'two', 3: 'three', 4: 'four', 5: 'five' };
+		const messageParts = Object.entries(brokenRollsCount).map(([denom, count]) => {
+			const countWord = numToWords[count] || count;
+			return `${countWord} ${denom} roll${count > 1 ? 's' : ''}`;
+		});
+
+		let message;
+		if (messageParts.length === 1) {
+			message = messageParts[0];
+		} else {
+			const lastPart = messageParts.pop();
+			message = `${messageParts.join(', ')} and ${lastPart}`;
+		}
+
+		actions.push({
+			type: 'BREAK_ROLL',
+			message: `Note: ${message} ${
+				messageParts.length > 0 || Object.values(brokenRollsCount)[0] > 1 ? 'was' : 'were'
+			} automatically broken down to optimize the change availability`
+		});
+	}
+
 	return {
-		totalDeposit: totalDepositAmount.round(2).toNumber(),
+		totalDeposit: totalDepositAmount,
 		breakdown: depositBreakdown,
+		subtotals: depositSubtotals,
 		actions
 	};
 };
@@ -212,4 +258,17 @@ export const getFlattenedDenominations = (currencyCode: CurrencyCode): CurrencyD
 		}
 	});
 	return allDenominations;
+};
+
+export const numToWord = (n: number): string => toWords(n).charAt(0).toUpperCase() + toWords(n).slice(1);
+
+export const formatAmount = (amount: Big, currencyCode: CurrencyCode, showPlusSign = false): string => {
+	const formatted = `${getCurrency(currencyCode).symbol}${amount.abs().toFixed(2)}`;
+	if (amount.lt(0)) {
+		return `-${formatted}`;
+	}
+	if (showPlusSign && amount.gt(0)) {
+		return `+${formatted}`;
+	}
+	return formatted;
 };

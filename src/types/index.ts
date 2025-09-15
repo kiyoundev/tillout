@@ -1,3 +1,5 @@
+import Big from 'big.js';
+
 export type CurrencyCode = 'us' | 'ca' | 'au' | 'nz' | 'eu' | 'gb';
 
 export interface Currency {
@@ -26,9 +28,14 @@ export type DepositBreakdown = {
 	[Tender in TenderType]?: { [denom: string]: number };
 };
 
+export type DepositSubtotals = {
+	[Tender in TenderType]?: Big;
+};
+
 export type DepositSummary = {
-	totalDeposit: number;
+	totalDeposit: Big;
 	breakdown: DepositBreakdown;
+	subtotals: DepositSubtotals;
 	actions: DepositAction[];
 };
 

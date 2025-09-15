@@ -19,11 +19,13 @@
 		"@mui/material": "^7.2.0",
 		"big.js": "^7.0.1",
 		"motion": "^12.23.12",
+		"number-to-words": "^1.2.4",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-hook-form": "^7.53.1",
 		"react-number-format": "^5.4.4",
 		"react-router-dom": "^7.8.0",
+		"react-to-print": "^3.1.1",
 		"zustand": "^5.0.7"
 	},
 	"devDependencies": {
@@ -39,6 +41,7 @@
 		"@testing-library/react": "^16.2.0",
 		"@types/big.js": "^6.2.2",
 		"@types/jest": "^29.5.14",
+		"@types/number-to-words": "^1.2.3",
 		"@types/react": "^18.3.23",
 		"@types/react-dom": "^18.3.5",
 		"@vitejs/plugin-react": "^4.3.2",

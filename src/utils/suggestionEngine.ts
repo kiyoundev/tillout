@@ -1,6 +1,7 @@
 import Big from 'big.js';
 import { getFlattenedDenominations } from './util';
 import type { CurrencyCode, TenderType, Counts } from '../types';
+import { numToWord } from './util';
 
 // --- TYPE DEFINITIONS --- //
 
@@ -28,13 +29,29 @@ export interface VarianceSuggestion {
 }
 
 /** The complete set of parameters required for the suggestion engine to generate advice. */
+// export interface SuggestionEngineParams {
+// 	discrepancy: number;
+// 	isShortage: boolean;
+// 	tenderCounts: Counts;
+// 	currencyCode: CurrencyCode;
+// 	primaryInputKeys?: string[];
+// }
+
 export interface SuggestionEngineParams {
-	discrepancy: number;
-	isShortage: boolean;
-	tenderCounts: Counts;
+	countedTotal: number;
+	openingBalance: number;
+	totalSales: number;
 	currencyCode: CurrencyCode;
+	tenderCounts: Counts;
 	primaryInputKeys?: string[];
 }
+
+const getSingularTenderType = (tender: TenderType): string => {
+	if (tender.endsWith('s')) {
+		return tender.slice(0, -1);
+	}
+	return tender; // Return as-is if not plural (e.g., for future-proofing)
+};
 
 // --- CANDIDATE GENERATION LOGIC --- //
 
@@ -45,12 +62,17 @@ export interface SuggestionEngineParams {
 const findSingleItemCandidates = (discrepancy: Big, denominations: CurrencyDenomination[]): VarianceSuggestion[] => {
 	return denominations
 		.filter((denom) => denom.value.eq(discrepancy)) // Use .eq() for comparison
-		.map((denom) => ({
-			type: 'SINGLE_ITEM',
-			message: `Did you miscount one **${denom.denom}**?`,
-			denominationsToHighlight: [denom.key],
-			priority: 1 + denom.basePriority
-		}));
+		.map((denom) => {
+			const singularTender = getSingularTenderType(denom.tender);
+			return {
+				type: 'SINGLE_ITEM',
+				message: `{isShortage|${numToWord(1)} missing ${denom.denom} ${singularTender}|${numToWord(1)} extra ${
+					denom.denom
+				} ${singularTender}}`, // Placeholder
+				denominationsToHighlight: [denom.key],
+				priority: 1 + denom.basePriority
+			};
+		});
 };
 
 /**
@@ -64,9 +86,12 @@ const findMultiItemCandidates = (discrepancy: Big, denominations: CurrencyDenomi
 		if (denom.value.gt(0) && discrepancy.mod(denom.value).eq(0)) {
 			const count = discrepancy.div(denom.value).toNumber();
 			if (count > 1 && count <= 10) {
+				const tenderName = count > 1 ? denom.tender : getSingularTenderType(denom.tender);
 				candidates.push({
 					type: 'MULTI_ITEM',
-					message: `Are you off by ${count} **${denom.denom}**?`,
+					message: `{isShortage|${numToWord(count)} missing ${denom.denom} ${tenderName}|${numToWord(count)} extra ${
+						denom.denom
+					} ${tenderName}}`,
 					denominationsToHighlight: [denom.key],
 					priority: 3 + count + denom.basePriority // Prioritize smaller counts
 				});
@@ -91,7 +116,7 @@ const findDenominationSwapCandidates = (discrepancy: Big, denominations: Currenc
 				const [larger, smaller] = denom1.value.gt(denom2.value) ? [denom1, denom2] : [denom2, denom1];
 				candidates.push({
 					type: 'DENOMINATION_SWAP',
-					message: `Did you accidentally swap a **${smaller.denom}** for a **${larger.denom}**?`,
+					message: `Swapped ${smaller.denom} for ${larger.denom}`,
 					denominationsToHighlight: [smaller.key, larger.key],
 					priority: 2 // Swaps are a very high-priority, specific error type
 				});
@@ -112,7 +137,10 @@ const findDenominationSwapCandidates = (discrepancy: Big, denominations: Currenc
  * @returns A ranked array of the top 3-4 most likely `VarianceSuggestion` objects.
  */
 export const generateVarianceSuggestions = (params: SuggestionEngineParams): VarianceSuggestion[] => {
-	const { discrepancy, isShortage, tenderCounts, currencyCode, primaryInputKeys = ['Opening Balance', 'Total Sales'] } = params;
+	const { countedTotal, openingBalance, totalSales, tenderCounts, currencyCode, primaryInputKeys = ['Opening Balance', 'Total Sales'] } = params;
+
+	const discrepancy = openingBalance + totalSales - countedTotal;
+	const isShortage = discrepancy > 0;
 
 	const discrepancyBig = new Big(discrepancy);
 	if (discrepancyBig.eq(0)) {
@@ -123,9 +151,10 @@ export const generateVarianceSuggestions = (params: SuggestionEngineParams): Var
 	let candidates: VarianceSuggestion[] = [];
 
 	// 1. Candidate Generation
-	candidates.push(...findSingleItemCandidates(discrepancyBig, denominations));
-	candidates.push(...findMultiItemCandidates(discrepancyBig, denominations));
-	candidates.push(...findDenominationSwapCandidates(discrepancyBig, denominations));
+	const absoluteDiscrepancy = discrepancyBig.abs();
+	candidates.push(...findSingleItemCandidates(absoluteDiscrepancy, denominations));
+	candidates.push(...findMultiItemCandidates(absoluteDiscrepancy, denominations));
+	candidates.push(...findDenominationSwapCandidates(absoluteDiscrepancy, denominations));
 
 	// 2. Context-Aware Filtering (Logic remains the same, just uses keys)
 	const filteredCandidates = candidates.filter((suggestion) => {
@@ -148,19 +177,29 @@ export const generateVarianceSuggestions = (params: SuggestionEngineParams): Var
 		return true;
 	});
 
-	// 3. Ranking & Formatting
+	// 3. Ranking & Final Message Formatting
 	const sortedCandidates = filteredCandidates.sort((a, b) => a.priority - b.priority);
-	const term = isShortage ? 'short' : 'over';
-	const formattedSuggestions = sortedCandidates.map((s) => ({
-		...s,
-		message: `Your till is ${term} by $${discrepancyBig.toFixed(2)}. ${s.message}`
-	}));
+
+	const formattedSuggestions = sortedCandidates.map((s) => {
+		const messageTemplate = s.message;
+		let finalMessage = messageTemplate;
+
+		const match = messageTemplate.match(/{isShortage\|([^|]+)\|([^}]+)}/);
+		if (match) {
+			finalMessage = isShortage ? match[1] : match[2];
+		}
+
+		return {
+			...s,
+			message: finalMessage
+		};
+	});
 
 	// 4. Add Fallback Suggestion
 	if (formattedSuggestions.length === 0) {
 		formattedSuggestions.push({
 			type: 'INPUT_ERROR',
-			message: `We couldn't find a simple counting error. Could you please double-check the **${primaryInputKeys.join('** and **')}** figures?`,
+			message: `Please double-check the ${primaryInputKeys.join(' and ')} figures`,
 			denominationsToHighlight: primaryInputKeys,
 			priority: 99
 		});

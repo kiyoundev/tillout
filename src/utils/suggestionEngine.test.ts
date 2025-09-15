@@ -7,7 +7,7 @@ describe('Variance Suggestion Engine Scenarios', () => {
 			discrepancy: 20.0,
 			isShortage: true,
 			currencyCode: 'us',
-			tenderCounts: { bills: { '$1': 10, '$10': 5, '$20': 4 }, coins: {}, rolls: {} },
+			tenderCounts: { bills: { $1: 10, $10: 5, $20: 4 }, coins: {}, rolls: {} }
 		};
 		const suggestions = generateVarianceSuggestions(params);
 		expect(suggestions[0].type).toBe('SINGLE_ITEM');
@@ -19,7 +19,7 @@ describe('Variance Suggestion Engine Scenarios', () => {
 			discrepancy: 5.0,
 			isShortage: false,
 			currencyCode: 'us',
-			tenderCounts: { bills: { '$5': 6, '$10': 5 }, coins: {}, rolls: {} },
+			tenderCounts: { bills: { $5: 6, $10: 5 }, coins: {}, rolls: {} }
 		};
 		const suggestions = generateVarianceSuggestions(params);
 		expect(suggestions[0].type).toBe('SINGLE_ITEM');
@@ -31,7 +31,7 @@ describe('Variance Suggestion Engine Scenarios', () => {
 			discrepancy: 9.0,
 			isShortage: true,
 			currencyCode: 'us',
-			tenderCounts: { bills: { '$1': 11, '$10': 4 }, coins: {}, rolls: {} },
+			tenderCounts: { bills: { $1: 11, $10: 4 }, coins: {}, rolls: {} }
 		};
 		const suggestions = generateVarianceSuggestions(params);
 		expect(suggestions[0].type).toBe('DENOMINATION_SWAP');
@@ -43,7 +43,7 @@ describe('Variance Suggestion Engine Scenarios', () => {
 			discrepancy: 40.0,
 			isShortage: true,
 			currencyCode: 'us',
-			tenderCounts: { bills: { '$20': 3 }, coins: {}, rolls: {} },
+			tenderCounts: { bills: { $20: 3 }, coins: {}, rolls: {} }
 		};
 		const suggestions = generateVarianceSuggestions(params);
 		expect(suggestions[0].type).toBe('MULTI_ITEM');
@@ -56,7 +56,7 @@ describe('Variance Suggestion Engine Scenarios', () => {
 			discrepancy: 20.0,
 			isShortage: false,
 			currencyCode: 'us',
-			tenderCounts: { bills: { '$1': 5, '$20': 0 }, coins: {}, rolls: {} },
+			tenderCounts: { bills: { $1: 5, $20: 0 }, coins: {}, rolls: {} }
 		};
 		const suggestions = generateVarianceSuggestions(params);
 		const hasTwentyDollarSuggestion = suggestions.some((s) => s.message.includes('$20'));
@@ -68,7 +68,7 @@ describe('Variance Suggestion Engine Scenarios', () => {
 			discrepancy: 9.0,
 			isShortage: true,
 			currencyCode: 'us',
-			tenderCounts: { bills: { '$1': 5, '$10': 0 }, coins: {}, rolls: {} },
+			tenderCounts: { bills: { $1: 5, $10: 0 }, coins: {}, rolls: {} }
 		};
 		const suggestions = generateVarianceSuggestions(params);
 		expect(suggestions.find((s) => s.type === 'DENOMINATION_SWAP')).toBeUndefined();
@@ -79,7 +79,7 @@ describe('Variance Suggestion Engine Scenarios', () => {
 			discrepancy: 1.37,
 			isShortage: true,
 			currencyCode: 'us',
-			tenderCounts: { bills: { '$1': 5 }, coins: {}, rolls: {} },
+			tenderCounts: { bills: { $1: 5 }, coins: {}, rolls: {} }
 		};
 		const suggestions = generateVarianceSuggestions(params);
 		expect(suggestions[0].type).toBe('INPUT_ERROR');

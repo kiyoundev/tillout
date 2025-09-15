@@ -126,6 +126,7 @@ export const CURRENCY_DETAILS: Record<CurrencyCode, Currency> = {
 };
 
 export const CURRENCY_CODES = Object.keys(CURRENCY_DETAILS) as CurrencyCode[];
+
 export const TENDER_TYPES: Record<TenderType, string> = {
 	bills: 'Banknotes',
 	coins: 'Coins',
