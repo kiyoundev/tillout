@@ -1,50 +1,103 @@
-# React + TypeScript + Vite
+# TillOut - Till Calculation System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TillOut is a web-based application tool for cashiers and retail managers that simplifies the process of counting and balancing cash registers. By providing a clear interface for entering denomination counts, it generates an accurate deposit breakdown, which helps reduce human error and saves valuable time during daily cash management.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation & Setup](#installation--setup)
+- [Usage](#usage)
+- [Available Scripts](#available-scripts)
+- [Project Structure](#project-structure)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Variance Calculation**: Automatically calculates and displays any variance (under/over) between the expected and actual cash amounts.
+- **Variance Suggestions**: In case of a variance, a suggestion algorithm helps identify which tender type or denomination to double-check.
+- **Deposit Breakdown**: Automatically calculates the final deposit amount and presents a clear breakdown for banking.
+- **Multiple-Currency Support**: Easily configurable for use with different currencies.
 
-- Configure the top-level `parserOptions` property like this:
+## Technologies Used
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Framework**: [React](https://reactjs.org/) with [Vite](https://vitejs.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **UI Library**: [Material-UI (MUI)](https://mui.com/)
+- **Animation**: [Framer Motion](https://motion.dev/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Component Development**: [Storybook](https://storybook.js.org/)
+- **Routing**: [React Router](https://reactrouter.com/)
+- **Testing**: [Jest](https://jestjs.io/) & [React Testing Library](https://testing-library.com/)
+
+## Installation & Setup
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/) (v18 or later)
+- [npm](https://www.npmjs.com/)
+
+### Steps
+
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/kiyoundev/tillout.git
+    ```
+
+2.  **Navigate to the project directory:**
+    ```sh
+    cd tillout
+    ```
+
+3.  **Install dependencies:**
+    ```sh
+    npm install
+    ```
+
+4.  **Start the development server:**
+    ```sh
+    npm run dev
+    ```
+
+The application will be available at `http://localhost:5173`.
+
+## Usage
+
+1.  Open the application in your browser.
+2.  On the main page, enter the quantity for each bill, coin, and roll denomination in its respective field.
+3.  Navigate to the summary page to view a detailed breakdown of the count.
+
+## Available Scripts
+
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the application for production.
+- `npm run lint`: Lints the codebase using ESLint.
+- `npm run test`: Runs the test suite with Jest.
+- `npm run test:watch`: Runs the test suite in watch mode.
+- `npm run storybook`: Starts the Storybook server for component development.
+- `npm run build-storybook`: Builds a static version of the Storybook.
+
+## Project Structure
+
+The project follows a feature-based architecture to promote scalability and maintainability. Core features are organized into their own modules, each containing its specific components, hooks, and logic. Shared, reusable components are kept in a global `components` directory. The project is configured with a `@` path alias that points to the `src` directory, simplifying import paths.
+
+```
+src/
+├── assets/            # Static assets (fonts, images)
+├── components/        # Shared, reusable UI components
+├── constants/         # Application-wide constants (e.g., currency data)
+├── features/          # Feature-based modules
+│   ├── entry/         # Components related to the data entry page
+│   └── summary/       # Components related to the summary/variance page
+├── pages/             # Page components that assemble features
+├── stores/            # Zustand global state management
+├── styles/            # Theme and global styling
+├── types/             # Shared TypeScript type definitions
+└── utils/             # Global utility functions
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Future Updates
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- [ ] **User Authentication**: Implement user accounts to save pre-defined configurations and track till history.
+- [ ] **Multiple Till Support**: Allow users to manage and switch between multiple till counts simultaneously (e.g., for different cash registers or shifts).
+- [ ] **Enhanced Reporting**: Introduce an analytics dashboard with charts and graphs to visualize historical till data, helping users track variance trends and gain insights into cash management patterns.
+- [ ] **Data Export Options**: Enable users to export reports in various formats (PDF, CSV) 
