@@ -11,22 +11,23 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 // Internal Components
-import { DateTime } from '../../components/DateTime/DateTime';
-import { VarianceDial } from '../../components/VarianceDial/VarianceDial';
+import { useNavigate } from 'react-router-dom';
+import { DateTime } from '@/components/DateTime/DateTime';
+import { VarianceDial } from '@/features/summary/components/VarianceDial/VarianceDial';
 
 // State Management
-import { useCounts, useCurrencyCode, useOpeningBalance, useTotalSales } from '../../stores/tillStore';
+import { useCounts, useCurrencyCode, useOpeningBalance, useTotalSales } from '@/stores/tillStore';
 
 // Utilities
-import { calculateDeposit, calculateTotal, calculateVariance, formatAmount } from '../../utils/util';
-import { generateVarianceSuggestions, VarianceSuggestion } from '../../utils/suggestionEngine';
+import { calculateDeposit, calculateTotal, calculateVariance, formatAmount } from '@/utils/util';
+import { generateVarianceSuggestions, VarianceSuggestion } from '@/utils/suggestionEngine';
 
 // Types
-import { TenderType, DepositBreakdown, DepositSubtotals, DepositAction, CurrencyCode } from '../../types';
+import { TenderType, DepositBreakdown, DepositSubtotals, DepositAction, CurrencyCode } from '@/types';
 
 // Assets & Theme
-import { TENDER_TYPES } from '../../assets/currencies';
-import { theme } from '../../theme/theme';
+import { TENDER_TYPES } from '@/constants/currencies';
+import { theme } from '@/styles/theme';
 
 type BreakdownHeaderProps = {
 	label: string;
@@ -491,7 +492,8 @@ export const VarianceSection = ({ variance }: { variance: Big }) => (
 	</Stack>
 );
 
-export const Summary: React.FC = () => {
+export const SummaryPage: React.FC = () => {
+	const navigate = useNavigate();
 	const counts = useCounts();
 	const currencyCode = useCurrencyCode();
 	const openingBalance = useOpeningBalance();
@@ -558,6 +560,7 @@ export const Summary: React.FC = () => {
 					<Button
 						variant='secondary'
 						startIcon={<KeyboardBackspaceOutlinedIcon />}
+						onClick={() => navigate('/')}
 					>
 						Edit Entry
 					</Button>

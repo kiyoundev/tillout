@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { TextField, Autocomplete, Box } from '@mui/material';
-import { type CurrencyCode } from '../../types/index.ts';
-import { getCurrency } from '../../utils/util.ts';
-import { CURRENCY_DETAILS } from '../../assets/currencies';
+import { getCurrency } from '@/utils/util';
+import { CURRENCY_DETAILS } from '@/constants/currencies';
 import { filterValues } from './CurrencySelect.utils';
-import { useCurrencyCode, useTillActions } from '../../stores/tillStore.ts';
+import { useCurrencyCode, useTillActions } from '@/stores/tillStore';
+import type { CurrencyCode } from '@/types';
 
 export interface CurrencySelectProps {
 	helperText?: string;
+	currencyCode?: CurrencyCode;
+	onCurrencyChange?: (currencyCode: CurrencyCode) => void;
 }
 
 /**
@@ -19,12 +21,28 @@ export interface CurrencySelectProps {
  * - Communicates the selected currency back to the parent component via the `onCurrencyChange` callback.
  */
 
-export const CurrencySelect: React.FC<CurrencySelectProps> = ({ helperText = 'Select a currency' }) => {
+export const CurrencySelect: React.FC<CurrencySelectProps> = ({
+	helperText = 'Select a currency',
+	currencyCode: propCurrencyCode,
+	onCurrencyChange
+}) => {
 	const [inputValue, setInputValue] = useState('');
 	const [inputFocused, setInputFocused] = useState(false);
 
-	const currencyCode = useCurrencyCode();
+	const storeCurrencyCode = useCurrencyCode();
 	const { updateCurrencyCode } = useTillActions();
+
+	const currencyCode = propCurrencyCode ?? storeCurrencyCode;
+
+	const handleChange = (newValue: CurrencyCode | null) => {
+		if (!newValue) return;
+
+		if (onCurrencyChange) {
+			onCurrencyChange(newValue);
+		} else {
+			updateCurrencyCode(newValue);
+		}
+	};
 
 	return (
 		<Autocomplete
@@ -37,7 +55,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({ helperText = 'Se
 			openOnFocus // open dropdown upon focus
 			options={Object.keys(CURRENCY_DETAILS) as CurrencyCode[]}
 			value={currencyCode}
-			onChange={(_, newValue) => newValue && updateCurrencyCode(newValue)}
+			onChange={(_, newValue) => handleChange(newValue)}
 			inputValue={inputValue}
 			onInputChange={(_, newInputValue, reason) => {
 				// upon selecting a new option followed by automatic blur, clear the input value

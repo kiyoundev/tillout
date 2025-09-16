@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { CountGrid, CountGridProps } from './CountGrid';
-import { getCurrency } from '../../utils/util';
-import { type Counts, type CurrencyCode, type TenderType } from '../../types';
-import * as tillStore from '../../stores/tillStore';
+import { getCurrency } from '@/utils/util';
+import { type Counts, type CurrencyCode, type TenderType } from '@/types';
+import * as tillStore from '@/stores/tillStore';
 
 const useCurrencyCodeMock = jest.spyOn(tillStore, 'useCurrencyCode');
 const useCountsMock = jest.spyOn(tillStore, 'useCounts');

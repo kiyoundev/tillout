@@ -22,7 +22,7 @@ export const CountField = ({ value, onValueChange, label, ...props }: CountField
 		label={label}
 		fullWidth
 		// --- NumericFormat specific props ---}
-		value={value}
+		value={value === undefined ? '' : value}
 		onValueChange={onValueChange}
 		allowNegative={false}
 		decimalScale={0}

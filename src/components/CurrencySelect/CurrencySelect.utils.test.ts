@@ -1,5 +1,5 @@
 import { filterValues } from './CurrencySelect.utils';
-import { CURRENCY_CODES } from '../../assets/currencies';
+import { CURRENCY_CODES } from '../../constants/currencies';
 
 describe('CurrencySelect helpers', () => {
 	describe('filterValues', () => {

@@ -1,5 +1,5 @@
 import { filterValues } from './TenderSelect.utils';
-import { TENDER_TYPES } from '../../assets/currencies';
+import { TENDER_TYPES } from '../../constants/currencies';
 import { type TenderType } from '../../types';
 
 describe('TenderSelect helpers', () => {

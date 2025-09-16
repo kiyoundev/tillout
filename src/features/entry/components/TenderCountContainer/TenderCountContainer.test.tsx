@@ -1,18 +1,21 @@
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from '@mui/material/styles';
 import { TenderCountContainer, TenderCountContainerProps } from './TenderCountContainer';
-import { TENDER_TYPES } from '../../assets/currencies';
-import { theme } from '../../theme/theme';
-import { TenderType } from '../../types';
-import { CountGrid } from '../CountGrid/CountGrid';
+import { TENDER_TYPES } from '@/constants/currencies';
+import { theme } from '@/styles/theme';
+import { TenderType } from '@/types';
+import { CountGrid } from '@/features/entry/components/CountGrid/CountGrid';
 
 // Mock the child component to isolate the container's logic.
 // This ensures the test focuses only on the TenderCountContainer's behavior.
-jest.mock('../CountGrid/CountGrid', () => ({
+jest.mock('@/features/entry/components/CountGrid/CountGrid', () => ({
 	// The 'any' type is used here because we are mocking the component and don't need to match its real prop types.
 	CountGrid: jest.fn((props: any) => (
-		<div data-testid="mock-count-grid" data-tendertype={props.tenderType} />
-	)),
+		<div
+			data-testid='mock-count-grid'
+			data-tendertype={props.tenderType}
+		/>
+	))
 }));
 
 const setup = (props: TenderCountContainerProps) => {
@@ -25,7 +28,7 @@ const setup = (props: TenderCountContainerProps) => {
 
 describe('TenderCountContainer Component', () => {
 	// Use describe.each to run the same tests for all tender types, reducing code duplication.
-	describe.each(['bills', 'coins', 'rolls'] as TenderType[])('for tenderType="%s"', tenderType => {
+	describe.each(['bills', 'coins', 'rolls'] as TenderType[])('for tenderType="%s"', (tenderType) => {
 		beforeEach(() => {
 			// Clear mock history before each test to ensure clean assertions between test cases.
 			(CountGrid as jest.Mock).mockClear();

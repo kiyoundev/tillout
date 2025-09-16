@@ -1,6 +1,6 @@
 import { getCurrency, getColumnSize, calculateDeposit } from './util';
-import { CURRENCY_DETAILS } from '../assets/currencies';
-import { type CurrencyCode, type Counts } from '../types';
+import { CURRENCY_DETAILS } from '@/constants/currencies';
+import { type CurrencyCode, type Counts } from '@/types';
 
 describe('utility functions', () => {
 	describe('getCurrency', () => {

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Divider } from '@mui/material';
-import { CountContainerTitle } from '../Styled/CountContainerTitle';
-import { PaperContainer } from '../Styled/PaperContainer';
-import { CountGrid } from '../CountGrid/CountGrid';
-import { TENDER_TYPES } from '../../assets/currencies';
-import { TenderType } from '../../types';
+import { Divider, Typography } from '@mui/material';
+import { PaperContainer } from '@/components/Styled/PaperContainer';
+import { CountGrid } from '@/features/entry/components/CountGrid/CountGrid';
+import { TENDER_TYPES } from '@/constants/currencies';
+import { TenderType } from '@/types';
+// import { CountContainerTitle } from '../Styled/CountContainerTitle';
 
 export type TenderCountContainerProps = {
 	tenderType: TenderType;
@@ -27,7 +27,13 @@ export type TenderCountContainerProps = {
 export const TenderCountContainer: React.FC<TenderCountContainerProps> = ({ tenderType }) => {
 	return (
 		<PaperContainer>
-			<CountContainerTitle>{TENDER_TYPES[tenderType].toUpperCase()}</CountContainerTitle>
+			{/* <CountContainerTitle>{TENDER_TYPES[tenderType].toUpperCase()}</CountContainerTitle> */}
+			<Typography
+				variant='body_breakdown'
+				sx={{ fontSize: '22px' }}
+			>
+				{TENDER_TYPES[tenderType].toUpperCase()}
+			</Typography>
 			<Divider sx={{ mt: 2, mb: 3 }} />
 			<CountGrid tenderType={tenderType} />
 		</PaperContainer>

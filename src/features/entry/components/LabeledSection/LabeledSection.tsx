@@ -1,8 +1,8 @@
 import { Divider, BoxProps } from '@mui/material';
 import React from 'react';
 
-import { CountContainerTitle } from '../Styled/CountContainerTitle';
-import { PaperContainer } from '../Styled/PaperContainer';
+import { CountContainerTitle } from '@/components/Styled/CountContainerTitle';
+import { PaperContainer } from '@/components/Styled/PaperContainer';
 
 export interface LabeledSectionProps extends BoxProps {
 	title: string;

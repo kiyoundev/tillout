@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { useTillStore } from './tillStore';
-import { type TenderType } from '../../types';
+import { type TenderType } from '@/types';
 
 describe('useTillStore', () => {
 	const initialState = useTillStore.getState();

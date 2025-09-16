@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { animate, cubicBezier } from 'motion';
 import { motion, useMotionValue, useTransform, useReducedMotion, useMotionTemplate } from 'motion/react';
-import { theme } from '../../theme/theme';
+import { theme } from '@/styles/theme';
 import { getCircleProps } from './VarianceDial.utils';
 
 export const COLORS = {

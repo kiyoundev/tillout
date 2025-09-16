@@ -122,6 +122,10 @@ const shape: ShapeOptions = {
 	buttonRadius: 100
 };
 
+const baseTheme = createTheme();
+const newShadows = [...baseTheme.shadows];
+newShadows[24] = '0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 5px -1px rgba(0, 0, 0, 0.10)';
+
 export const theme = createTheme({
 	typography: {
 		fontFamily: '"SF Pro Display", "Helvetica", "Arial", sans-serif',
@@ -155,7 +159,7 @@ export const theme = createTheme({
 		focusedBorderWidth: '1.35px'
 	},
 	shape,
-	shadows: [...Array(24).fill('none'), '0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 5px -1px rgba(0, 0, 0, 0.10)'] as Shadows,
+	shadows: newShadows as Shadows,
 	components: {
 		MuiTextField: {
 			defaultProps: {

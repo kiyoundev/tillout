@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from '@mui/material/styles';
 import { LabeledSection, LabeledSectionProps } from './LabeledSection';
-import { theme } from '../../theme/theme';
+import { theme } from '@/styles/theme';
 
 const setup = (props: LabeledSectionProps) => {
 	render(

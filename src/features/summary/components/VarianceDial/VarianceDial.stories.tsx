@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { VarianceDial } from './VarianceDial';
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from '../../theme/theme';
+import { theme } from '@/styles/theme';
 
 const meta: Meta<typeof VarianceDial> = {
 	title: 'Components/VarianceDial',

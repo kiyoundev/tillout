@@ -1,5 +1,5 @@
 import { Autocomplete, TextField } from '@mui/material';
-import { TENDER_TYPES } from '../../assets/currencies';
+import { TENDER_TYPES } from '../../constants/currencies';
 import { type TenderType } from '../../types';
 import { filterValues } from './TenderSelect.utils';
 import { useTillActions, useSelectedTender } from '../../stores/tillStore';

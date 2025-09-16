@@ -1,9 +1,8 @@
-import { Currency, CurrencyCode } from '../types';
 import Big from 'big.js';
-import { CURRENCY_DETAILS } from '../assets/currencies';
-import type { Counts, TenderType, DepositSummary, DepositBreakdown, DepositAction, DepositSubtotals } from '../types';
-import type { CurrencyDenomination } from './suggestionEngine';
 import { toWords } from 'number-to-words';
+import type { Currency, CurrencyCode, Counts, TenderType, DepositSummary, DepositBreakdown, DepositAction, DepositSubtotals } from '@/types';
+import { CURRENCY_DETAILS } from '@/constants/currencies';
+import type { CurrencyDenomination } from './suggestionEngine';
 
 /**
  * Retrieves the currency details for a given currency code.

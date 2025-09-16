@@ -2,8 +2,8 @@ import { render, screen, waitForElementToBeRemoved, within } from '@testing-libr
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from '@mui/material/styles';
 import { Config } from './Config';
-import { theme } from '../../theme/theme';
-import * as tillStore from '../../stores/tillStore';
+import { theme } from '@/styles/theme';
+import * as tillStore from '@/stores/tillStore';
 
 describe('Config Component', () => {
 	const useOpeningBalanceMock = jest.spyOn(tillStore, 'useOpeningBalance');

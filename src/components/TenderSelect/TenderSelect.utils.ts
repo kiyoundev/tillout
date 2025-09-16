@@ -1,4 +1,4 @@
-import { TENDER_TYPES } from '../../assets/currencies';
+import { TENDER_TYPES } from '../../constants/currencies';
 import { type TenderType } from '../../types';
 
 export const filterValues = (options: TenderType[], inputValue: string) => {

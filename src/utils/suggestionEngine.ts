@@ -1,6 +1,6 @@
 import Big from 'big.js';
 import { getFlattenedDenominations } from './util';
-import type { CurrencyCode, TenderType, Counts } from '../types';
+import type { CurrencyCode, TenderType, Counts } from '@/types';
 import { numToWord } from './util';
 
 // --- TYPE DEFINITIONS --- //

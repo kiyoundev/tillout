@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useArgs } from 'storybook/preview-api';
-import { CountGrid } from './CountGrid';
-import { CURRENCY_CODES, TENDER_TYPES } from '../../assets/currencies';
-import { getColumnSize } from '../../utils/util';
-import { type CountGridProps, type OnDataChangeHandler } from './CountGrid';
+import { TenderCountContainer, TenderCountContainerProps } from './TenderCountContainer';
+import { CURRENCY_CODES, TENDER_TYPES } from '../../constants/currencies';
+import { Counts, TenderType } from '../../types';
 
-const meta: Meta<typeof CountGrid> = {
-	title: 'Components/CountGrid',
-	component: CountGrid,
+const meta: Meta<typeof TenderCountContainer> = {
+	title: 'Components/TenderCountContainer',
+	component: TenderCountContainer,
 	parameters: {
 		layout: 'centered'
 	},
@@ -39,42 +38,44 @@ const meta: Meta<typeof CountGrid> = {
 
 export default meta;
 
-type Story = StoryObj<typeof CountGrid>;
+type Story = StoryObj<typeof TenderCountContainer>;
 
 export const Default: Story = {
+	parameters: {
+		design: {
+			type: 'figma',
+			url: 'https://www.figma.com/design/18zXNs33NLGTaGuqrOjELQ/TillOut?node-id=2284-44129&t=O5tqYnrIhdsLrRlY-4'
+		}
+	},
 	args: {
 		currencyCode: 'us',
 		tenderType: 'bills',
-		onDataChange: () => {},
 		counts: {
 			bills: {},
 			coins: {},
 			rolls: {}
 		}
 	},
-	render: function Render(args: CountGridProps) {
+	render: function Render(args: TenderCountContainerProps) {
 		const [{ counts }, updateArgs] = useArgs();
 
-		const handleDataChange: OnDataChangeHandler = (denomination, count, tenderType) => {
+		const handleDataChange = (denomination: string, count: number | undefined, tenderType: TenderType) => {
+			const currentCounts = counts || { bills: {}, coins: {}, rolls: {} };
 			const newCounts = {
-				...counts,
+				...currentCounts,
 				[tenderType]: {
-					...counts[tenderType],
+					...(currentCounts[tenderType] || {}),
 					[denomination]: count
 				}
 			};
-
 			updateArgs({ counts: newCounts });
 		};
 
-		const columnSize = getColumnSize(args.currencyCode);
-
 		return (
-			<CountGrid
+			<TenderCountContainer
 				{...args}
-				counts={counts}
+				counts={counts as Counts}
 				onDataChange={handleDataChange}
-				columnSize={columnSize}
 			/>
 		);
 	}

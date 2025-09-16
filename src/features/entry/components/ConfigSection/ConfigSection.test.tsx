@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from '../../theme/theme';
+import { theme } from '@/styles/theme';
 import { ConfigSection } from './ConfigSection';
 
 describe('ConfigSection Component', () => {

@@ -1,11 +1,11 @@
-import Grid from '@mui/material/Grid'; // Grid version 2
-import { AmountField } from '../AmountField/AmountField';
-import { CurrencySelect } from '../CurrencySelect/CurrencySelect';
-import { ConfigSection } from '../ConfigSection/ConfigSection';
-import { PaperContainer } from '../Styled/PaperContainer';
-import { TenderSelect } from '../TenderSelect/TenderSelect';
+import Grid from '@mui/material/Grid';
+import { AmountField } from '@/components/AmountField/AmountField';
+import { CurrencySelect } from '@/components/CurrencySelect/CurrencySelect';
+import { ConfigSection } from '@/features/entry/components/ConfigSection/ConfigSection';
+import { PaperContainer } from '@/components/Styled/PaperContainer';
+import { TenderSelect } from '@/components/TenderSelect/TenderSelect';
 
-import { useTillActions, useOpeningBalance, useTotalSales } from '../../stores/tillStore';
+import { useTillActions, useOpeningBalance, useTotalSales } from '@/stores/tillStore';
 
 export const Config = () => {
 	const openingBalance = useOpeningBalance();

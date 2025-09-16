@@ -2,7 +2,7 @@
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import { theme } from './theme/theme';
+import { theme } from './styles/theme';
 import { App } from './App';
 import './assets/fonts/fonts.css';
 

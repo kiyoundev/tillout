@@ -8,6 +8,7 @@ export interface TillActions {
 	updateOpeningBalance: (openingBalance: number | undefined) => void;
 	updateTotalSales: (totalSales: number | undefined) => void;
 	updateCount: (tenderType: TenderType, denomination: string, count: number | undefined) => void;
+	resetCount: () => void; // Add this line
 }
 
 export interface TillState {
@@ -46,7 +47,15 @@ export const useTillStore = create<TillState>((set) => ({
 						[denomination]: count
 					}
 				}
-			}))
+			})),
+		resetCount: () =>
+			set({
+				counts: {
+					bills: {},
+					coins: {},
+					rolls: {}
+				}
+			})
 	}
 }));
 
@@ -57,3 +66,4 @@ export const useOpeningBalance = () => useTillStore((state) => state.openingBala
 export const useTotalSales = () => useTillStore((state) => state.totalSales);
 export const useCounts = () => useTillStore((state) => state.counts);
 export const useTillActions = () => useTillStore((state) => state.actions);
+export const useResetCount = () => useTillStore((state) => state.actions.resetCount);

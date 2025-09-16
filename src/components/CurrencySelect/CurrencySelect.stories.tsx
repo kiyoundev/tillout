@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useArgs } from 'storybook/preview-api';
 import { Box } from '@mui/material';
-import { CurrencySelect, CurrencySelectProps } from './CurrencySelect';
-import { CURRENCY_CODES } from '../../assets/currencies';
+import { CurrencySelect } from '@/components/CurrencySelect/CurrencySelect';
+import { CURRENCY_CODES } from '@/constants/currencies';
+import * as tillStore from '@/stores/tillStore';
 
 const meta: Meta<typeof CurrencySelect> = {
 	title: 'Components/CurrencySelect',
@@ -19,18 +20,11 @@ const meta: Meta<typeof CurrencySelect> = {
 		)
 	],
 	argTypes: {
+		// Arg for the mock store
 		currencyCode: {
-			control: { type: 'select' },
+			control: 'select',
 			options: CURRENCY_CODES,
-			table: {
-				defaultValue: { summary: 'us' }
-			}
-		},
-		onCurrencyChange: {
-			table: {
-				type: { summary: '(currencyCode: CurrencyCode) => void' },
-				disable: true
-			}
+			description: 'The mocked currency code from the store.'
 		}
 	},
 	args: {
@@ -41,14 +35,22 @@ const meta: Meta<typeof CurrencySelect> = {
 export default meta;
 
 export const Default: StoryObj<typeof CurrencySelect> = {
-	render: function Render(args: CurrencySelectProps) {
-		const [{ currencyCode }, updateArgs] = useArgs();
-		return (
-			<CurrencySelect
-				{...args}
-				currencyCode={currencyCode}
-				onCurrencyChange={(currencyCode) => updateArgs({ currencyCode })}
-			/>
-		);
-	}
+	decorators: [
+		(Story, _context) => {
+			const [{ currencyCode }, updateArgs] = useArgs();
+
+			jest.spyOn(tillStore, 'useCurrencyCode').mockReturnValue(currencyCode);
+			jest.spyOn(tillStore, 'useTillActions').mockReturnValue({
+				updateCurrencyCode: (newCode) => updateArgs({ currencyCode: newCode }),
+				// Mock other actions as needed
+				updateCount: () => {},
+				updateOpeningBalance: () => {},
+				updateTotalSales: () => {},
+				updateSelectedTender: () => {},
+				resetCount: () => {}
+			});
+
+			return <Story />;
+		}
+	]
 };
