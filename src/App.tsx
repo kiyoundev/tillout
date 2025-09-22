@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { EntryPage } from './pages/EntryPage/EntryPage.tsx';
 import { SummaryPage } from './pages/Summary/SummaryPage.tsx';
 
-export const App: React.FC = () => {
-	return (
+export const App: React.FC = () => (
+	<Box sx={{ minWidth: 320 }}>
 		<Router>
 			<Routes>
 				<Route
@@ -16,5 +17,5 @@ export const App: React.FC = () => {
 				/>
 			</Routes>
 		</Router>
-	);
-};
+	</Box>
+);

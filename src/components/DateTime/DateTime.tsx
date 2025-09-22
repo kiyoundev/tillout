@@ -29,19 +29,20 @@ export const DateTime: React.FC = () => {
 
 	return (
 		<Stack
-			direction='row'
+			direction={'row'}
+			alignItems='center'
+			justifyContent={{ xs: 'center', sm: 'flex-start' }}
 			spacing={1}
-			sx={{ mb: 2 }}
 		>
 			<Typography
-				variant='heading_secondary'
+				variant='dateTimeLabel'
 				color='text.secondary'
 				sx={{ fontSize: '24px' }}
 			>
 				{formattedDate}
 			</Typography>
 			<Typography
-				variant='heading_secondary'
+				variant='dateTimeLabel'
 				color='text.secondary'
 				sx={{ fontSize: '24px' }}
 			>

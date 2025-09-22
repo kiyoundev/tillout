@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { TextField, Autocomplete, Box } from '@mui/material';
+import { TextField, Autocomplete, Box, Stack, Typography } from '@mui/material';
 import { getCurrency } from '@/utils/util';
 import { CURRENCY_DETAILS } from '@/constants/currencies';
 import { filterValues } from './CurrencySelect.utils';
 import { useCurrencyCode, useTillActions } from '@/stores/tillStore';
 import type { CurrencyCode } from '@/types';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 export interface CurrencySelectProps {
 	helperText?: string;
@@ -44,6 +45,8 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
 		}
 	};
 
+	const breakpoint = useBreakpoint();
+
 	return (
 		<Autocomplete
 			slotProps={{
@@ -72,15 +75,27 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
 					// Only display currency when input is not focused
 					value &&
 					!inputFocused && (
-						<>
+						<Stack
+							direction='row'
+							alignItems='center'
+							sx={{ ml: 0.5 }}
+							spacing={1}
+						>
 							<img
 								loading='lazy'
 								width='25'
 								src={`http://flagcdn.com/${value}.svg`}
 							/>
-							<Box sx={{ ml: 1 }}>{currency.label}</Box>
-							<Box sx={{ ml: 0.5, color: 'text.secondary' }}>{` - ${currency.name}`}</Box>
-						</>
+
+							<Stack
+								direction='row'
+								spacing={0.5}
+							>
+								<Typography>{currency.label}</Typography>
+								{breakpoint !== 'xs' && <Typography>-</Typography>}
+								<Typography color='text.secondary'>{currency.name}</Typography>
+							</Stack>
+						</Stack>
 					)
 				);
 			}}

@@ -1,70 +1,119 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from '@/styles/theme';
 import { ConfigSection } from './ConfigSection';
+import { theme } from '@/styles/theme';
+import * as tillStore from '@/stores/tillStore';
 
 describe('ConfigSection Component', () => {
-	it('renders the title and children correctly', () => {
+	const useOpeningBalanceMock = jest.spyOn(tillStore, 'useOpeningBalance');
+	const useTotalSalesMock = jest.spyOn(tillStore, 'useTotalSales');
+	const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
+	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
+		updateOpeningBalance: jest.fn(),
+		updateTotalSales: jest.fn()
+	};
+
+	// Create a setup function to prepare the mock for each test.
+	const setup = (initialState: { openingBalance?: number; totalSales?: number } = {}) => {
+		useOpeningBalanceMock.mockReturnValue(initialState.openingBalance);
+		useTotalSalesMock.mockReturnValue(initialState.totalSales);
+		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
+
 		render(
 			<ThemeProvider theme={theme}>
-				<ConfigSection title='Test Title'>
-					<div>Child Content</div>
-				</ConfigSection>
+				<ConfigSection />
 			</ThemeProvider>
 		);
 
-		expect(screen.getByText('TEST TITLE')).toBeInTheDocument();
-		expect(screen.getByText('Child Content')).toBeInTheDocument();
+		const openingBalanceContainer = screen.getByTestId('opening-balance-section');
+		const openingBalanceInput = within(openingBalanceContainer).getByRole('textbox');
+
+		const totalSalesContainer = screen.getByTestId('total-sales-section');
+		const totalSalesInput = within(totalSalesContainer).getByRole('textbox');
+
+		return {
+			user: userEvent.setup(),
+			openingBalanceInput,
+			totalSalesInput
+		};
+	};
+
+	beforeEach(() => {
+		jest.clearAllMocks();
 	});
 
-	it('does not show the tooltip icon when showIcon is false', () => {
-		render(
-			<ThemeProvider theme={theme}>
-				<ConfigSection
-					title='Test Title'
-					showIcon={false}
-				>
-					<div>Child Content</div>
-				</ConfigSection>
-			</ThemeProvider>
-		);
-
-		expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+	afterAll(() => {
+		jest.restoreAllMocks();
 	});
 
-	it('shows the tooltip icon and text when showIcon is true', async () => {
-		const user = userEvent.setup();
-		render(
-			<ThemeProvider theme={theme}>
-				<ConfigSection
-					title='Test Title'
-					showIcon
-					tooltipText='My Tooltip'
-				>
-					<div>Child Content</div>
-				</ConfigSection>
-			</ThemeProvider>
-		);
+	it('renders all section titles', () => {
+		setup();
 
-		const icon = screen.getByTestId('InfoOutlinedIcon');
-		await user.hover(icon);
-
-		expect(await screen.findByText('My Tooltip')).toBeInTheDocument();
+		expect(screen.getByText('CURRENCY')).toBeInTheDocument();
+		expect(screen.getByText('TENDER')).toBeInTheDocument();
+		expect(screen.getByText('OPENING BALANCE')).toBeInTheDocument();
+		expect(screen.getByText('TOTAL SALES')).toBeInTheDocument();
 	});
 
-	it('passes through data-testid', () => {
-		render(
-			<ThemeProvider theme={theme}>
-				<ConfigSection
-					title='Test Title'
-					data-testid='config-section-test'
-				>
-					<div>Child Content</div>
-				</ConfigSection>
-			</ThemeProvider>
-		);
+	it('renders child input functions', () => {
+		setup();
 
-		expect(screen.getByTestId('config-section-test')).toBeInTheDocument();
+		// Two selects (CurrencySelect, TenderSelect)
+		expect(screen.getAllByRole('combobox')).toHaveLength(2);
+
+		// Two amount inputs (by helper text)
+		expect(screen.getByText('Enter Opening Balance')).toBeInTheDocument();
+		expect(screen.getByText('Enter Total Sales Amount')).toBeInTheDocument();
+	});
+
+	it('integrates selector functions: renders values from store', () => {
+		setup({ openingBalance: 100.5, totalSales: 250.75 });
+
+		// Assert formatted values
+		expect(screen.getByDisplayValue('100.50')).toBeInTheDocument();
+		expect(screen.getByDisplayValue('250.75')).toBeInTheDocument();
+	});
+
+	it('integrates selector functions: renders empty when selectors return undefined', () => {
+		const { openingBalanceInput, totalSalesInput } = setup();
+
+		// No formatted values present
+		expect(screen.queryByDisplayValue('100.50')).not.toBeInTheDocument();
+		expect(screen.queryByDisplayValue('250.75')).not.toBeInTheDocument();
+
+		expect(openingBalanceInput).toHaveValue('');
+		expect(totalSalesInput).toHaveValue('');
+	});
+
+	it('`updateOpeningBalance` and `updateTotalSales` are called with the correct values', async () => {
+		const { user, openingBalanceInput, totalSalesInput } = setup();
+
+		await user.type(openingBalanceInput, '100.50');
+		await user.type(totalSalesInput, '1234.56');
+
+		expect(mockActions.updateOpeningBalance).toHaveBeenCalledWith(100.5);
+		expect(mockActions.updateTotalSales).toHaveBeenCalledWith(1234.56);
+	});
+
+	it('displays the correct tooltips on hover', async () => {
+		const { user } = setup();
+
+		// Define the expected tooltip texts
+		const openingBalanceTooltip = 'The starting cash float for the register, to be used during the next day’s operations.';
+		const totalSalesTooltip = 'The expected total cash sales recorded by the POS system for the day.';
+
+		const openingBalanceIcon = screen.getByLabelText(openingBalanceTooltip);
+		const totalSalesIcon = screen.getByLabelText(totalSalesTooltip);
+
+		await user.hover(openingBalanceIcon);
+		expect(await screen.findByText(openingBalanceTooltip)).toBeInTheDocument();
+		await user.unhover(openingBalanceIcon);
+		await waitForElementToBeRemoved(() => screen.queryByText(openingBalanceTooltip));
+
+		await user.hover(totalSalesIcon);
+		expect(await screen.findByText(totalSalesTooltip)).toBeInTheDocument();
+		await user.unhover(totalSalesIcon);
+		await waitForElementToBeRemoved(() => screen.queryByText(totalSalesTooltip));
 	});
 });

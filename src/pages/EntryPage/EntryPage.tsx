@@ -1,9 +1,11 @@
 import '@/assets/fonts/fonts.css';
 import { TenderCountContainer } from '@/features/entry/components/TenderCountContainer/TenderCountContainer';
-import { Config } from '@/features/entry/components/Config/Config';
+import { ConfigSection } from '@/features/entry/components/ConfigSection/ConfigSection';
 import { useSelectedTender, useOpeningBalance, useTotalSales, useResetCount } from '@/stores/tillStore';
-import { Stack, Button } from '@mui/material';
+import { Stack } from '@mui/material';
+import { ActionButtons } from '@/components/ActionButtons/ActionButtons';
 import { useNavigate } from 'react-router-dom';
+import { UICONSTANTS } from '@/styles/UIConstants';
 
 export const EntryPage: React.FC = () => {
 	const selectedTender = useSelectedTender();
@@ -16,10 +18,10 @@ export const EntryPage: React.FC = () => {
 
 	return (
 		<Stack
-			p={4}
-			spacing={3.5}
+			p={{ xs: UICONSTANTS.EntryPage.padding_xs, sm: UICONSTANTS.EntryPage.padding }}
+			spacing={UICONSTANTS.EntryPage.spacing}
 		>
-			<Config />
+			<ConfigSection />
 
 			{isConfigComplete && (
 				<>
@@ -27,24 +29,11 @@ export const EntryPage: React.FC = () => {
 					{selectedTender.includes('coins') && <TenderCountContainer tenderType='coins' />}
 					{selectedTender.includes('rolls') && <TenderCountContainer tenderType='rolls' />}
 
-					<Stack
-						direction='row'
-						spacing={2.5}
-						justifyContent='flex-end'
-					>
-						<Button
-							variant='secondary'
-							onClick={resetCount}
-						>
-							Reset
-						</Button>
-						<Button
-							variant='primary'
-							onClick={() => navigate('/summary')}
-						>
-							Calculate
-						</Button>
-					</Stack>
+					<ActionButtons
+						page='entry'
+						onReset={resetCount}
+						onSubmit={() => navigate('/summary')}
+					/>
 				</>
 			)}
 		</Stack>

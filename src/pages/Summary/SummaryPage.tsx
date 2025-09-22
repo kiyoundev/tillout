@@ -2,21 +2,21 @@
 import Big from 'big.js';
 
 // Material-UI Components
-import { Button, Stack, Typography, Divider, List, ListItem, ListItemIcon } from '@mui/material';
+import { Stack, Typography, Divider, List, ListItem, ListItemIcon } from '@mui/material';
 
 // Material-UI Icons
-import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
 import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 // Internal Components
-import { useNavigate } from 'react-router-dom';
 import { DateTime } from '@/components/DateTime/DateTime';
 import { VarianceDial } from '@/features/summary/components/VarianceDial/VarianceDial';
+import { ActionButtons } from '@/components/ActionButtons/ActionButtons';
 
-// State Management
+// State Management & Hooks
 import { useCounts, useCurrencyCode, useOpeningBalance, useTotalSales } from '@/stores/tillStore';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 // Utilities
 import { calculateDeposit, calculateTotal, calculateVariance, formatAmount } from '@/utils/util';
@@ -28,6 +28,7 @@ import { TenderType, DepositBreakdown, DepositSubtotals, DepositAction, Currency
 // Assets & Theme
 import { TENDER_TYPES } from '@/constants/currencies';
 import { theme } from '@/styles/theme';
+import { UICONSTANTS } from '@/styles/UIConstants';
 
 type BreakdownHeaderProps = {
 	label: string;
@@ -77,13 +78,13 @@ const BreakdownHeader = ({ label, amount }: BreakdownHeaderProps) => (
 		alignItems='center'
 	>
 		<Typography
-			variant='heading_secondary'
+			variant='heading_medium'
 			sx={{ fontSize: '22px' }}
 		>
 			{label}
 		</Typography>
 		<Typography
-			variant='heading_secondary'
+			variant='heading_medium'
 			color={theme.palette.text.gray}
 			sx={{ fontSize: '20px' }}
 		>
@@ -105,13 +106,13 @@ const BreakdownRow = ({ label, quantity }: BreakdownRowProps) => (
 		// sx={{ mb: 0.5 }}
 	>
 		<Typography
-			variant='body_breakdown'
+			variant='body_regular'
 			sx={{ fontSize: '22px' }}
 		>
 			{label}
 		</Typography>
 		<Typography
-			variant='body_breakdown'
+			variant='body_regular'
 			sx={{ fontSize: '20px' }}
 		>
 			{quantity}
@@ -202,7 +203,7 @@ const TotalDepositContent = ({ totalDeposit, currencyCode }: { totalDeposit: Big
 		sx={{ mb: 4 }}
 	>
 		<Typography
-			variant='heading_secondary'
+			variant='heading_medium'
 			color={theme.palette.text.gray}
 			sx={{ mb: 1.5 }}
 		>
@@ -226,14 +227,14 @@ const TotalDepositContent = ({ totalDeposit, currencyCode }: { totalDeposit: Big
 
 const VarianceDetailContent = ({ countedTotal, discrepancy, currencyCode }: { countedTotal: Big; discrepancy: Big; currencyCode: CurrencyCode }) => {
 	return (
-		<Stack direction='row'>
+		<Stack direction={{ xs: 'column', sm: 'row' }}>
 			<Stack
 				direction='column'
 				spacing={1.5}
 				sx={{ mb: 4, flexGrow: 1, width: '50%' }}
 			>
 				<Typography
-					variant='heading_secondary'
+					variant='heading_medium'
 					color={theme.palette.text.gray}
 					sx={{ mb: 1.5 }}
 				>
@@ -252,7 +253,7 @@ const VarianceDetailContent = ({ countedTotal, discrepancy, currencyCode }: { co
 				sx={{ mb: 4, flexGrow: 1, width: '50%' }}
 			>
 				<Typography
-					variant='heading_secondary'
+					variant='heading_medium'
 					color={theme.palette.text.gray}
 					sx={{ mb: 1.5 }}
 				>
@@ -304,7 +305,7 @@ const SuggestionNotification = ({
 				>
 					<DangerousOutlinedIcon sx={{ color: theme.palette.text.gray }} />
 					<Typography
-						variant='body_breakdown'
+						variant='body_regular'
 						color={theme.palette.text.gray}
 						sx={{ fontSize: '18px' }}
 					>
@@ -314,7 +315,7 @@ const SuggestionNotification = ({
 					</Typography>
 				</Stack>
 				<Typography
-					variant='body_breakdown'
+					variant='body_regular'
 					color={theme.palette.text.gray}
 					sx={{ fontSize: '18px', pl: 4 }}
 				>
@@ -337,7 +338,7 @@ const SuggestionNotification = ({
 			>
 				<DangerousOutlinedIcon sx={{ color: theme.palette.text.gray }} />
 				<Typography
-					variant='body_breakdown'
+					variant='body_regular'
 					color={theme.palette.text.gray}
 					sx={{ fontSize: '18px' }}
 				>
@@ -359,7 +360,7 @@ const SuggestionNotification = ({
 							<FiberManualRecordIcon sx={{ fontSize: '8px' }} />
 						</ListItemIcon>
 						<Typography
-							variant='body_breakdown'
+							variant='body_regular'
 							color={theme.palette.text.gray}
 							sx={{ fontSize: '18px' }}
 						>
@@ -385,7 +386,7 @@ const ActionNotification = ({ actions }: { actions: DepositAction[] }) => (
 	>
 		<InfoOutlinedIcon sx={{ color: theme.palette.text.gray }} />
 		<Typography
-			variant='body_breakdown'
+			variant='body_regular'
 			color={theme.palette.text.gray}
 			sx={{ fontSize: '18px' }}
 		>
@@ -395,7 +396,7 @@ const ActionNotification = ({ actions }: { actions: DepositAction[] }) => (
 );
 
 /**
- * The main content section of the summary page.
+ * The main content section of the summary page - represents the left section of the summary page.
  * It conditionally renders either the final deposit summary or the variance details based on whether the till is balanced.
  * @param variance The variance amount to determine which content to show.
  * @param countedTotal The total counted amount.
@@ -426,15 +427,11 @@ const SummarySection = ({
 	return (
 		<Stack
 			direction='column'
-			p={4}
-			sx={{ flexGrow: 1, width: '50%' }}
+			p={{ xs: UICONSTANTS.SummarySection.padding_xs, sm: UICONSTANTS.SummarySection.padding }}
+			spacing={{ xs: UICONSTANTS.SummarySection.spacing_xs, sm: UICONSTANTS.SummarySection.spacing }}
+			sx={{ flexGrow: 1, width: { xs: '100%', md: '50%' } }}
 		>
-			<Typography
-				variant='heading_semibold'
-				sx={{ mb: 4 }}
-			>
-				{isVarianceMet ? 'SUMMARY' : 'DETAILS'}
-			</Typography>
+			<Typography variant='heading_semibold'>{isVarianceMet ? 'SUMMARY' : 'DETAILS'}</Typography>
 
 			{!isVarianceMet && (
 				<>
@@ -477,23 +474,24 @@ export const VarianceSection = ({ variance }: { variance: Big }) => (
 	<Stack
 		direction='column'
 		alignItems='center'
-		p={4}
-		sx={{ flexGrow: 1, width: '50%' }}
+		p={{ xs: UICONSTANTS.VarianceSection.padding_xs, sm: UICONSTANTS.VarianceSection.padding }}
+		sx={{ flexGrow: 1, width: { xs: '100%', md: '50%' } }}
 	>
 		<Typography
 			variant='heading_semibold'
-			sx={{ alignSelf: 'flex-start', mb: 4 }}
+			sx={{ alignSelf: 'flex-start', mb: { xs: UICONSTANTS.VarianceSection.spacing_xs, sm: UICONSTANTS.VarianceSection.spacing } }}
 		>
 			VARIANCE
 		</Typography>
-		<Stack sx={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
+		<Stack sx={{ justifyContent: 'center', alignItems: 'center' }}>
 			<VarianceDial variance={variance} />
 		</Stack>
 	</Stack>
 );
 
 export const SummaryPage: React.FC = () => {
-	const navigate = useNavigate();
+	const breakpoint = useBreakpoint();
+
 	const counts = useCounts();
 	const currencyCode = useCurrencyCode();
 	const openingBalance = useOpeningBalance();
@@ -515,20 +513,19 @@ export const SummaryPage: React.FC = () => {
 	return (
 		<>
 			<Stack
-				p={4}
-				spacing={3.5}
+				p={{ xs: UICONSTANTS.SummaryPage.padding_xs, sm: UICONSTANTS.SummaryPage.padding }}
+				spacing={{ xs: UICONSTANTS.SummaryPage.spacing_xs, sm: UICONSTANTS.SummaryPage.spacing }}
 			>
 				<DateTime />
 
 				<Stack
-					direction='row'
+					direction={{ xs: 'column', md: 'row' }}
 					sx={{
 						border: `1px solid ${theme.palette.PaperContainer.border}`,
 						borderRadius: theme.shape.borderRadius,
 						boxShadow: theme.shadows[24]
 					}}
 				>
-					{/* LEFT COLUMN */}
 					<SummarySection
 						variance={variance}
 						countedTotal={countedTotal}
@@ -548,29 +545,10 @@ export const SummaryPage: React.FC = () => {
 						sx={{ borderColor: theme.palette.PaperContainer.border, borderWidth: '0.75px' }}
 					/>
 
-					{/* RIGHT COLUMN */}
 					<VarianceSection variance={variance} />
 				</Stack>
 
-				<Stack
-					direction='row'
-					spacing={2.5}
-					justifyContent='flex-end'
-				>
-					<Button
-						variant='secondary'
-						startIcon={<KeyboardBackspaceOutlinedIcon />}
-						onClick={() => navigate('/')}
-					>
-						Edit Entry
-					</Button>
-					{/* <Button
-						variant='primary'
-						endIcon={<FileUploadOutlinedIcon />}
-					>
-						Export
-					</Button> */}
-				</Stack>
+				<ActionButtons page='summary' />
 			</Stack>
 		</>
 	);

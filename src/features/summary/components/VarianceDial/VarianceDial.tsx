@@ -5,6 +5,8 @@ import { animate, cubicBezier } from 'motion';
 import { motion, useMotionValue, useTransform, useReducedMotion, useMotionTemplate } from 'motion/react';
 import { theme } from '@/styles/theme';
 import { getCircleProps } from './VarianceDial.utils';
+import { UICONSTANTS } from '@/styles/UIConstants';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 export const COLORS = {
 	BG_TRACK_COLOR: 'rgba(199,204,214,0.4)',
@@ -34,18 +36,18 @@ const ANIMATION_CONFIG = {
 	}
 };
 
-const PROPS = {
-	SIZE: 250,
-	THICKNESS: 4
-};
-
 type VarianceDialProps = {
 	variance: Big;
 };
 
 export const VarianceDial: React.FC<VarianceDialProps> = ({ variance: varianceBig }) => {
+	const breakpoint = useBreakpoint();
+
+	const dialSize = breakpoint === 'xs' ? UICONSTANTS.VarianceDial.size_xs : UICONSTANTS.VarianceDial.size;
+	const dialThickness = UICONSTANTS.VarianceDial.thickness;
+
 	const variance = varianceBig.toNumber();
-	const { viewBox, ...circleProps } = getCircleProps(PROPS.THICKNESS);
+	const { viewBox, ...circleProps } = getCircleProps(dialThickness);
 
 	// Pick color based on variance
 	const progressColor = variance < 0.75 ? COLORS.PROG_BAD : variance <= 0.9 ? COLORS.PROG_GOOD : COLORS.PROG_GREAT;
@@ -85,28 +87,28 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance: varianceBi
 			sx={{
 				position: 'relative',
 				display: 'inline-flex',
-				width: `${PROPS.SIZE}px`,
-				height: `${PROPS.SIZE}px`
+				width: `${dialSize}px`,
+				height: `${dialSize}px`
 			}}
 		>
 			<svg
 				data-testid='variance-dial-svg'
-				width={PROPS.SIZE}
-				height={PROPS.SIZE}
+				width={dialSize}
+				height={dialSize}
 				viewBox={viewBox}
 				style={{ transform: 'rotate(-90deg)' }}
 			>
 				{/* Background Track */}
 				<circle
 					{...circleProps}
-					strokeWidth={PROPS.THICKNESS}
+					strokeWidth={dialThickness}
 					stroke={COLORS.BG_TRACK_COLOR}
 				/>
 				{/* Base Circle */}
 				<motion.circle
 					{...circleProps}
 					data-testid='progress-circle'
-					strokeWidth={PROPS.THICKNESS}
+					strokeWidth={dialThickness}
 					stroke={progressColor}
 					style={{ pathLength: baseProgress }}
 					visibility={variance > 0 ? 'visible' : 'hidden'}
@@ -115,7 +117,7 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance: varianceBi
 				{variance > 1 && (
 					<motion.circle
 						{...circleProps}
-						strokeWidth={PROPS.THICKNESS}
+						strokeWidth={dialThickness}
 						stroke={COLORS.PROG_OVER}
 						style={{
 							pathLength: overageProgress,
@@ -125,7 +127,7 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance: varianceBi
 				)}
 			</svg>
 			<Typography
-				variant='h3'
+				variant='varianceDialLabel'
 				color={theme.palette.text.primary}
 				sx={{
 					position: 'absolute',

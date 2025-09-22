@@ -1,10 +1,9 @@
 import { Typography, styled } from '@mui/material';
 
 export const CountContainerTitle = styled(Typography)(({ theme }) => ({
-	fontFamily: 'Helvetica Neue, Helvetica',
-	fontWeight: 400,
-	letterSpacing: 0,
-	lineHeight: '18px',
-	fontSize: '20px',
-	color: theme.palette.text.primary
+	...theme.typography.heading_medium,
+	fontSize: theme.typography.pxToRem(24),
+	[theme.breakpoints.down('sm')]: {
+		fontSize: theme.typography.pxToRem(20)
+	}
 }));

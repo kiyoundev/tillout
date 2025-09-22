@@ -1,10 +1,10 @@
 import React from 'react';
-import { Divider, Typography } from '@mui/material';
+import { Divider, Typography, Stack } from '@mui/material';
 import { PaperContainer } from '@/components/Styled/PaperContainer';
 import { CountGrid } from '@/features/entry/components/CountGrid/CountGrid';
 import { TENDER_TYPES } from '@/constants/currencies';
-import { TenderType } from '@/types';
-// import { CountContainerTitle } from '../Styled/CountContainerTitle';
+import type { TenderType } from '@/types';
+import { UICONSTANTS } from '@/styles/UIConstants';
 
 export type TenderCountContainerProps = {
 	tenderType: TenderType;
@@ -24,18 +24,26 @@ export type TenderCountContainerProps = {
  * @param onDataChange Callback function that is fired when the count for any denomination changes.
  */
 
-export const TenderCountContainer: React.FC<TenderCountContainerProps> = ({ tenderType }) => {
-	return (
-		<PaperContainer>
-			{/* <CountContainerTitle>{TENDER_TYPES[tenderType].toUpperCase()}</CountContainerTitle> */}
-			<Typography
-				variant='body_breakdown'
-				sx={{ fontSize: '22px' }}
-			>
-				{TENDER_TYPES[tenderType].toUpperCase()}
-			</Typography>
-			<Divider sx={{ mt: 2, mb: 3 }} />
-			<CountGrid tenderType={tenderType} />
-		</PaperContainer>
-	);
-};
+export const TenderCountContainer: React.FC<TenderCountContainerProps> = ({ tenderType }) => (
+	<PaperContainer>
+		<Stack
+			direction='row'
+			alignItems='center'
+		>
+			<Typography variant='tenderCountTitle'>{TENDER_TYPES[tenderType].toUpperCase()}</Typography>
+		</Stack>
+		<Divider
+			sx={{
+				mt: {
+					xs: UICONSTANTS.TenderCountContainer.spacing_title_divider_xs,
+					sm: UICONSTANTS.TenderCountContainer.spacing_title_divider
+				},
+				mb: {
+					xs: UICONSTANTS.TenderCountContainer.spacing_title_countgrid_xs,
+					sm: UICONSTANTS.TenderCountContainer.spacing_title_countgrid
+				}
+			}}
+		/>
+		<CountGrid tenderType={tenderType} />
+	</PaperContainer>
+);
