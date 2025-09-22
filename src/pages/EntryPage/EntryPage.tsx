@@ -18,7 +18,7 @@ export const EntryPage: React.FC = () => {
 
 	return (
 		<Stack
-			p={{ xs: UICONSTANTS.EntryPage.padding_xs, sm: UICONSTANTS.EntryPage.padding }}
+			p={{ xxs: UICONSTANTS.EntryPage.padding_xs, sm: UICONSTANTS.EntryPage.padding }}
 			spacing={UICONSTANTS.EntryPage.spacing}
 		>
 			<ConfigSection />

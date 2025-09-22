@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useArgs } from 'storybook/preview-api';
 import { TenderCountContainer, TenderCountContainerProps } from './TenderCountContainer';
-import { CURRENCY_CODES, TENDER_TYPES } from '../../constants/currencies';
-import { Counts, TenderType } from '../../types';
+import { CURRENCY_CODES, TENDER_TYPES } from '@/constants/currencies';
+import { Counts, TenderType } from '@/types';
 
 const meta: Meta<typeof TenderCountContainer> = {
 	title: 'Components/TenderCountContainer',

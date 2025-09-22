@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import { toWords } from 'number-to-words';
-import type { Currency, CurrencyCode, Counts, TenderType, DepositSummary, DepositBreakdown, DepositAction, DepositSubtotals } from '@/types';
 import { CURRENCY_DETAILS } from '@/constants/currencies';
+import type { Currency, CurrencyCode, Counts, TenderType, DepositSummary, DepositBreakdown, DepositAction, DepositSubtotals } from '@/types';
 import type { CurrencyDenomination } from './suggestionEngine';
 
 /**
@@ -270,4 +270,36 @@ export const formatAmount = (amount: Big, currencyCode: CurrencyCode, showPlusSi
 		return `+${formatted}`;
 	}
 	return formatted;
+};
+
+/**
+ * Predicts the width of a string of text in pixels if it were rendered with a given font.
+ * Uses the HTML5 Canvas API for accurate measurement without rendering to the DOM.
+ *
+ * @param text The string to measure.
+ * @param font The CSS font string (e.g., 'bold 16px Arial').
+ * @returns The predicted width of the text in pixels.
+ */
+export const predictTextWidth = (text: string, font: string): number => {
+	// Re-use canvas object for better performance
+	const canvas = (predictTextWidth as any).canvas || ((predictTextWidth as any).canvas = document.createElement('canvas'));
+	const context = canvas.getContext('2d');
+
+	if (!context) {
+		console.error('Canvas 2D context is not available.');
+		return 0;
+	}
+
+	context.font = font;
+	const metrics = context.measureText(text);
+	return metrics.width;
+};
+
+export const formatCurrencyLabel = () => {
+	const currencies = Object.values(CURRENCY_DETAILS);
+	const longestCurrency = currencies.reduce((longest, current) => (current.name.length > longest.name.length ? current : longest));
+
+	console.log(longestCurrency.name);
+	return longestCurrency.name;
+	// const threshold
 };

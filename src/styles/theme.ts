@@ -29,6 +29,10 @@ declare module '@mui/material/Button' {
 }
 
 declare module '@mui/material/styles' {
+	interface BreakpointOverrides {
+		xxs: true;
+	}
+
 	interface TypeText {
 		gray: string;
 	}
@@ -132,6 +136,16 @@ const newShadows = [...baseTheme.shadows];
 newShadows[24] = '0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 5px -1px rgba(0, 0, 0, 0.10)';
 
 export const theme = createTheme({
+	breakpoints: {
+		values: {
+			xxs: 0,
+			xs: 320,
+			sm: 420,
+			md: 600,
+			lg: 900,
+			xl: 1200
+		}
+	},
 	typography: {
 		fontFamily: '"SF Pro Text", "Helvetica", "Arial", sans-serif',
 

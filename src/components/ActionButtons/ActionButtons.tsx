@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Button } from '@mui/material';
 import { UICONSTANTS } from '@/styles/UIConstants';
 import KeyboardBackspaceOutlinedIcon from '@mui/icons-material/KeyboardBackspaceOutlined';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+// import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import { useNavigate } from 'react-router-dom';
 
 export type ActionButtonsProps = {
@@ -24,14 +24,14 @@ const EditEntryButton = () => {
 	);
 };
 
-const ExportButton = () => (
-	<Button
-		variant='primary'
-		endIcon={<FileUploadOutlinedIcon />}
-	>
-		Export
-	</Button>
-);
+// const ExportButton = () => (
+// 	<Button
+// 		variant='primary'
+// 		endIcon={<FileUploadOutlinedIcon />}
+// 	>
+// 		Export
+// 	</Button>
+// );
 
 const ResetButton = ({ onReset }: { onReset: () => void }) => (
 	<Button

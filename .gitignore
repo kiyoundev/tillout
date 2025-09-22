@@ -33,3 +33,6 @@ commit_msg.txt
 
 # windsurf rules
 .windsurfrules
+
+# Local Netlify folder
+.netlify

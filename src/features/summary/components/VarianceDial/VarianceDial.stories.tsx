@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { VarianceDial } from './VarianceDial';
 import { ThemeProvider } from '@mui/material/styles';
+import Big from 'big.js';
 import { theme } from '@/styles/theme';
 
 const meta: Meta<typeof VarianceDial> = {
@@ -34,7 +35,7 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
 	args: {
-		variance: 0.85
+		variance: new Big(0.85)
 	}
 };
 
@@ -44,7 +45,7 @@ export const Default: Story = {
  */
 export const Bad: Story = {
 	args: {
-		variance: 0.74
+		variance: new Big(0.74)
 	}
 };
 
@@ -54,7 +55,7 @@ export const Bad: Story = {
  */
 export const Good: Story = {
 	args: {
-		variance: 0.75
+		variance: new Big(0.75)
 	}
 };
 
@@ -64,7 +65,7 @@ export const Good: Story = {
  */
 export const Great: Story = {
 	args: {
-		variance: 1
+		variance: new Big(1)
 	}
 };
 
@@ -74,6 +75,6 @@ export const Great: Story = {
  */
 export const Overage: Story = {
 	args: {
-		variance: 1.2
+		variance: new Big(1.2)
 	}
 };

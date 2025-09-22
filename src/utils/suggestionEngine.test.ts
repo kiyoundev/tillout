@@ -4,8 +4,9 @@ import type { SuggestionEngineParams } from './suggestionEngine';
 describe('Variance Suggestion Engine Scenarios', () => {
 	it('Scenario 1: Single-Item Error (Shortage)', () => {
 		const params: SuggestionEngineParams = {
-			discrepancy: 20.0,
-			isShortage: true,
+			countedTotal: 120,
+			openingBalance: 100,
+			totalSales: 40,
 			currencyCode: 'us',
 			tenderCounts: { bills: { $1: 10, $10: 5, $20: 4 }, coins: {}, rolls: {} }
 		};
@@ -16,8 +17,9 @@ describe('Variance Suggestion Engine Scenarios', () => {
 
 	it('Scenario 2: Single-Item Error (Overage)', () => {
 		const params: SuggestionEngineParams = {
-			discrepancy: 5.0,
-			isShortage: false,
+			countedTotal: 85,
+			openingBalance: 50,
+			totalSales: 30,
 			currencyCode: 'us',
 			tenderCounts: { bills: { $5: 6, $10: 5 }, coins: {}, rolls: {} }
 		};
@@ -28,8 +30,9 @@ describe('Variance Suggestion Engine Scenarios', () => {
 
 	it('Scenario 3: Denomination Swap Error', () => {
 		const params: SuggestionEngineParams = {
-			discrepancy: 9.0,
-			isShortage: true,
+			countedTotal: 51,
+			openingBalance: 50,
+			totalSales: 10,
 			currencyCode: 'us',
 			tenderCounts: { bills: { $1: 11, $10: 4 }, coins: {}, rolls: {} }
 		};
@@ -40,8 +43,9 @@ describe('Variance Suggestion Engine Scenarios', () => {
 
 	it('Scenario 4: Multi-Item Error', () => {
 		const params: SuggestionEngineParams = {
-			discrepancy: 40.0,
-			isShortage: true,
+			countedTotal: 60,
+			openingBalance: 50,
+			totalSales: 50,
 			currencyCode: 'us',
 			tenderCounts: { bills: { $20: 3 }, coins: {}, rolls: {} }
 		};
@@ -53,8 +57,9 @@ describe('Variance Suggestion Engine Scenarios', () => {
 
 	it('Scenario 5: Context-Aware Filtering (Overage)', () => {
 		const params: SuggestionEngineParams = {
-			discrepancy: 20.0,
-			isShortage: false,
+			countedTotal: 25,
+			openingBalance: 0,
+			totalSales: 5,
 			currencyCode: 'us',
 			tenderCounts: { bills: { $1: 5, $20: 0 }, coins: {}, rolls: {} }
 		};
@@ -65,8 +70,9 @@ describe('Variance Suggestion Engine Scenarios', () => {
 
 	it('Scenario 6: Context-Aware Filtering (Swap)', () => {
 		const params: SuggestionEngineParams = {
-			discrepancy: 9.0,
-			isShortage: true,
+			countedTotal: 5,
+			openingBalance: 10,
+			totalSales: 4,
 			currencyCode: 'us',
 			tenderCounts: { bills: { $1: 5, $10: 0 }, coins: {}, rolls: {} }
 		};
@@ -76,8 +82,9 @@ describe('Variance Suggestion Engine Scenarios', () => {
 
 	it('Scenario 7: Fallback Suggestion', () => {
 		const params: SuggestionEngineParams = {
-			discrepancy: 1.37,
-			isShortage: true,
+			countedTotal: 5,
+			openingBalance: 5,
+			totalSales: 1.37,
 			currencyCode: 'us',
 			tenderCounts: { bills: { $1: 5 }, coins: {}, rolls: {} }
 		};

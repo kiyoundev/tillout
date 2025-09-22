@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { TextField, Autocomplete, Box, Stack, Typography } from '@mui/material';
-import { getCurrency } from '@/utils/util';
-import { CURRENCY_DETAILS } from '@/constants/currencies';
-import { filterValues } from './CurrencySelect.utils';
 import { useCurrencyCode, useTillActions } from '@/stores/tillStore';
-import type { CurrencyCode } from '@/types';
+import { filterValues } from './CurrencySelect.utils';
+import { getCurrency } from '@/utils/util';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
+import { CURRENCY_DETAILS } from '@/constants/currencies';
+import type { CurrencyCode } from '@/types';
 
 export interface CurrencySelectProps {
 	helperText?: string;
-	currencyCode?: CurrencyCode;
-	onCurrencyChange?: (currencyCode: CurrencyCode) => void;
 }
 
 /**
@@ -22,28 +20,12 @@ export interface CurrencySelectProps {
  * - Communicates the selected currency back to the parent component via the `onCurrencyChange` callback.
  */
 
-export const CurrencySelect: React.FC<CurrencySelectProps> = ({
-	helperText = 'Select a currency',
-	currencyCode: propCurrencyCode,
-	onCurrencyChange
-}) => {
+export const CurrencySelect: React.FC<CurrencySelectProps> = ({ helperText = 'Select a currency' }) => {
 	const [inputValue, setInputValue] = useState('');
 	const [inputFocused, setInputFocused] = useState(false);
 
-	const storeCurrencyCode = useCurrencyCode();
+	const currencyCode = useCurrencyCode();
 	const { updateCurrencyCode } = useTillActions();
-
-	const currencyCode = propCurrencyCode ?? storeCurrencyCode;
-
-	const handleChange = (newValue: CurrencyCode | null) => {
-		if (!newValue) return;
-
-		if (onCurrencyChange) {
-			onCurrencyChange(newValue);
-		} else {
-			updateCurrencyCode(newValue);
-		}
-	};
 
 	const breakpoint = useBreakpoint();
 
@@ -58,7 +40,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
 			openOnFocus // open dropdown upon focus
 			options={Object.keys(CURRENCY_DETAILS) as CurrencyCode[]}
 			value={currencyCode}
-			onChange={(_, newValue) => handleChange(newValue)}
+			onChange={(_, newValue) => updateCurrencyCode(newValue)}
 			inputValue={inputValue}
 			onInputChange={(_, newInputValue, reason) => {
 				// upon selecting a new option followed by automatic blur, clear the input value
@@ -89,11 +71,21 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
 
 							<Stack
 								direction='row'
+								alignItems='center'
 								spacing={0.5}
 							>
+								{/* at xxs breakpoint, only currency label should be displayed */}
+
 								<Typography>{currency.label}</Typography>
-								{breakpoint !== 'xs' && <Typography>-</Typography>}
-								<Typography color='text.secondary'>{currency.name}</Typography>
+								{!['xxs', 'xs', 'sm', 'md'].includes(breakpoint) && <Typography>-</Typography>}
+								{/* {breakpoint !== 'xs' && <Typography>-</Typography>} */}
+								{!['xxs', 'xs'].includes(breakpoint) && <Typography color='text.secondary'>{currency.name}</Typography>}
+								{/* <Typography color='text.secondary'>{currency.name}</Typography> */}
+
+								{/* 
+								{!['xxs', 'xs', 'sm'].includes(breakpoint) && <Typography>-</Typography>}
+								{!['xxs', 'xs', 'sm'].includes(breakpoint) && <Typography color='text.secondary'>{currency.name}</Typography>}
+								 */}
 							</Stack>
 						</Stack>
 					)

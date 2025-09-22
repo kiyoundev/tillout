@@ -16,7 +16,6 @@ import { ActionButtons } from '@/components/ActionButtons/ActionButtons';
 
 // State Management & Hooks
 import { useCounts, useCurrencyCode, useOpeningBalance, useTotalSales } from '@/stores/tillStore';
-import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 // Utilities
 import { calculateDeposit, calculateTotal, calculateVariance, formatAmount } from '@/utils/util';
@@ -490,7 +489,7 @@ export const VarianceSection = ({ variance }: { variance: Big }) => (
 );
 
 export const SummaryPage: React.FC = () => {
-	const breakpoint = useBreakpoint();
+	// const breakpoint = useBreakpoint();
 
 	const counts = useCounts();
 	const currencyCode = useCurrencyCode();

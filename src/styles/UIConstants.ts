@@ -8,7 +8,7 @@ export const UICONSTANTS = {
 	ConfigSection: {
 		// padding should be defined in @/components/Styled/PaperContainer
 		padding: 3,
-		padding_xs: 2,
+		padding_xs: 3,
 		// spacing between each Config Components, both row and column
 		spacing: 3,
 		// at sm & md breakpoints, the grid should change to single column
@@ -20,8 +20,9 @@ export const UICONSTANTS = {
 		spacing_xs: 1.5
 	},
 	TenderCountContainer: {
-		// padding should be defined in @/components/Styled/PaperContainer
-		padding: 3,
+		// padding for TenderCountContainer uses the same valye from ConfigSection
+		// defined in @/components/Styled/PaperContainer
+
 		// spacing in between the title and divider
 		spacing_title_divider: 2,
 		spacing_title_divider_xs: 1.5,
@@ -66,11 +67,12 @@ export const FONTSIZE = {
 	heading_semibold: 30,
 	heading_medium: 20,
 	body_regular: 20,
-	sectionTitle: 24,
+
+	sectionTitle: 26,
 	sectionTitle_xs: 20,
 	buttonLabel: 16,
 	buttonLabel_xs: 14,
-	tenderCountTitle: 22,
+	tenderCountTitle: 24,
 	tenderCountTitle_xs: 20,
 	varianceDialLabel: 48,
 	varianceDialLabel_xs: 38,

@@ -6,7 +6,7 @@ export const PaperContainer = styled(Box)(({ theme }) => ({
 	border: `1.5px solid ${theme.palette.PaperContainer.border}`,
 	borderRadius: '10px',
 	padding: theme.spacing(UICONSTANTS.ConfigSection.padding),
-	[theme.breakpoints.down('sm')]: {
+	[theme.breakpoints.down('xs')]: {
 		padding: theme.spacing(UICONSTANTS.ConfigSection.padding_xs)
 	}
 }));
