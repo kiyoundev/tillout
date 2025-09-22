@@ -2,7 +2,7 @@
 import Big from 'big.js';
 
 // Material-UI Components
-import { Stack, Typography, Divider, List, ListItem, ListItemIcon } from '@mui/material';
+import { Stack, Typography, Divider, List, ListItem, ListItemIcon, Box } from '@mui/material';
 
 // Material-UI Icons
 import DangerousOutlinedIcon from '@mui/icons-material/DangerousOutlined';
@@ -16,7 +16,6 @@ import { ActionButtons } from '@/components/ActionButtons/ActionButtons';
 
 // State Management & Hooks
 import { useCounts, useCurrencyCode, useOpeningBalance, useTotalSales } from '@/stores/tillStore';
-import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 // Utilities
 import { calculateDeposit, calculateTotal, calculateVariance, formatAmount } from '@/utils/util';
@@ -103,7 +102,6 @@ const BreakdownRow = ({ label, quantity }: BreakdownRowProps) => (
 		direction='row'
 		justifyContent='space-between'
 		alignItems='center'
-		// sx={{ mb: 0.5 }}
 	>
 		<Typography
 			variant='body_regular'
@@ -167,29 +165,27 @@ const BreakdownTender = ({ tenderType, amount, items }: BreakdownTenderProps) =>
  * @param subtotals An object with the monetary subtotal for each tender type.
  * @param currencyCode The currency code for formatting amounts.
  */
-const BreakdownContent = ({ breakdown, subtotals, currencyCode }: BreakdownContentProps) => {
-	return (
-		<Stack
-			direction='column'
-			spacing={3}
-		>
-			{Object.entries(breakdown).map(([tenderTypeKey, items]) => {
-				const tenderType = tenderTypeKey as TenderType;
-				if (!subtotals[tenderType]) {
-					return null;
-				}
-				return (
-					<BreakdownTender
-						key={tenderType}
-						tenderType={TENDER_TYPES[tenderType].toUpperCase()}
-						amount={formatAmount(subtotals[tenderType]!, currencyCode)}
-						items={items}
-					/>
-				);
-			})}
-		</Stack>
-	);
-};
+const BreakdownContent = ({ breakdown, subtotals, currencyCode }: BreakdownContentProps) => (
+	<Stack
+		direction='column'
+		spacing={3}
+	>
+		{Object.entries(breakdown).map(([tenderTypeKey, items]) => {
+			const tenderType = tenderTypeKey as TenderType;
+			if (!subtotals[tenderType]) {
+				return null;
+			}
+			return (
+				<BreakdownTender
+					key={tenderType}
+					tenderType={TENDER_TYPES[tenderType].toUpperCase()}
+					amount={formatAmount(subtotals[tenderType]!, currencyCode)}
+					items={items}
+				/>
+			);
+		})}
+	</Stack>
+);
 
 /**
  * Displays the final total deposit amount.
@@ -199,22 +195,16 @@ const BreakdownContent = ({ breakdown, subtotals, currencyCode }: BreakdownConte
 const TotalDepositContent = ({ totalDeposit, currencyCode }: { totalDeposit: Big; currencyCode: CurrencyCode }) => (
 	<Stack
 		direction='column'
-		spacing={1.5}
-		sx={{ mb: 4 }}
+		spacing={1}
+		// sx={{ mb: 4 }}
 	>
 		<Typography
-			variant='heading_medium'
+			variant='summaryAmountLabel'
 			color={theme.palette.text.gray}
-			sx={{ mb: 1.5 }}
 		>
 			Total Deposit Amount
 		</Typography>
-		<Typography
-			variant='heading_semibold'
-			sx={{ fontSize: '32px', mb: 4 }}
-		>
-			{formatAmount(totalDeposit, currencyCode)}
-		</Typography>
+		<Typography variant='summaryAmount'>{formatAmount(totalDeposit, currencyCode)}</Typography>
 	</Stack>
 );
 
@@ -227,44 +217,35 @@ const TotalDepositContent = ({ totalDeposit, currencyCode }: { totalDeposit: Big
 
 const VarianceDetailContent = ({ countedTotal, discrepancy, currencyCode }: { countedTotal: Big; discrepancy: Big; currencyCode: CurrencyCode }) => {
 	return (
-		<Stack direction={{ xs: 'column', sm: 'row' }}>
+		<Stack
+			direction={{ xxs: 'column', sm: 'row' }}
+			spacing={{ xxs: UICONSTANTS.VarianceDetailContent.spacing_xxs, sm: UICONSTANTS.VarianceDetailContent.spacing_sm }}
+		>
 			<Stack
 				direction='column'
-				spacing={1.5}
-				sx={{ mb: 4, flexGrow: 1, width: '50%' }}
+				spacing={1}
+				sx={{ flexGrow: 1, width: '50%' }}
 			>
 				<Typography
-					variant='heading_medium'
+					variant='summaryAmountLabel'
 					color={theme.palette.text.gray}
-					sx={{ mb: 1.5 }}
 				>
 					Counted Total
 				</Typography>
-				<Typography
-					variant='heading_semibold'
-					sx={{ fontSize: '32px', mb: 4 }}
-				>
-					{formatAmount(countedTotal, currencyCode)}
-				</Typography>
+				<Typography variant='summaryAmount'>{formatAmount(countedTotal, currencyCode)}</Typography>
 			</Stack>
 			<Stack
 				direction='column'
-				spacing={1.5}
-				sx={{ mb: 4, flexGrow: 1, width: '50%' }}
+				spacing={1}
+				sx={{ flexGrow: 1, width: '50%' }}
 			>
 				<Typography
-					variant='heading_medium'
+					variant='summaryAmountLabel'
 					color={theme.palette.text.gray}
-					sx={{ mb: 1.5 }}
 				>
 					Variance Amount
 				</Typography>
-				<Typography
-					variant='heading_semibold'
-					sx={{ fontSize: '32px', mb: 4 }}
-				>
-					{formatAmount(discrepancy, currencyCode, true)}
-				</Typography>
+				<Typography variant='summaryAmount'>{formatAmount(discrepancy, currencyCode, true)}</Typography>
 			</Stack>
 		</Stack>
 	);
@@ -305,9 +286,8 @@ const SuggestionNotification = ({
 				>
 					<DangerousOutlinedIcon sx={{ color: theme.palette.text.gray }} />
 					<Typography
-						variant='body_regular'
+						variant='notification'
 						color={theme.palette.text.gray}
-						sx={{ fontSize: '18px' }}
 					>
 						{discrepancy.lt(0)
 							? `Your till is short by ${formatAmount(discrepancy.abs(), currencyCode)}.`
@@ -315,9 +295,9 @@ const SuggestionNotification = ({
 					</Typography>
 				</Stack>
 				<Typography
-					variant='body_regular'
+					variant='notification'
 					color={theme.palette.text.gray}
-					sx={{ fontSize: '18px', pl: 4 }}
+					sx={{ pl: 4 }}
 				>
 					{inputErrorMessage}
 				</Typography>
@@ -338,9 +318,8 @@ const SuggestionNotification = ({
 			>
 				<DangerousOutlinedIcon sx={{ color: theme.palette.text.gray }} />
 				<Typography
-					variant='body_regular'
+					variant='notification'
 					color={theme.palette.text.gray}
-					sx={{ fontSize: '18px' }}
 				>
 					{discrepancy.lt(0)
 						? `Your till is short by ${formatAmount(discrepancy.abs(), currencyCode)}. You might have: `
@@ -360,9 +339,8 @@ const SuggestionNotification = ({
 							<FiberManualRecordIcon sx={{ fontSize: '8px' }} />
 						</ListItemIcon>
 						<Typography
-							variant='body_regular'
+							variant='notification'
 							color={theme.palette.text.gray}
-							sx={{ fontSize: '18px' }}
 						>
 							{suggestion.message}
 						</Typography>
@@ -427,11 +405,10 @@ const SummarySection = ({
 	return (
 		<Stack
 			direction='column'
-			p={{ xs: UICONSTANTS.SummarySection.padding_xs, sm: UICONSTANTS.SummarySection.padding }}
-			spacing={{ xs: UICONSTANTS.SummarySection.spacing_xs, sm: UICONSTANTS.SummarySection.spacing }}
-			sx={{ flexGrow: 1, width: { xs: '100%', md: '50%' } }}
+			p={{ xxs: UICONSTANTS.SummarySection.padding_xs, sm: UICONSTANTS.SummarySection.padding }}
+			spacing={{ xxs: UICONSTANTS.SummarySection.spacing_xs, sm: UICONSTANTS.SummarySection.spacing }}
 		>
-			<Typography variant='heading_semibold'>{isVarianceMet ? 'SUMMARY' : 'DETAILS'}</Typography>
+			<Typography variant='summaryPageSectionTitle'>{isVarianceMet ? 'SUMMARY' : 'DETAILS'}</Typography>
 
 			{!isVarianceMet && (
 				<>
@@ -474,12 +451,12 @@ export const VarianceSection = ({ variance }: { variance: Big }) => (
 	<Stack
 		direction='column'
 		alignItems='center'
-		p={{ xs: UICONSTANTS.VarianceSection.padding_xs, sm: UICONSTANTS.VarianceSection.padding }}
-		sx={{ flexGrow: 1, width: { xs: '100%', md: '50%' } }}
+		p={{ xxs: UICONSTANTS.VarianceSection.padding_xs, sm: UICONSTANTS.VarianceSection.padding }}
+		spacing={{ xxs: UICONSTANTS.VarianceSection.spacing_xs, sm: UICONSTANTS.VarianceSection.spacing }}
 	>
 		<Typography
-			variant='heading_semibold'
-			sx={{ alignSelf: 'flex-start', mb: { xs: UICONSTANTS.VarianceSection.spacing_xs, sm: UICONSTANTS.VarianceSection.spacing } }}
+			variant='summaryPageSectionTitle'
+			sx={{ alignSelf: 'flex-start' }}
 		>
 			VARIANCE
 		</Typography>
@@ -490,8 +467,6 @@ export const VarianceSection = ({ variance }: { variance: Big }) => (
 );
 
 export const SummaryPage: React.FC = () => {
-	const breakpoint = useBreakpoint();
-
 	const counts = useCounts();
 	const currencyCode = useCurrencyCode();
 	const openingBalance = useOpeningBalance();
@@ -513,8 +488,8 @@ export const SummaryPage: React.FC = () => {
 	return (
 		<>
 			<Stack
-				p={{ xs: UICONSTANTS.SummaryPage.padding_xs, sm: UICONSTANTS.SummaryPage.padding }}
-				spacing={{ xs: UICONSTANTS.SummaryPage.spacing_xs, sm: UICONSTANTS.SummaryPage.spacing }}
+				p={{ xxs: UICONSTANTS.SummaryPage.padding_xs, md: UICONSTANTS.SummaryPage.padding_md, lg: UICONSTANTS.SummaryPage.padding }}
+				spacing={{ xxs: UICONSTANTS.SummaryPage.spacing_xs, sm: UICONSTANTS.SummaryPage.spacing }}
 			>
 				<DateTime />
 
@@ -526,28 +501,51 @@ export const SummaryPage: React.FC = () => {
 						boxShadow: theme.shadows[24]
 					}}
 				>
-					<SummarySection
-						variance={variance}
-						countedTotal={countedTotal}
-						openingBalance={openingBalance || 0}
-						totalSales={totalSales || 0}
-						totalDeposit={totalDeposit}
-						breakdown={breakdown}
-						subtotals={subtotals}
-						actions={actions}
-						suggestions={suggestions}
-						currencyCode={currencyCode}
-					/>
+					{/* When direction changes from row to column at breakpoint 'sm', the order of the boxes is reversed */}
+
+					<Box
+						sx={{
+							order: {
+								xxs: 3, // Default order: second
+								md: 1 // 'md' and up: first
+							},
+							flexGrow: 1,
+							width: { xs: '100%', md: '50%' }
+						}}
+					>
+						<SummarySection
+							variance={variance}
+							countedTotal={countedTotal}
+							openingBalance={openingBalance || 0}
+							totalSales={totalSales || 0}
+							totalDeposit={totalDeposit}
+							breakdown={breakdown}
+							subtotals={subtotals}
+							actions={actions}
+							suggestions={suggestions}
+							currencyCode={currencyCode}
+						/>
+					</Box>
 
 					<Divider
 						orientation='vertical'
 						flexItem
-						sx={{ borderColor: theme.palette.PaperContainer.border, borderWidth: '0.75px' }}
+						sx={{ borderColor: theme.palette.PaperContainer.border, borderWidth: '0.75px', order: 2 }}
 					/>
 
-					<VarianceSection variance={variance} />
+					<Box
+						sx={{
+							order: {
+								xxs: 1, // Default order: second
+								md: 3 // 'md' and up: first
+							},
+							flexGrow: 1,
+							width: { xs: '100%', md: '50%' }
+						}}
+					>
+						<VarianceSection variance={variance} />
+					</Box>
 				</Stack>
-
 				<ActionButtons page='summary' />
 			</Stack>
 		</>

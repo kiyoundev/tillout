@@ -3,7 +3,7 @@ import { Grid, Stack, Fade, Tooltip, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { theme } from '@/styles/theme';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
-import { UICONSTANTS } from '@/styles/UIConstants';
+import { FONTSIZE, UICONSTANTS } from '@/styles/UIConstants';
 
 export type ConfigComponentProps = {
 	title: string;
@@ -17,12 +17,12 @@ export const ConfigComponent = ({ title, showIcon = false, tooltipText, children
 
 	return (
 		<Grid
-			size={{ xs: 12, md: 6 }}
+			size={{ xxs: 12, md: 6 }}
 			{...rest}
 		>
 			<Stack
 				direction='column'
-				spacing={{ xs: UICONSTANTS.ConfigComponent.spacing_xs, sm: UICONSTANTS.ConfigComponent.spacing }}
+				spacing={{ xxs: UICONSTANTS.ConfigComponent.spacing_xs, sm: UICONSTANTS.ConfigComponent.spacing }}
 			>
 				<Stack
 					direction='row'
@@ -45,7 +45,15 @@ export const ConfigComponent = ({ title, showIcon = false, tooltipText, children
 							}}
 							sx={{ color: theme.palette.text.gray }}
 						>
-							<InfoOutlinedIcon sx={{ color: theme.palette.text.gray, fontSize: theme.typography.sectionTitle.fontSize }} />
+							<InfoOutlinedIcon
+								sx={{
+									color: theme.palette.text.gray,
+									fontSize: {
+										xxs: theme.typography.pxToRem(FONTSIZE.sectionTitle_xs),
+										sm: theme.typography.pxToRem(FONTSIZE.sectionTitle)
+									}
+								}}
+							/>
 						</Tooltip>
 					)}
 				</Stack>

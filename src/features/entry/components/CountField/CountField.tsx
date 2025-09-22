@@ -25,7 +25,7 @@ export const CountField = ({ value, onValueChange, label, ...props }: CountField
 			customInput={TextField}
 			label={label}
 			fullWidth
-			slotProps={breakpoint === 'xs' ? { inputLabel: { shrink: true } } : {}}
+			slotProps={breakpoint === 'xxs' ? { inputLabel: { shrink: true } } : {}}
 			// --- NumericFormat specific props ---}
 			value={value === undefined ? '' : value}
 			onValueChange={onValueChange}

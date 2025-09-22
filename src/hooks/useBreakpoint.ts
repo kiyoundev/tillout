@@ -11,11 +11,13 @@ export const useBreakpoint = (): Breakpoint => {
 	const theme = useTheme();
 
 	// Call all hooks at the top level
+	// Call all hooks at the top level, in order from largest to smallest
 	const matches = {
 		xl: useMediaQuery(theme.breakpoints.up('xl')),
 		lg: useMediaQuery(theme.breakpoints.up('lg')),
 		md: useMediaQuery(theme.breakpoints.up('md')),
-		sm: useMediaQuery(theme.breakpoints.up('sm'))
+		sm: useMediaQuery(theme.breakpoints.up('sm')),
+		xs: useMediaQuery(theme.breakpoints.up('xs'))
 	};
 
 	// Find the largest breakpoint that matches
@@ -26,5 +28,5 @@ export const useBreakpoint = (): Breakpoint => {
 	}
 
 	// If nothing else matches, we're on the smallest breakpoint.
-	return 'xs';
+	return 'xxs';
 };

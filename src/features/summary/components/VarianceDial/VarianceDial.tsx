@@ -5,7 +5,7 @@ import { animate, cubicBezier } from 'motion';
 import { motion, useMotionValue, useTransform, useReducedMotion, useMotionTemplate } from 'motion/react';
 import { theme } from '@/styles/theme';
 import { getCircleProps } from './VarianceDial.utils';
-import { UICONSTANTS } from '@/styles/UIConstants';
+import { FONTSIZE, UICONSTANTS } from '@/styles/UIConstants';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 export const COLORS = {
@@ -43,7 +43,8 @@ type VarianceDialProps = {
 export const VarianceDial: React.FC<VarianceDialProps> = ({ variance: varianceBig }) => {
 	const breakpoint = useBreakpoint();
 
-	const dialSize = breakpoint === 'xs' ? UICONSTANTS.VarianceDial.size_xs : UICONSTANTS.VarianceDial.size;
+	// const dialSize = breakpoint === 'xxs' ? UICONSTANTS.VarianceDial.size_xs : UICONSTANTS.VarianceDial.size;
+	const dialSize = !['sm', 'md', 'lg', 'xl'].includes(breakpoint) ? UICONSTANTS.VarianceDial.size_xs : UICONSTANTS.VarianceDial.size;
 	const dialThickness = UICONSTANTS.VarianceDial.thickness;
 
 	const variance = varianceBig.toNumber();
@@ -128,15 +129,16 @@ export const VarianceDial: React.FC<VarianceDialProps> = ({ variance: varianceBi
 			</svg>
 			<Typography
 				variant='varianceDialLabel'
-				color={theme.palette.text.primary}
 				sx={{
 					position: 'absolute',
 					top: '50%',
 					left: '50%',
 					transform: 'translate(-50%, -50%)',
-					fontWeight: 700,
-					fontSize: 48,
-					pointerEvents: 'none'
+					pointerEvents: 'none',
+					fontSize: {
+						xxs: theme.typography.pxToRem(FONTSIZE.varianceDialLabel_xs), // 32px
+						sm: theme.typography.pxToRem(FONTSIZE.varianceDialLabel) // 40px
+					}
 				}}
 			>
 				<motion.span style={{ filter }}>{percentageText}</motion.span>

@@ -16,7 +16,7 @@ export const ConfigSection = () => {
 		<PaperContainer>
 			<Grid
 				container
-				rowSpacing={{ xs: UICONSTANTS.ConfigSection.spacing_xs, sm: UICONSTANTS.ConfigSection.spacing }}
+				rowSpacing={{ xxs: UICONSTANTS.ConfigSection.spacing_xs, sm: UICONSTANTS.ConfigSection.spacing }}
 				columnSpacing={UICONSTANTS.ConfigSection.spacing}
 			>
 				<ConfigComponent title='CURRENCY'>

@@ -89,11 +89,12 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
 
 							<Stack
 								direction='row'
+								alignItems='center'
 								spacing={0.5}
 							>
 								<Typography>{currency.label}</Typography>
-								{breakpoint !== 'xs' && <Typography>-</Typography>}
-								<Typography color='text.secondary'>{currency.name}</Typography>
+								{!['xxs', 'xs'].includes(breakpoint) && <Typography>-</Typography>}
+								{!['xxs', 'xs'].includes(breakpoint) && <Typography color='text.secondary'>{currency.name}</Typography>}
 							</Stack>
 						</Stack>
 					)

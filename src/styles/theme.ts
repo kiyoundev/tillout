@@ -4,7 +4,14 @@ import { FONTSIZE } from './UIConstants';
 // Create a type for the variant names we want to expose, excluding the responsive '_xs' keys
 type MainTypographyVariants = Omit<
 	typeof FONTSIZE,
-	'sectionTitle_xs' | 'buttonLabel_xs' | 'tenderCountTitle_xs' | 'varianceDialLabel_xs' | 'dateTimeLabel_xs'
+	| 'sectionTitle_xs'
+	| 'buttonLabel_xs'
+	| 'tenderCountTitle_xs'
+	| 'varianceDialLabel_xs'
+	| 'dateTimeLabel_xs'
+	| 'summaryPageSectionTitle_xs'
+	| 'summaryAmountLabel_xs'
+	| 'summaryAmount_xs'
 >;
 
 // Type for defining the style properties for each variant
@@ -29,6 +36,9 @@ declare module '@mui/material/Button' {
 }
 
 declare module '@mui/material/styles' {
+	interface BreakpointOverrides {
+		xxs: true;
+	}
 	interface TypeText {
 		gray: string;
 	}
@@ -132,6 +142,17 @@ const newShadows = [...baseTheme.shadows];
 newShadows[24] = '0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 5px -1px rgba(0, 0, 0, 0.10)';
 
 export const theme = createTheme({
+	breakpoints: {
+		values: {
+			xxs: 0,
+			xs: 320,
+			sm: 450,
+			md: 600,
+			lg: 900,
+			xl: 1200
+		}
+	},
+
 	typography: {
 		fontFamily: '"SF Pro Text", "Helvetica", "Arial", sans-serif',
 
@@ -187,9 +208,11 @@ export const theme = createTheme({
 		},
 		varianceDialLabel: {
 			fontFamily: '"SF Pro Text", "Helvetica", "Arial", sans-serif',
-			fontSize: baseTheme.typography.pxToRem(FONTSIZE.varianceDialLabel),
-			[baseTheme.breakpoints.down('sm')]: {
-				fontSize: baseTheme.typography.pxToRem(FONTSIZE.varianceDialLabel_xs)
+			fontWeight: 600,
+			color: baseTheme.palette.text.secondary,
+			fontSize: baseTheme.typography.pxToRem(FONTSIZE.varianceDialLabel_xs),
+			[baseTheme.breakpoints.up('sm')]: {
+				fontSize: baseTheme.typography.pxToRem(FONTSIZE.varianceDialLabel)
 			},
 			letterSpacing: '-0.5px',
 			lineHeight: '100%'
@@ -201,6 +224,43 @@ export const theme = createTheme({
 			[baseTheme.breakpoints.down('sm')]: {
 				fontSize: baseTheme.typography.pxToRem(FONTSIZE.dateTimeLabel_xs)
 			},
+			letterSpacing: '-0.5px',
+			lineHeight: '100%'
+		},
+		summaryPageSectionTitle: {
+			fontFamily: '"SF Pro Display", "Helvetica", "Arial", sans-serif',
+			fontWeight: 600, // Semibold
+			fontSize: baseTheme.typography.pxToRem(FONTSIZE.summaryPageSectionTitle),
+			[baseTheme.breakpoints.down('sm')]: {
+				fontSize: baseTheme.typography.pxToRem(FONTSIZE.summaryPageSectionTitle_xs)
+			},
+			letterSpacing: '-0.5px',
+			lineHeight: '100%'
+		},
+		summaryAmountLabel: {
+			fontFamily: '"SF Pro Display", "Helvetica", "Arial", sans-serif',
+			fontWeight: 600, // Semibold
+			fontSize: baseTheme.typography.pxToRem(FONTSIZE.summaryAmountLabel),
+			[baseTheme.breakpoints.down('sm')]: {
+				fontSize: baseTheme.typography.pxToRem(FONTSIZE.summaryAmountLabel_xs)
+			},
+			letterSpacing: '-0.5px',
+			lineHeight: '100%'
+		},
+		summaryAmount: {
+			fontFamily: '"SF Pro Display", "Helvetica", "Arial", sans-serif',
+			fontWeight: 600, // Semibold
+			fontSize: baseTheme.typography.pxToRem(FONTSIZE.summaryAmount),
+			[baseTheme.breakpoints.down('sm')]: {
+				fontSize: baseTheme.typography.pxToRem(FONTSIZE.summaryAmount_xs)
+			},
+			letterSpacing: '-0.5px',
+			lineHeight: '100%'
+		},
+		notification: {
+			fontFamily: '"SF Pro Text", "Helvetica", "Arial", sans-serif',
+			fontWeight: 400, // Regular
+			fontSize: baseTheme.typography.pxToRem(FONTSIZE.notification),
 			letterSpacing: '-0.5px',
 			lineHeight: '100%'
 		}
@@ -245,11 +305,9 @@ export const theme = createTheme({
 		},
 		MuiInputLabel: {
 			styleOverrides: {
-				// *******DOUBLE CHECK THIS PART*********
 				root: ({ theme }) => ({
 					fontSize: theme.typography.pxToRem(16)
 				})
-				// **************************************
 			}
 		},
 		MuiDivider: {

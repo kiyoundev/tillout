@@ -35,11 +35,11 @@ export const TenderCountContainer: React.FC<TenderCountContainerProps> = ({ tend
 		<Divider
 			sx={{
 				mt: {
-					xs: UICONSTANTS.TenderCountContainer.spacing_title_divider_xs,
+					xxs: UICONSTANTS.TenderCountContainer.spacing_title_divider_xs,
 					sm: UICONSTANTS.TenderCountContainer.spacing_title_divider
 				},
 				mb: {
-					xs: UICONSTANTS.TenderCountContainer.spacing_title_countgrid_xs,
+					xxs: UICONSTANTS.TenderCountContainer.spacing_title_countgrid_xs,
 					sm: UICONSTANTS.TenderCountContainer.spacing_title_countgrid
 				}
 			}}

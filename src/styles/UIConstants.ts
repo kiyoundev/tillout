@@ -1,6 +1,7 @@
 export const UICONSTANTS = {
 	EntryPage: {
 		padding: 4,
+		padding_md: 3,
 		padding_xs: 2,
 		// spacing between each sections - ConfigSection to TenderCountContainer or TenderCountContainer to TenderCountContainer
 		spacing: 3.5
@@ -31,6 +32,7 @@ export const UICONSTANTS = {
 	},
 	SummaryPage: {
 		padding: 4,
+		padding_md: 3,
 		padding_xs: 2,
 		// spacing between the DateTime element and the main content of the page
 		spacing: 3.5,
@@ -39,8 +41,9 @@ export const UICONSTANTS = {
 	SummarySection: {
 		padding: 4,
 		padding_xs: 3,
-		spacing: 4,
-		spacing_xs: 3
+		// spacing between the SummarySection title and the content components - eg. SummarySection title & TotalDepositContent component
+		spacing: 3.5,
+		spacing_xs: 2.5
 	},
 	VarianceSection: {
 		padding: 4,
@@ -49,7 +52,9 @@ export const UICONSTANTS = {
 		spacing_xs: 3
 	},
 	VarianceDetailContent: {
-		spacing: 4
+		// Spacing between variance detail content components - eg. Counted Total & Variance Amount
+		spacing_xxs: 2, // spacing for xxs and xs breakpoint
+		spacing_sm: 0 // flex-grow takes care of spacing
 	},
 	VarianceDial: {
 		size: 250,
@@ -72,8 +77,15 @@ export const FONTSIZE = {
 	buttonLabel_xs: 14,
 	tenderCountTitle: 22,
 	tenderCountTitle_xs: 20,
-	varianceDialLabel: 48,
-	varianceDialLabel_xs: 38,
+	varianceDialLabel: 40,
+	varianceDialLabel_xs: 32,
 	dateTimeLabel: 24,
-	dateTimeLabel_xs: 22
+	dateTimeLabel_xs: 22,
+	summaryPageSectionTitle: 28,
+	summaryPageSectionTitle_xs: 26,
+	summaryAmountLabel: 20, // eg. 'Total Deposit Amount' or 'Counted Total' or 'Variance Amount'
+	summaryAmountLabel_xs: 18,
+	summaryAmount: 32,
+	summaryAmount_xs: 30,
+	notification: 18
 };

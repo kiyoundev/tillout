@@ -28,6 +28,7 @@ export const TenderSelect = () => {
 
 	return (
 		<Autocomplete
+			fullWidth
 			multiple
 			disableCloseOnSelect // keep the dropdown menu open even when an option is selected
 			slotProps={{
