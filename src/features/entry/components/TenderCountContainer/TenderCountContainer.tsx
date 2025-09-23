@@ -3,11 +3,13 @@ import { Divider, Typography, Stack } from '@mui/material';
 import { PaperContainer } from '@/components/Styled/PaperContainer';
 import { CountGrid } from '@/features/entry/components/CountGrid/CountGrid';
 import { TENDER_TYPES } from '@/constants/currencies';
-import type { TenderType } from '@/types';
+import type { Counts, CurrencyCode, TenderType } from '@/types';
 import { UICONSTANTS } from '@/styles/UIConstants';
 
 export type TenderCountContainerProps = {
 	tenderType: TenderType;
+	currencyCode?: CurrencyCode;
+	counts?: Counts;
 };
 
 /**

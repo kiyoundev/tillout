@@ -1,6 +1,6 @@
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { withThemeFromJSXProvider } from '@storybook/addon-themes';
-import { theme } from '../src/theme/theme';
+import { theme } from '../src/styles/theme';
 
 export const decorators = [
 	withThemeFromJSXProvider({

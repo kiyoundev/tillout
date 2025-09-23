@@ -3,6 +3,7 @@ import React from 'react';
 import { useReducedMotion } from 'motion/react';
 import { animate } from 'motion';
 import { VarianceDial, COLORS } from './VarianceDial';
+import Big from 'big.js';
 
 // --- Mocks ---
 jest.mock('./VarianceDial', () => ({
@@ -56,7 +57,7 @@ describe('VarianceDial Component', () => {
 	});
 
 	it('renders the dial and initial percentage text', () => {
-		render(<VarianceDial variance={0} />);
+		render(<VarianceDial variance={new Big(0)} />);
 		// The initial text is '0%' because the animation starts from 0
 		expect(screen.getByText('0%')).toBeInTheDocument();
 		// Check for the two circles (background track and progress)
@@ -64,37 +65,37 @@ describe('VarianceDial Component', () => {
 	});
 
 	it('triggers the animation with the correct target value', () => {
-		render(<VarianceDial variance={0.85} />);
+		render(<VarianceDial variance={new Big(0.85)} />);
 		// Check that animate is called with the motion value and the target variance
 		expect(mockAnimate).toHaveBeenCalledWith(expect.anything(), 0.85, expect.any(Object));
 	});
 
 	it('uses the "bad" progress color for variance below 0.75', () => {
-		render(<VarianceDial variance={0.5} />);
+		render(<VarianceDial variance={new Big(0.5)} />);
 		const progressCircle = screen.getByTestId('variance-dial-svg').querySelectorAll('circle')[1];
 		expect(progressCircle).toHaveAttribute('stroke', COLORS.PROG_BAD);
 	});
 
 	it('uses the "good" progress color for variance between 0.75 and 0.9', () => {
-		render(<VarianceDial variance={0.8} />);
+		render(<VarianceDial variance={new Big(0.8)} />);
 		const progressCircle = screen.getByTestId('variance-dial-svg').querySelectorAll('circle')[1];
 		expect(progressCircle).toHaveAttribute('stroke', COLORS.PROG_GOOD);
 	});
 
 	it('uses the "great" progress color for variance above 0.9', () => {
-		render(<VarianceDial variance={0.95} />);
+		render(<VarianceDial variance={new Big(0.95)} />);
 		const progressCircle = screen.getByTestId('variance-dial-svg').querySelectorAll('circle')[1];
 		expect(progressCircle).toHaveAttribute('stroke', COLORS.PROG_GREAT);
 	});
 
 	it('does not call animate when reduced motion is enabled', () => {
 		mockUseReducedMotion.mockReturnValue(true);
-		render(<VarianceDial variance={0.9} />);
+		render(<VarianceDial variance={new Big(0.9)} />);
 		expect(mockAnimate).not.toHaveBeenCalled();
 	});
 
 	it('renders the overage circle for variance above 100%', () => {
-		render(<VarianceDial variance={1.2} />);
+		render(<VarianceDial variance={new Big(1.2)} />);
 		const circles = screen.getByTestId('variance-dial-svg').querySelectorAll('circle');
 		// Expect background, base, and overage circles
 		expect(circles).toHaveLength(3);

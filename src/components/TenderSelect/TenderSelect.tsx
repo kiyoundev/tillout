@@ -4,10 +4,9 @@ import { type TenderType } from '../../types';
 import { filterValues } from './TenderSelect.utils';
 import { useTillActions, useSelectedTender } from '../../stores/tillStore';
 
-// export interface TenderSelectProps {
-// 	selectedTender: TenderType[];
-// 	onTenderChange: (selectedTender: TenderType[]) => void;
-// }
+export interface TenderSelectProps {
+	selectedTender?: TenderType[];
+}
 
 /**
  * A multi-select Autocomplete component for selecting tender types (e.g., Bills, Coins, Rolls).
