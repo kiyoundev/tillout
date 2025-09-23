@@ -1,4 +1,8 @@
 import { render, screen } from '@testing-library/react';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
+
+// Mock the useBreakpoint hook
+jest.mock('@/hooks/useBreakpoint');
 import userEvent from '@testing-library/user-event';
 import { CurrencySelect } from './CurrencySelect';
 import * as tillStore from '../../stores/tillStore';
@@ -7,6 +11,7 @@ import { type CurrencyCode } from '../../types';
 describe('CurrencySelect Component', () => {
 	const useCurrencyCodeMock = jest.spyOn(tillStore, 'useCurrencyCode');
 	const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
+	const mockedUseBreakpoint = useBreakpoint as jest.Mock;
 	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
 		updateCurrencyCode: jest.fn()
 	};
@@ -16,6 +21,7 @@ describe('CurrencySelect Component', () => {
 		// For each test, we define what our mocked hooks should return.
 		useCurrencyCodeMock.mockReturnValue(initialCurrencyCode);
 		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
+		mockedUseBreakpoint.mockReturnValue('md');
 
 		render(<CurrencySelect />);
 
@@ -38,7 +44,8 @@ describe('CurrencySelect Component', () => {
 
 		// Check for the rendered value, which includes the label and name
 		expect(screen.getByText('USD')).toBeInTheDocument();
-		expect(screen.getByText('- US Dollar')).toBeInTheDocument();
+		expect(screen.getByText('-')).toBeInTheDocument();
+		expect(screen.getByText('US Dollar')).toBeInTheDocument();
 	});
 
 	it('updates the currency code when a new currency is selected', async () => {

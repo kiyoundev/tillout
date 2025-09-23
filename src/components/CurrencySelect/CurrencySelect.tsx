@@ -10,7 +10,6 @@ import { useBreakpoint } from '@/hooks/useBreakpoint';
 export interface CurrencySelectProps {
 	helperText?: string;
 	currencyCode?: CurrencyCode;
-	onCurrencyChange?: (currencyCode: CurrencyCode) => void;
 }
 
 /**
@@ -22,28 +21,12 @@ export interface CurrencySelectProps {
  * - Communicates the selected currency back to the parent component via the `onCurrencyChange` callback.
  */
 
-export const CurrencySelect: React.FC<CurrencySelectProps> = ({
-	helperText = 'Select a currency',
-	currencyCode: propCurrencyCode,
-	onCurrencyChange
-}) => {
+export const CurrencySelect: React.FC<CurrencySelectProps> = ({ helperText = 'Select a currency' }) => {
 	const [inputValue, setInputValue] = useState('');
 	const [inputFocused, setInputFocused] = useState(false);
 
-	const storeCurrencyCode = useCurrencyCode();
+	const currencyCode = useCurrencyCode();
 	const { updateCurrencyCode } = useTillActions();
-
-	const currencyCode = propCurrencyCode ?? storeCurrencyCode;
-
-	const handleChange = (newValue: CurrencyCode | null) => {
-		if (!newValue) return;
-
-		if (onCurrencyChange) {
-			onCurrencyChange(newValue);
-		} else {
-			updateCurrencyCode(newValue);
-		}
-	};
 
 	const breakpoint = useBreakpoint();
 
@@ -58,7 +41,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
 			openOnFocus // open dropdown upon focus
 			options={Object.keys(CURRENCY_DETAILS) as CurrencyCode[]}
 			value={currencyCode}
-			onChange={(_, newValue) => handleChange(newValue)}
+			onChange={(_, newValue) => updateCurrencyCode(newValue)}
 			inputValue={inputValue}
 			onInputChange={(_, newInputValue, reason) => {
 				// upon selecting a new option followed by automatic blur, clear the input value

@@ -59,11 +59,21 @@ export const useTillStore = create<TillState>((set) => ({
 	}
 }));
 
-// Custom Hooks
-export const useCurrencyCode = () => useTillStore((state) => state.currencyCode);
-export const useSelectedTender = () => useTillStore((state) => state.selectedTender);
-export const useOpeningBalance = () => useTillStore((state) => state.openingBalance);
-export const useTotalSales = () => useTillStore((state) => state.totalSales);
-export const useCounts = () => useTillStore((state) => state.counts);
-export const useTillActions = () => useTillStore((state) => state.actions);
-export const useResetCount = () => useTillStore((state) => state.actions.resetCount);
+// Custom Hooks - wrapped in a mutable object for mocking
+export const storeHooks = {
+	useCurrencyCode: () => useTillStore((state) => state.currencyCode),
+	useSelectedTender: () => useTillStore((state) => state.selectedTender),
+	useOpeningBalance: () => useTillStore((state) => state.openingBalance),
+	useTotalSales: () => useTillStore((state) => state.totalSales),
+	useCounts: () => useTillStore((state) => state.counts),
+	useTillActions: () => useTillStore((state) => state.actions),
+	useResetCount: () => useTillStore((state) => state.actions.resetCount)
+};
+
+export const useCurrencyCode = () => storeHooks.useCurrencyCode();
+export const useSelectedTender = () => storeHooks.useSelectedTender();
+export const useOpeningBalance = () => storeHooks.useOpeningBalance();
+export const useTotalSales = () => storeHooks.useTotalSales();
+export const useCounts = () => storeHooks.useCounts();
+export const useTillActions = () => storeHooks.useTillActions();
+export const useResetCount = () => storeHooks.useResetCount();
