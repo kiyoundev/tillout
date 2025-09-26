@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useArgs } from 'storybook/preview-api';
 import { AmountField } from '@/components/AmountField/AmountField';
 import { CURRENCY_CODES } from '@/constants/currencies';
-import * as tillStore from '@/stores/tillStore';
+import { createTillStore, StoreProvider } from '@/stores/tillStore';
 import { CurrencyCode } from '@/types';
 
 const meta: Meta<typeof AmountField> = {
@@ -41,17 +41,20 @@ export const Default: Story = {
 	args: {
 		helperText: 'Enter the amount',
 		value: undefined,
-		// Mock store initial state
 		currencyCode: 'us'
 	},
 	decorators: [
 		(Story, context) => {
 			const { currencyCode } = context.args as { currencyCode: CurrencyCode };
-			jest.spyOn(tillStore, 'useCurrencyCode').mockReturnValue(currencyCode);
-			return <Story />;
+			const store = createTillStore({ currencyCode });
+			return (
+				<StoreProvider store={store}>
+					<Story />
+				</StoreProvider>
+			);
 		}
 	],
-	render: function Render(args) {
+	render: (args) => {
 		const [{ value }, updateArgs] = useArgs();
 		return (
 			<AmountField

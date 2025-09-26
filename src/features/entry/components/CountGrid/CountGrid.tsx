@@ -2,43 +2,29 @@ import { Grid } from '@mui/material';
 import { CountField } from '@/features/entry/components/CountField/CountField';
 import { getCurrency, getColumnSize } from '@/utils/util';
 import { type TenderType, type Counts, type CurrencyCode } from '@/types';
-import { useCurrencyCode, useCounts, useTillActions } from '@/stores/tillStore';
-
-export type OnDataChangeHandler = (denomination: string, count: number | undefined, tenderType: TenderType) => void;
+import { useCurrencyCode, useCounts, useUpdateCount } from '@/stores/tillStore';
 
 export type CountGridProps = {
 	tenderType: TenderType;
 	currencyCode?: CurrencyCode;
 	counts?: Counts;
-	onDataChange?: OnDataChangeHandler;
 };
 
 /**
- * Renders a grid of CountField components for a specific currency and tender type.
- * It is a controlled component, receiving its state via props and communicating changes via callbacks.
- * - Dynamically arranges CountField components into a responsive grid.
- * - Displays denominations for a given `currencyCode` and `tenderType` (e.g., USD bills, CAD coins).
- * - Receives the entire `counts` object and accesses the relevant slice based on `tenderType`.
- * - Reports any change in a denomination's count back to the parent via the `onDataChange` handler.
+ * Renders a grid of `CountField` inputs for the requested `tenderType`.
+ * State for `currencyCode`, `counts`, and the `updateCount` action is sourced directly from the till store (Zustand).
+ *
+ * - Computes layout and denomination labels from the active currency in the store.
+ * - Reads count values for the current tender from `useCounts()`.
+ * - Persists user edits by invoking `useUpdateCount()`.
  */
 
-export const CountGrid: React.FC<CountGridProps> = ({ tenderType, currencyCode: propCurrencyCode, counts: propCounts, onDataChange }) => {
-	const storeCurrencyCode = useCurrencyCode();
-	const storeCounts = useCounts();
-	const { updateCount } = useTillActions();
+export const CountGrid: React.FC<CountGridProps> = ({ tenderType }) => {
+	const currencyCode = useCurrencyCode();
+	const counts = useCounts();
+	const updateCount = useUpdateCount();
 
-	const currencyCode = propCurrencyCode ?? storeCurrencyCode;
-	const counts = propCounts ?? storeCounts;
-
-	const handleValueChange = (denomination: string, value: number | undefined) => {
-		if (onDataChange) {
-			onDataChange(denomination, value, tenderType);
-		} else {
-			updateCount(tenderType, denomination, value);
-		}
-	};
 	const columnSize = getColumnSize(currencyCode);
-
 	const currency = getCurrency(currencyCode);
 	const denominations = tenderType === 'rolls' ? Object.keys(currency.denomination[tenderType]) : currency.denomination[tenderType];
 
@@ -55,7 +41,7 @@ export const CountGrid: React.FC<CountGridProps> = ({ tenderType, currencyCode: 
 					<CountField
 						label={denomination}
 						value={counts?.[tenderType]?.[denomination]}
-						onValueChange={(value) => handleValueChange(denomination, value.floatValue)}
+						onValueChange={(value) => updateCount(tenderType, denomination, value.floatValue)}
 					/>
 				</Grid>
 			))}

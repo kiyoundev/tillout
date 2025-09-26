@@ -1,18 +1,15 @@
 import '@/assets/fonts/fonts.css';
 import { TenderCountContainer } from '@/features/entry/components/TenderCountContainer/TenderCountContainer';
 import { ConfigSection } from '@/features/entry/components/ConfigSection/ConfigSection';
-import { useSelectedTender, useOpeningBalance, useTotalSales, useResetCount } from '@/stores/tillStore';
+import { useSelectedTender, useOpeningBalance, useTotalSales } from '@/stores/tillStore';
 import { Stack } from '@mui/material';
 import { ActionButtons } from '@/components/ActionButtons/ActionButtons';
-import { useNavigate } from 'react-router-dom';
 import { UICONSTANTS } from '@/styles/UIConstants';
 
 export const EntryPage: React.FC = () => {
 	const selectedTender = useSelectedTender();
 	const openingBalance = useOpeningBalance();
 	const totalSales = useTotalSales();
-	const resetCount = useResetCount();
-	const navigate = useNavigate();
 
 	const isConfigComplete = selectedTender.length > 0 && openingBalance !== undefined && totalSales !== undefined;
 
@@ -29,11 +26,7 @@ export const EntryPage: React.FC = () => {
 					{selectedTender.includes('coins') && <TenderCountContainer tenderType='coins' />}
 					{selectedTender.includes('rolls') && <TenderCountContainer tenderType='rolls' />}
 
-					<ActionButtons
-						page='entry'
-						onReset={resetCount}
-						onSubmit={() => navigate('/summary')}
-					/>
+					<ActionButtons page='entry' />
 				</>
 			)}
 		</Stack>

@@ -1,28 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import React from 'react';
 import { Box } from '@mui/material';
-import { useArgs } from 'storybook/preview-api';
 import { TenderSelect } from './TenderSelect';
 import { TENDER_TYPES } from '@/constants/currencies';
-import { storeHooks } from '@/stores/tillStore';
+import { createTillStore, StoreProvider } from '@/stores/tillStore';
+import { useArgs } from 'storybook/internal/preview-api';
+import React from 'react';
 import type { TenderType } from '@/types';
-
-// Save originals at module level
-const originalUseSelectedTender = storeHooks.useSelectedTender;
-const originalUseTillActions = storeHooks.useTillActions;
 
 const meta: Meta<typeof TenderSelect> = {
 	title: 'Components/TenderSelect',
 	component: TenderSelect,
 	parameters: { layout: 'centered' },
+	tags: ['autodocs'],
 	decorators: [
 		(Story) => (
-			<Box sx={{ width: '400px' }}>
+			<Box sx={{ width: 400 }}>
 				<Story />
 			</Box>
 		)
 	],
-	tags: ['autodocs'],
 	argTypes: {
 		selectedTender: {
 			control: { type: 'multi-select' },
@@ -32,9 +28,6 @@ const meta: Meta<typeof TenderSelect> = {
 				defaultValue: { summary: '[]' }
 			}
 		}
-	},
-	args: {
-		selectedTender: []
 	}
 };
 
@@ -42,30 +35,43 @@ export default meta;
 type Story = StoryObj<typeof TenderSelect>;
 
 export const Default: Story = {
-	decorators: [
-		(Story) => {
-			const [{ selectedTender }, updateArgs] = useArgs();
+	args: {
+		selectedTender: []
+	},
+	render: (args) => {
+		const [{ selectedTender }, updateArgs] = useArgs();
 
-			// Mock the store hooks
-			storeHooks.useSelectedTender = () => selectedTender as TenderType[];
-			storeHooks.useTillActions = () => ({
-				updateCurrencyCode: (newCode: string) => updateArgs({ currencyCode: newCode }),
-				updateCount: () => {},
-				updateOpeningBalance: () => {},
-				updateTotalSales: () => {},
-				updateSelectedTender: () => {},
-				resetCount: () => {}
-			});
+		// 1) Stable store instance for the life of the story
+		const store = React.useMemo(() => createTillStore({ selectedTender: args.selectedTender }), []);
 
-			// Restore originals on unmount
-			React.useEffect(() => {
-				return () => {
-					storeHooks.useSelectedTender = originalUseSelectedTender;
-					storeHooks.useTillActions = originalUseTillActions;
-				};
-			}, []);
+		// 2) Controls → UI: push arg into store on change
+		React.useEffect(() => {
+			const current = store.getState().selectedTender;
+			if (current !== selectedTender) {
+				store.getState().actions.updateSelectedTender(selectedTender);
+			}
+		}, [selectedTender]);
 
-			return <Story />;
-		}
-	]
+		// 3) UI → Controls: patch actions.updateCurrencyCode BEFORE providing to context
+		React.useEffect(() => {
+			const actions = store.getState().actions;
+			const original = actions.updateSelectedTender;
+			actions.updateSelectedTender = (next: TenderType[]) => {
+				const prev = store.getState().selectedTender;
+				original(next); // update store
+				if (prev !== next) {
+					updateArgs({ selectedTender: next });
+				}
+			};
+			return () => {
+				actions.updateSelectedTender = original;
+			};
+		}, [updateArgs]);
+
+		return (
+			<StoreProvider store={store}>
+				<TenderSelect />
+			</StoreProvider>
+		);
+	}
 };

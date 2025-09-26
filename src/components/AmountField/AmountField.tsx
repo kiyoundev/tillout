@@ -10,18 +10,11 @@ import type { CurrencyCode } from '@/types';
  * Props for the AmountField component.
  */
 
-export type AmountFieldProps = Pick<TextFieldProps, 'helperText' | 'label'> & {
+export type AmountFieldProps = Pick<TextFieldProps, 'helperText'> & {
 	value: number | undefined;
 	onValueChange: (value: number | undefined) => void;
 	currencyCode?: CurrencyCode;
-	label?: string;
 };
-
-/**
- * A utility function that returns locale-aware thousand and decimal separators.
- * @param currencyCode The currency code to get separators for.
- * @returns An object containing the `thousandSeparator` and `decimalSeparator`.
- */
 
 /**
  * A specialized TextField for inputting monetary amounts.
@@ -32,7 +25,7 @@ export type AmountFieldProps = Pick<TextFieldProps, 'helperText' | 'label'> & {
  * - Enforces a two-decimal-place format.
  */
 
-export const AmountField = ({ value, onValueChange, helperText, label, currencyCode: propCurrencyCode, ...props }: AmountFieldProps) => {
+export const AmountField = ({ value, onValueChange, helperText, currencyCode: propCurrencyCode, ...props }: AmountFieldProps) => {
 	const storeCurrencyCode = useCurrencyCode();
 	const currencyCode = propCurrencyCode || storeCurrencyCode;
 	const currency = getCurrency(currencyCode);
@@ -42,7 +35,6 @@ export const AmountField = ({ value, onValueChange, helperText, label, currencyC
 		<NumericFormat
 			// MUI TextField props
 			customInput={TextField}
-			label={label}
 			helperText={helperText}
 			slotProps={{
 				input: {

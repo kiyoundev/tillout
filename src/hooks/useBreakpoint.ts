@@ -10,7 +10,6 @@ import { Breakpoint } from '@mui/material';
 export const useBreakpoint = (): Breakpoint => {
 	const theme = useTheme();
 
-	// Call all hooks at the top level
 	// Call all hooks at the top level, in order from largest to smallest
 	const matches = {
 		xl: useMediaQuery(theme.breakpoints.up('xl')),

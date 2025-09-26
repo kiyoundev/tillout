@@ -2,7 +2,7 @@ import { TextField, type TextFieldProps } from '@mui/material';
 import { NumericFormat, type OnValueChange } from 'react-number-format';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 
-export type CountFieldProps = Pick<TextFieldProps, 'label' | 'onFocus' | 'onBlur' | 'helperText'> & {
+export type CountFieldProps = Pick<TextFieldProps, 'label' | 'onFocus' | 'onBlur'> & {
 	value: number | undefined;
 	onValueChange: OnValueChange;
 };

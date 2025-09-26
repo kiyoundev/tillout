@@ -1,4 +1,4 @@
-import Big from 'big.js';
+import type Big from 'big.js';
 
 export type CurrencyCode = 'us' | 'ca' | 'au' | 'nz' | 'eu' | 'gb';
 

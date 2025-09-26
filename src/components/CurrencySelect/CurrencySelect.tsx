@@ -3,7 +3,7 @@ import { TextField, Autocomplete, Box, Stack, Typography } from '@mui/material';
 import { getCurrency } from '@/utils/util';
 import { CURRENCY_DETAILS } from '@/constants/currencies';
 import { filterValues } from './CurrencySelect.utils';
-import { useCurrencyCode, useTillActions } from '@/stores/tillStore';
+import { useCurrencyCode, useUpdateCurrencyCode } from '@/stores/tillStore';
 import type { CurrencyCode } from '@/types';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 
@@ -18,7 +18,7 @@ export interface CurrencySelectProps {
  * - Renders a list of all available currencies, showing their flag, name, and code.
  * - Allows users to filter currencies by typing the currency name or code.
  * - Displays the selected currency's flag and code when a value is chosen.
- * - Communicates the selected currency back to the parent component via the `onCurrencyChange` callback.
+ * - Updates the global currency state through the till store when a new currency is selected.
  */
 
 export const CurrencySelect: React.FC<CurrencySelectProps> = ({ helperText = 'Select a currency' }) => {
@@ -26,7 +26,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({ helperText = 'Se
 	const [inputFocused, setInputFocused] = useState(false);
 
 	const currencyCode = useCurrencyCode();
-	const { updateCurrencyCode } = useTillActions();
+	const updateCurrencyCode = useUpdateCurrencyCode();
 
 	const breakpoint = useBreakpoint();
 

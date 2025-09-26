@@ -2,51 +2,52 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 import { Box } from '@mui/material';
 import { useArgs } from 'storybook/preview-api';
-import { TenderCountContainer } from './TenderCountContainer';
 import { CURRENCY_CODES, TENDER_TYPES } from '@/constants/currencies';
-import { Counts, TenderType } from '@/types';
-import { storeHooks } from '@/stores/tillStore';
+import { createTillStore, StoreProvider } from '@/stores/tillStore';
+import { getCurrency } from '@/utils/util';
+import { TenderCountContainer } from './TenderCountContainer';
 
-// Save originals at module level
-const originalUseCurrencyCode = storeHooks.useCurrencyCode;
-const originalUseCounts = storeHooks.useCounts;
-const originalUseTillActions = storeHooks.useTillActions;
+// export type TenderCountContainerProps = {
+// 	tenderType: TenderType;
+// 	currencyCode?: CurrencyCode;
+// 	counts?: Counts;
+// };
 
 const meta: Meta<typeof TenderCountContainer> = {
 	title: 'Components/TenderCountContainer',
 	component: TenderCountContainer,
 	parameters: { layout: 'centered' },
+	tags: ['autodocs'],
 	decorators: [
 		(Story) => (
-			<Box sx={{ width: '400px' }}>
+			<Box sx={{ width: 400 }}>
 				<Story />
 			</Box>
 		)
 	],
-	tags: ['autodocs'],
 	argTypes: {
-		currencyCode: {
-			control: 'select',
-			options: CURRENCY_CODES,
-			description: 'The currency to display denominations for.'
-		},
 		tenderType: {
 			control: 'select',
 			options: Object.keys(TENDER_TYPES),
-			description: 'The type of tender to display (bills, coins, or rolls).'
+			description: 'The type of tender to display (bills, coins, or rolls).',
+			table: {
+				defaultValue: { summary: 'bills' }
+			}
+		},
+		currencyCode: {
+			control: 'select',
+			options: CURRENCY_CODES,
+			description: 'The mocked currency code from the store.',
+			table: {
+				defaultValue: { summary: 'us' }
+			}
 		},
 		counts: {
 			control: 'object',
-			description: 'An object holding the count for each denomination.'
-		}
-	},
-	args: {
-		currencyCode: 'us',
-		tenderType: 'bills',
-		counts: {
-			bills: {},
-			coins: {},
-			rolls: {}
+			description: 'The mocked counts object from the store.',
+			table: {
+				defaultValue: { summary: '{ bills: {}, coins: {}, rolls: {} }' }
+			}
 		}
 	}
 };
@@ -56,41 +57,64 @@ export default meta;
 type Story = StoryObj<typeof TenderCountContainer>;
 
 export const Default: Story = {
-	decorators: [
-		(Story) => {
-			const [{ currencyCode, counts }, updateArgs] = useArgs();
-
-			// Mock the store hooks
-			storeHooks.useCurrencyCode = () => currencyCode;
-			storeHooks.useCounts = () => counts as Counts;
-			storeHooks.useTillActions = () => ({
-				updateCurrencyCode: (newCode: string) => updateArgs({ currencyCode: newCode }),
-				updateCount: (tenderType: TenderType, denomination: string, count: number | undefined) => {
-					const newCounts = {
-						...counts,
-						[tenderType]: {
-							...counts[tenderType],
-							[denomination]: count
-						}
-					};
-					updateArgs({ counts: newCounts });
-				},
-				updateOpeningBalance: () => {},
-				updateTotalSales: () => {},
-				updateSelectedTender: () => {},
-				resetCount: () => {}
-			});
-
-			// Restore originals on unmount
-			React.useEffect(() => {
-				return () => {
-					storeHooks.useCurrencyCode = originalUseCurrencyCode;
-					storeHooks.useCounts = originalUseCounts;
-					storeHooks.useTillActions = originalUseTillActions;
-				};
-			}, []);
-
-			return <Story />;
+	args: {
+		tenderType: 'bills',
+		currencyCode: 'us',
+		counts: {
+			bills: {},
+			coins: {},
+			rolls: {}
 		}
-	]
+	},
+	render: (args) => {
+		const [{ currencyCode, counts }, updateArgs] = useArgs();
+
+		const currency = getCurrency(currencyCode);
+		const denominations =
+			args.tenderType === 'rolls' ? Object.keys(currency.denomination[args.tenderType]) : currency.denomination[args.tenderType];
+
+		// Stable store for the life of the story
+		const store = React.useMemo(() => createTillStore(), []);
+
+		// Controls → UI: push changes from controls into the store
+		React.useEffect(() => {
+			const state = store.getState();
+			if (state.currencyCode !== currencyCode) {
+				state.actions.updateCurrencyCode(currencyCode);
+			}
+
+			const controlCounts = counts?.[args.tenderType] ?? {};
+			const storeCounts = state.counts[args.tenderType] ?? {};
+
+			denominations.forEach((denomination) => {
+				const nextValue = controlCounts[denomination];
+				const currentValue = storeCounts[denomination];
+
+				if (currentValue !== nextValue) {
+					state.actions.updateCount(args.tenderType, denomination, nextValue);
+				}
+			});
+		}, [currencyCode, counts, args.tenderType]);
+
+		// UI → Controls: patch the action
+		React.useEffect(() => {
+			const actions = store.getState().actions;
+			const originalUpdateCount = actions.updateCount;
+
+			actions.updateCount = (tenderType, denomination, value) => {
+				originalUpdateCount(tenderType, denomination, value);
+				updateArgs({ counts: store.getState().counts });
+			};
+
+			return () => {
+				actions.updateCount = originalUpdateCount;
+			};
+		}, [store, updateArgs]);
+
+		return (
+			<StoreProvider store={store}>
+				<TenderCountContainer tenderType={args.tenderType} />
+			</StoreProvider>
+		);
+	}
 };

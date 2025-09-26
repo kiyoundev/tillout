@@ -7,23 +7,21 @@ import { theme } from '@/styles/theme';
 const meta: Meta<typeof VarianceDial> = {
 	title: 'Components/VarianceDial',
 	component: VarianceDial,
-	parameters: {
-		layout: 'centered'
-	},
+	parameters: { layout: 'centered' },
 	tags: ['autodocs'],
-	argTypes: {
-		variance: {
-			control: { type: 'range', min: 0, max: 2, step: 0.05 }, // Finer step
-			description: 'Variance value between 0 and 2'
-		}
-	},
 	decorators: [
 		(Story) => (
 			<ThemeProvider theme={theme}>
 				<Story />
 			</ThemeProvider>
 		)
-	]
+	],
+	argTypes: {
+		variance: {
+			control: { type: 'range', min: 0, max: 2, step: 0.05 }, // Finer step
+			description: 'Variance value between 0 and 2'
+		}
+	}
 };
 
 export default meta;
@@ -37,7 +35,7 @@ export const Default: Story = {
 	args: {
 		variance: new Big(0.85)
 	},
-	render: (args) => <VarianceDial variance={args.variance} />
+	render: ({ variance }) => <VarianceDial variance={new Big(variance)} />
 };
 
 /**

@@ -36,7 +36,7 @@ const ANIMATION_CONFIG = {
 	}
 };
 
-type VarianceDialProps = {
+export type VarianceDialProps = {
 	variance: Big;
 };
 

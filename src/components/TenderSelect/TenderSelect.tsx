@@ -2,11 +2,11 @@ import { Autocomplete, TextField } from '@mui/material';
 import { TENDER_TYPES } from '../../constants/currencies';
 import { type TenderType } from '../../types';
 import { filterValues } from './TenderSelect.utils';
-import { useTillActions, useSelectedTender } from '../../stores/tillStore';
+import { useSelectedTender, useUpdateSelectedTender } from '../../stores/tillStore';
 
-export interface TenderSelectProps {
-	selectedTender?: TenderType[];
-}
+// export interface TenderSelectProps {
+// 	selectedTender?: TenderType[];
+// }
 
 /**
  * A multi-select Autocomplete component for selecting tender types (e.g., Bills, Coins, Rolls).
@@ -15,15 +15,12 @@ export interface TenderSelectProps {
  * - Renders a list of available tender types.
  * - Allows users to select one or more tender types.
  * - The dropdown remains open after a selection to facilitate multiple choices.
- * - Communicates the array of selected tenders back to the parent component via the `onTenderChange` callback.
- *
- * @param selectedTender An array of the currently selected tender types.
- * @param onTenderChange Callback function fired when the selection of tender types changes.
+ * - Synchronises changes directly with the till store via `useUpdateSelectedTender()`.
  */
 
-export const TenderSelect = () => {
+export const TenderSelect: React.FC = () => {
 	const selectedTender = useSelectedTender();
-	const { updateSelectedTender } = useTillActions();
+	const updateSelectedTender = useUpdateSelectedTender();
 
 	return (
 		<Autocomplete

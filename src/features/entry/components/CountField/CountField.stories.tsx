@@ -1,25 +1,25 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { CountField, type CountFieldProps } from './CountField'; // Import CountFieldProps
 import { useArgs } from 'storybook/preview-api';
-import type { NumberFormatValues } from 'react-number-format'; // Import NumberFormatValues
+import { CountField, type CountFieldProps } from './CountField';
+import type { NumberFormatValues } from 'react-number-format';
 
 const meta: Meta<typeof CountField> = {
 	title: 'Components/CountField',
 	component: CountField,
-	parameters: {
-		layout: 'centered'
-	},
+	parameters: { layout: 'centered' },
 	tags: ['autodocs'],
 	argTypes: {
-		onValueChange: { table: { disable: true } },
-		onFocus: { table: { disable: true } },
-		onBlur: { table: { disable: true } },
 		value: {
-			description: 'The current value of the input'
+			description: 'The current value of the input',
+			control: 'number'
 		},
 		label: {
-			description: 'The text that appears as the input label'
-		}
+			description: 'The text that appears as the input label',
+			control: 'text'
+		},
+		onValueChange: { table: { disable: true } },
+		onFocus: { table: { disable: true } },
+		onBlur: { table: { disable: true } }
 	}
 };
 
@@ -31,6 +31,24 @@ export const Default: Story = {
 	args: {
 		label: 'Label',
 		value: undefined
+	},
+	render: (args: CountFieldProps) => {
+		const [{ value }, updateArgs] = useArgs();
+
+		return (
+			<CountField
+				{...args}
+				value={value}
+				onValueChange={(values: NumberFormatValues) => updateArgs({ value: values.floatValue })}
+			/>
+		);
+	}
+};
+
+export const WithValue: Story = {
+	args: {
+		label: '$100',
+		value: 10
 	},
 	render: (args: CountFieldProps) => {
 		const [{ value }, updateArgs] = useArgs();
