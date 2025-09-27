@@ -5,20 +5,15 @@ import { type TenderType } from '../../types';
 import * as tillStore from '../../stores/tillStore';
 
 describe('TenderSelect Component', () => {
-	// Mock the entire store module to spy on its hooks.
 	const useSelectedTenderMock = jest.spyOn(tillStore, 'useSelectedTender');
-	const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
-	// Create a mock object for the store's actions.
-	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
-		// Only mock the action used by the component under test.
-		updateSelectedTender: jest.fn()
-	};
+	const useUpdateSelectedTenderMock = jest.spyOn(tillStore, 'useUpdateSelectedTender');
+	const updateSelectedTenderMock = jest.fn();
 
 	// Create a setup function to prepare the mock for each test.
 	const setup = (initialTenders: TenderType[] = []) => {
 		// For each test, we define what our mocked hooks should return.
 		useSelectedTenderMock.mockReturnValue(initialTenders);
-		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
+		useUpdateSelectedTenderMock.mockReturnValue(updateSelectedTenderMock);
 
 		render(<TenderSelect />);
 
@@ -30,6 +25,9 @@ describe('TenderSelect Component', () => {
 	// Reset all mocks before each test to prevent state leakage.
 	beforeEach(() => {
 		jest.clearAllMocks();
+		updateSelectedTenderMock.mockReset();
+		useSelectedTenderMock.mockReset();
+		useUpdateSelectedTenderMock.mockReset();
 	});
 
 	// Write the tests using the setup function.
@@ -62,8 +60,8 @@ describe('TenderSelect Component', () => {
 		const coinsOption = await screen.findByRole('option', { name: 'Coins' });
 		await user.click(coinsOption);
 
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['bills', 'coins']);
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
+		expect(updateSelectedTenderMock).toHaveBeenCalledWith(['bills', 'coins']);
+		expect(updateSelectedTenderMock).toHaveBeenCalledTimes(1);
 	});
 
 	it('removes a selection when an existing option is clicked', async () => {
@@ -75,8 +73,8 @@ describe('TenderSelect Component', () => {
 		const coinsOption = await screen.findByRole('option', { name: 'Coins' });
 		await user.click(coinsOption);
 
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['bills']);
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
+		expect(updateSelectedTenderMock).toHaveBeenCalledWith(['bills']);
+		expect(updateSelectedTenderMock).toHaveBeenCalledTimes(1);
 	});
 
 	it('removes a selection when a chip is deleted', async () => {
@@ -87,8 +85,8 @@ describe('TenderSelect Component', () => {
 
 		await user.click(deleteIcon);
 
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['coins']);
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
+		expect(updateSelectedTenderMock).toHaveBeenCalledWith(['coins']);
+		expect(updateSelectedTenderMock).toHaveBeenCalledTimes(1);
 	});
 
 	it('removes all selections when the clear icon is clicked', async () => {
@@ -97,7 +95,7 @@ describe('TenderSelect Component', () => {
 		const clearButton = screen.getByLabelText('Clear');
 		await user.click(clearButton);
 
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith([]);
+		expect(updateSelectedTenderMock).toHaveBeenCalledWith([]);
 	});
 
 	it('filters options when user types in the input', async () => {
@@ -121,7 +119,7 @@ describe('TenderSelect Component', () => {
 		await user.keyboard('{arrowdown}'); // Highlight first option ('Banknotes')
 		await user.keyboard('{enter}'); // Select it
 
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledWith(['bills']);
-		expect(mockActions.updateSelectedTender).toHaveBeenCalledTimes(1);
+		expect(updateSelectedTenderMock).toHaveBeenCalledWith(['bills']);
+		expect(updateSelectedTenderMock).toHaveBeenCalledTimes(1);
 	});
 });

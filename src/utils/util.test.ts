@@ -1,4 +1,16 @@
-import { getCurrency, getColumnSize, calculateDeposit } from './util';
+import Big from 'big.js';
+import {
+	getCurrency,
+	getColumnSize,
+	calculateDeposit,
+	parseValue,
+	getDenominationValue,
+	calculateTotal,
+	calculateVariance,
+	getFlattenedDenominations,
+	numToWord,
+	formatAmount
+} from './util';
 import { CURRENCY_DETAILS } from '@/constants/currencies';
 import { type CurrencyCode, type Counts } from '@/types';
 
@@ -13,6 +25,87 @@ describe('utility functions', () => {
 		it('should throw an error for an invalid currency code', () => {
 			const invalidCurrencyCode = 'xx' as CurrencyCode;
 			expect(() => getCurrency(invalidCurrencyCode)).toThrow('Invalid currency code');
+		});
+	});
+
+	describe('parseValue', () => {
+		it('extracts numeric value from currency string', () => {
+			expect(parseValue('$25.50')).toBe(25.5);
+		});
+
+		it('handles coin denomination with divisor', () => {
+			expect(parseValue('25¢', 100)).toBe(0.25);
+		});
+	});
+
+	describe('getDenominationValue', () => {
+		it('returns face value for bill denomination', () => {
+			const currency = getCurrency('us');
+			expect(getDenominationValue('bills', '$20', currency)).toBe(20);
+		});
+
+		it('returns coin value as decimal', () => {
+			const currency = getCurrency('us');
+			expect(getDenominationValue('coins', '25¢', currency)).toBe(0.25);
+		});
+
+		it('returns roll value from currency configuration', () => {
+			const currency = getCurrency('us');
+			expect(getDenominationValue('rolls', '25¢', currency)).toBe(10);
+		});
+	});
+
+	describe('calculateTotal', () => {
+		it('computes total value for mixed tenders', () => {
+			const counts: Counts = {
+				bills: { '$20': 3, '$5': 2 },
+				coins: { '25¢': 4 },
+				rolls: { '25¢': 1 }
+			};
+			const result = calculateTotal(counts, 'us');
+			expect(result.eq(new Big(81))).toBe(true);
+		});
+	});
+
+	describe('calculateVariance', () => {
+		it('returns zero when expected total is zero', () => {
+			const variance = calculateVariance(new Big(100), undefined, undefined);
+			expect(variance.eq(0)).toBe(true);
+		});
+
+		it('calculates ratio of counted to expected totals', () => {
+			const counted = new Big(210);
+			const variance = calculateVariance(counted, 200, 0);
+			expect(variance.toNumber()).toBeCloseTo(1.05, 10);
+		});
+	});
+
+	describe('getFlattenedDenominations', () => {
+		it('includes bills, coins, and rolls with value metadata', () => {
+			const denominations = getFlattenedDenominations('us');
+			expect(denominations.length).toBeGreaterThan(0);
+			expect(denominations.find((d) => d.key === 'us_bills_$20')).toEqual(expect.objectContaining({ denom: '$20', tender: 'bills' }));
+			expect(denominations.find((d) => d.key === 'us_rolls_25¢')).toEqual(expect.objectContaining({ denom: '25¢', tender: 'rolls' }));
+		});
+	});
+
+	describe('numToWord', () => {
+		it('converts numbers to capitalized words', () => {
+			expect(numToWord(42)).toBe('Forty-two');
+		});
+	});
+
+	describe('formatAmount', () => {
+		it('formats positive amounts with currency symbol', () => {
+			expect(formatAmount(new Big(123.45), 'us')).toBe('$123.45');
+		});
+
+		it('formats negative amounts with leading minus', () => {
+			expect(formatAmount(new Big(-10), 'us')).toBe('-$10.00');
+		});
+
+		it('adds plus sign when requested', () => {
+			expect(formatAmount(new Big(5), 'us', true)).toBe('+$5.00');
 		});
 	});
 
@@ -47,7 +140,7 @@ describe('utility functions', () => {
 			};
 			const openingBalance = 200.0;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(295.0);
+			expect(result.totalDeposit.eq(new Big(295))).toBe(true);
 			expect(result.breakdown).toEqual({ bills: { '$100': 2, '$20': 4, '$5': 3 }, coins: {}, rolls: {} });
 			expect(result.actions).toEqual([]);
 		});
@@ -56,7 +149,7 @@ describe('utility functions', () => {
 			const counts: Counts = { bills: { '$20': 10 }, coins: {}, rolls: {} };
 			const openingBalance = 200.0;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(0);
+			expect(result.totalDeposit.eq(new Big(0))).toBe(true);
 			expect(result.breakdown).toEqual({});
 			expect(result.actions).toEqual([]);
 		});
@@ -65,7 +158,7 @@ describe('utility functions', () => {
 			const counts: Counts = { bills: { '$20': 5 }, coins: {}, rolls: {} };
 			const openingBalance = 200.0;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(0);
+			expect(result.totalDeposit.eq(new Big(0))).toBe(true);
 			expect(result.breakdown).toEqual({});
 			expect(result.actions).toEqual([]);
 		});
@@ -78,9 +171,11 @@ describe('utility functions', () => {
 			};
 			const openingBalance = 50.0;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(65.0);
+			expect(result.totalDeposit.eq(new Big(65))).toBe(true);
 			expect(result.breakdown).toEqual({ bills: { '$20': 3 }, coins: { '25¢': 20 }, rolls: {} });
-			expect(result.actions).toEqual([{ type: 'BREAK_ROLL', message: 'Break 1 roll of 25¢ for a more flexible float.' }]);
+			expect(result.actions).toEqual([
+				{ type: 'BREAK_ROLL', message: 'Note: One 25¢ roll was automatically broken down to optimize the change availability' }
+			]);
 		});
 
 		it('Scenario 5: Coin Shortfall (Not Actionable)', () => {
@@ -91,7 +186,7 @@ describe('utility functions', () => {
 			};
 			const openingBalance = 50.0;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(70.0);
+			expect(result.totalDeposit.eq(new Big(70))).toBe(true);
 			expect(result.breakdown).toEqual({ bills: { '$20': 3, '$5': 2 }, coins: {}, rolls: {} });
 			expect(result.actions).toEqual([]);
 		});
@@ -104,7 +199,7 @@ describe('utility functions', () => {
 			};
 			const openingBalance = 187.65;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(392.85);
+			expect(result.totalDeposit.eq(new Big(392.85))).toBe(true);
 			expect(result.breakdown).toEqual({
 				bills: { '$100': 2, '$20': 9, '$10': 1, '$1': 2 },
 				coins: { '25¢': 3, '10¢': 1 },
@@ -116,7 +211,7 @@ describe('utility functions', () => {
 			const counts: Counts = { bills: { '$100': 5, '$50': 1, '$20': 2 }, coins: {}, rolls: {} };
 			const openingBalance = 100.0;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(490.0);
+			expect(result.totalDeposit.eq(new Big(490))).toBe(true);
 			expect(result.breakdown).toEqual({ bills: { '$100': 4, '$50': 1, '$20': 2 }, coins: {}, rolls: {} });
 		});
 
@@ -128,7 +223,7 @@ describe('utility functions', () => {
 			};
 			const openingBalance = 50.0;
 			const result = calculateDeposit(counts, openingBalance, 'us');
-			expect(result.totalDeposit).toBe(35.0);
+			expect(result.totalDeposit.eq(new Big(35))).toBe(true);
 			expect(result.breakdown).toEqual({ bills: { '$20': 1, '$5': 3 }, coins: {}, rolls: {} });
 		});
 	});

@@ -2,23 +2,20 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { CountGrid, CountGridProps } from './CountGrid';
 import { getCurrency } from '@/utils/util';
-import { type Counts, type CurrencyCode, type TenderType } from '@/types';
 import * as tillStore from '@/stores/tillStore';
-
-const useCurrencyCodeMock = jest.spyOn(tillStore, 'useCurrencyCode');
-const useCountsMock = jest.spyOn(tillStore, 'useCounts');
-const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
+import { type Counts, type CurrencyCode, type TenderType } from '@/types';
 
 describe('CountGrid Component', () => {
-	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
-		updateCount: jest.fn()
-	};
+	const useCurrencyCodeMock = jest.spyOn(tillStore, 'useCurrencyCode');
+	const useCountsMock = jest.spyOn(tillStore, 'useCounts');
+	const useUpdateCountsMock = jest.spyOn(tillStore, 'useUpdateCount');
+
+	const updateCountsMock = jest.fn();
 
 	const setup = (props: CountGridProps, initialCounts: Counts, initialCurrencyCode: CurrencyCode) => {
-		// For each test, we define what our mocked hooks should return.
 		useCurrencyCodeMock.mockReturnValue(initialCurrencyCode);
-		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
 		useCountsMock.mockReturnValue(initialCounts);
+		useUpdateCountsMock.mockReturnValue(updateCountsMock);
 
 		render(<CountGrid {...props} />);
 
@@ -78,6 +75,6 @@ describe('CountGrid Component', () => {
 		const fiftyDollarInput = screen.getByLabelText('$50');
 		await user.type(fiftyDollarInput, '5');
 
-		expect(mockActions.updateCount).toHaveBeenLastCalledWith('bills', '$50', 5);
+		expect(updateCountsMock).toHaveBeenLastCalledWith('bills', '$50', 5);
 	});
 });

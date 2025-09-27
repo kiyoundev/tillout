@@ -10,17 +10,15 @@ import { type CurrencyCode } from '../../types';
 
 describe('CurrencySelect Component', () => {
 	const useCurrencyCodeMock = jest.spyOn(tillStore, 'useCurrencyCode');
-	const useTillActionsMock = jest.spyOn(tillStore, 'useTillActions');
+	const useUpdateCurrencyCodeMock = jest.spyOn(tillStore, 'useUpdateCurrencyCode');
 	const mockedUseBreakpoint = useBreakpoint as jest.Mock;
-	const mockActions: Partial<jest.Mocked<tillStore.TillActions>> = {
-		updateCurrencyCode: jest.fn()
-	};
+	const updateCurrencyCodeMock = jest.fn();
 
 	// Create a setup function to prepare the mock for each test.
 	const setup = (initialCurrencyCode: CurrencyCode) => {
 		// For each test, we define what our mocked hooks should return.
 		useCurrencyCodeMock.mockReturnValue(initialCurrencyCode);
-		useTillActionsMock.mockReturnValue(mockActions as tillStore.TillActions);
+		useUpdateCurrencyCodeMock.mockReturnValue(updateCurrencyCodeMock);
 		mockedUseBreakpoint.mockReturnValue('md');
 
 		render(<CurrencySelect />);
@@ -62,8 +60,8 @@ describe('CurrencySelect Component', () => {
 		await user.click(euroOption);
 
 		// Verify that the callback was called with the correct new currency code
-		expect(mockActions.updateCurrencyCode).toHaveBeenCalledWith('eu');
-		expect(mockActions.updateCurrencyCode).toHaveBeenCalledTimes(1);
+		expect(updateCurrencyCodeMock).toHaveBeenCalledWith('eu');
+		expect(updateCurrencyCodeMock).toHaveBeenCalledTimes(1);
 	});
 
 	it('renders correctly with helper text', () => {

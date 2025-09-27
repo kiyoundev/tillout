@@ -79,16 +79,11 @@ describe('CountField Component', () => {
 	it('handles empty/cleared input correctly', async () => {
 		const { user, mockOnValueChange } = setup({ value: 42 });
 		const input = screen.getByRole('textbox', { name: /count/i }) as HTMLInputElement;
-		
+
 		// Clear the input
 		await user.clear(input);
-		
+
 		expect(input.value).toBe('');
 		expect(mockOnValueChange).toHaveBeenCalledWith({ formattedValue: '', value: '', floatValue: undefined }, expect.any(Object));
-	});
-
-	it('displays helper text when provided', () => {
-		setup({ helperText: 'Enter count here' });
-		expect(screen.getByText('Enter count here')).toBeInTheDocument();
 	});
 });

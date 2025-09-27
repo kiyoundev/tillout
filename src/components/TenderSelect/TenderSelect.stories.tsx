@@ -38,11 +38,11 @@ export const Default: Story = {
 	args: {
 		selectedTender: []
 	},
-	render: (args) => {
+	render: () => {
 		const [{ selectedTender }, updateArgs] = useArgs();
 
 		// 1) Stable store instance for the life of the story
-		const store = React.useMemo(() => createTillStore({ selectedTender: args.selectedTender }), []);
+		const store = React.useMemo(() => createTillStore({ selectedTender }), []);
 
 		// 2) Controls → UI: push arg into store on change
 		React.useEffect(() => {
