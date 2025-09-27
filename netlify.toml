@@ -1,6 +1,16 @@
 [build]
-  command = "npm run build"
+  command = "npm run build && npm run build-storybook && cp -r storybook-static dist/storybook"
   publish = "dist"
+
+[[redirects]]
+  from = "/storybook"
+  to = "/storybook/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/storybook/*"
+  to = "/storybook/index.html"
+  status = 200
 
 [[redirects]]
   from = "/*"

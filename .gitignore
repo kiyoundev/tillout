@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 
-BMAD
+# BMAD
 .bmad-core/
 .windsurf/
 docs/
